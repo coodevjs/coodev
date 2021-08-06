@@ -1,6 +1,5 @@
-import { IRailingConfig, IRailingOptions } from '@railing/types'
+import { IRailingConfig, IRailingOptions, IRailingPlugin } from '@railing/types'
 import { createWebpackConfig } from '@railing/scripts'
-import * as http from 'http'
 import * as WebpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpack from 'webpack'
 import * as connect from 'connect'
@@ -12,12 +11,15 @@ class RailingServer extends Railing {
 
   private devServer?: null | DevServer
   private readonly railingConfig: IRailingConfig
-  private readonly internalMiddlewares: connect.Server
+  private readonly internalMiddlewares!: connect.Server
 
   constructor(options: IRailingOptions) {
     super(options)
     this.railingConfig = loadRailingConfig()
-    this.internalMiddlewares = this.createMiddlewares()
+    this.internalMiddlewares = connect()
+
+    this.applyPlugins(this.railingConfig.plugins)
+    this.initializeMiddlewares(this.internalMiddlewares)
   }
 
   public get middlewares() {
@@ -37,7 +39,17 @@ class RailingServer extends Railing {
     }
   }
 
-  private createMiddlewares() {
+  private applyPlugins(plugins?: IRailingPlugin[]) {
+    if (plugins?.length) {
+      for (const plugin of plugins) {
+        plugin.apply(this)
+      }
+    }
+  }
+
+  private initializeMiddlewares(middlewares: connect.Server) {
+    this.hooks.middlewareInitialized.call(middlewares)
+
     console.log('Creating server middlewares...')
     console.log('Creating webpack compiler...')
     const compiler = this.createWebpackCompiler()
@@ -45,17 +57,7 @@ class RailingServer extends Railing {
       writeToDisk: true
     })
 
-    return connect()
-      .use(this.handleRequest.bind(this))
-      .use(devMiddleware)
-  }
-
-  private handleRequest(req: http.IncomingMessage, res: http.ServerResponse, next: connect.NextFunction) {
-    if (req.url === '/') {
-      res.end('<html><div>content</div><script src="/app.js"></script></html>')
-    } else {
-      next()
-    }
+    middlewares.use(devMiddleware)
   }
 
   private createWebpackCompiler() {

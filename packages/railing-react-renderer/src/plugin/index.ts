@@ -1,16 +1,24 @@
-export class RailingReactRendererPlugin {
-  apply(railing) {
-    // or
-    railing.setRenderer(renderer)
-    railing.setClientEntry('../client.tsx'),
-    railing.setServerEntry('../server.tsx')
+import { IRailingPlugin, IRailing } from '@railing/types'
 
-    railing.webpackConfig.setAilas({
-      __build__: path.join(rootDir, 'build')
+export class RailingReactRendererPlugin implements IRailingPlugin {
+  public apply(railing: IRailing) {
+    const htmlTemplate = `
+          <html>
+            <body>Content By RailingReactRendererPlugin</body>
+          </html>
+        `
+
+    const finalHtmlTemplate = railing.hooks.htmlTemplate.call(htmlTemplate)
+
+    railing.hooks.middlewareInitialized.tap('RailingReactRendererPlugin', middlewares => {
+      middlewares.use((req, res, next) => {
+        if (req.url === '/') {
+          res.end(finalHtmlTemplate)
+        } else {
+          next()
+        }
+      })
     })
   }
 
-  runtime() {
-    
-  }
 }

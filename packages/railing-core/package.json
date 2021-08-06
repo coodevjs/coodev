@@ -5,7 +5,7 @@
   "license": "MIT",
   "types": "index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json -d",
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {

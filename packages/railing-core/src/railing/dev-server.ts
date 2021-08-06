@@ -8,14 +8,12 @@ export interface IDevServerOptions {
 }
 
 class DevServer {
-  private railingConfig: IRailingConfig
+  // private railingConfig: IRailingConfig
   private middlewares: Middlewares
 
   constructor(options: IDevServerOptions) {
-    this.railingConfig = options.railingConfig
+    // this.railingConfig = options.railingConfig
     this.middlewares = options.middlewares
-
-    console.log(this.railingConfig);
   }
 
   public start() {

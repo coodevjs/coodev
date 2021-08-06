@@ -1,6 +1,7 @@
 import { RAILING_CONFIG } from '../constants'
 import { IRailingConfig } from '@railing/types'
 import * as fs from 'fs'
+import * as path from 'path'
 
 const validExtensions = ['.js']
 
@@ -9,7 +10,12 @@ export function loadRailingConfig() {
 
   let railingConfig: IRailingConfig = {}
 
-  const configPath = rootDir + RAILING_CONFIG + validExtensions[0]
+  const configPath = path.format({
+    dir: rootDir,
+    name: RAILING_CONFIG,
+    ext: validExtensions[0]
+  })
+
   if (fs.existsSync(configPath)) {
     railingConfig = require(configPath)
   }

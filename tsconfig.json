@@ -22,10 +22,9 @@
       "@railing/scripts": ["./packages/railing-scripts/lib/*"],
       "@railing/core/*": ["./packages/railing-core/lib/*"],
       "@railing/types": ["./packages/railing-types/*"],
-      "@railing/react-renderer/plugin": [
-        "./packages/railing-react-renderer/src/plugin/index.ts"
-      ],
-      "@railing/react-renderer": ["./packages/railing-react-renderer/src/index.ts"]
+      "@railing/react-renderer/*": [
+        "./packages/railing-react-renderer/lib/*"
+      ]
     }
   },
   "exclude": ["node_modules", "lib"]
