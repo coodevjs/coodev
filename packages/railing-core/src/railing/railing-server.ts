@@ -19,7 +19,7 @@ class RailingServer extends Railing {
     this.internalMiddlewares = connect()
 
     this.applyPlugins(this.railingConfig.plugins)
-    this.initializeMiddlewares(this.internalMiddlewares)
+    this.doInitializeMiddlewares(this.internalMiddlewares)
   }
 
   public get middlewares() {
@@ -47,8 +47,8 @@ class RailingServer extends Railing {
     }
   }
 
-  private initializeMiddlewares(middlewares: connect.Server) {
-    this.hooks.middlewareInitialized.call(middlewares)
+  private doInitializeMiddlewares(middlewares: connect.Server) {
+    this.hooks.initializeMiddlewares.call(middlewares)
 
     console.log('Creating server middlewares...')
     console.log('Creating webpack compiler...')
@@ -61,17 +61,21 @@ class RailingServer extends Railing {
   }
 
   private createWebpackCompiler() {
-    const clientWebpackConfig = createWebpackConfig(this.railingConfig, {
-      isDev: true,
-      isServer: false
-    })
+    const clientWebpackConfig = this.hooks.clientWebpackConfig.call(
+      createWebpackConfig(this.railingConfig, {
+        isDev: true,
+        isServer: false
+      })
+    )
     if (this.railingConfig.ssr === false) {
       return webpack(clientWebpackConfig)
     }
-    const serverWebpackConfig = createWebpackConfig(this.railingConfig, {
-      isDev: true,
-      isServer: true
-    })
+    const serverWebpackConfig = this.hooks.serverWebpackConfig.call(
+      createWebpackConfig(this.railingConfig, {
+        isDev: true,
+        isServer: true
+      })
+    )
     return webpack([clientWebpackConfig, serverWebpackConfig])
   }
 

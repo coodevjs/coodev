@@ -10,7 +10,7 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     const finalHtmlTemplate = railing.hooks.htmlTemplate.call(htmlTemplate)
 
-    railing.hooks.middlewareInitialized.tap('RailingReactRendererPlugin', middlewares => {
+    railing.hooks.initializeMiddlewares.tap('RailingReactRendererPlugin', middlewares => {
       middlewares.use((req, res, next) => {
         if (req.url === '/') {
           res.end(finalHtmlTemplate)

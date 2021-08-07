@@ -1,22 +1,27 @@
+import type { Configuration } from 'webpack'
 import type { SyncHook, SyncWaterfallHook } from 'tapable'
 import type { Server } from 'connect'
 
 export type IRuntimeConfig = Record<string, any>
 
-export type IMiddlewareInitializedSyncHook = SyncHook<[Server], void>
+export type IInitializeMiddlewaresSyncHook = SyncHook<[Server], void>
 
-export type IHtmlTemplateSyncHook = SyncWaterfallHook<[string], string>
+export type IHtmlTemplateSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
-export type IHtmlRenderedSyncHook = SyncWaterfallHook<[string], string>
+export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
+
+export type IWebpackConfigSyncWaterfallHook = SyncWaterfallHook<[Configuration], Configuration>
 
 export interface IRailingPlugin {
   apply(railingServerInstance: IRailing): void
 }
 
 export interface IRailingHooks {
-  middlewareInitialized: IMiddlewareInitializedSyncHook
+  initializeMiddlewares: IInitializeMiddlewaresSyncHook
   htmlTemplate: IHtmlTemplateSyncHook
   htmlRendered: IHtmlRenderedSyncHook
+  clientWebpackConfig: IWebpackConfigSyncWaterfallHook
+  serverWebpackConfig: IWebpackConfigSyncWaterfallHook
 }
 
 export interface IRailingOptions {
