@@ -17,9 +17,11 @@ class TestPlugin {
 }
 
 const railingConfig = {
-  ssr: false,
+  ssr: true,
   runtimeConfig: {},
-  plugins: [new TestPlugin(), new RailingReactRendererPlugin()],
+  plugins: [new TestPlugin(), new RailingReactRendererPlugin({
+    template: 'index.html'
+  })],
 };
 
 module.exports = railingConfig;

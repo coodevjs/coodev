@@ -54,7 +54,7 @@ export function createWebpackChainConfig(
 
   config.output
     .path(resolveAppPath(railingConfig.outputDir, options.isServer ? 'server' : 'client'))
-    .publicPath('./')
+    .publicPath('/')
     .filename((!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].js' : '[name].js')
     .chunkFilename((!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].chunk.js' : '[name].chunk.js')
     .libraryTarget(options.isServer ? 'commonjs' : 'umd')

@@ -8,10 +8,10 @@ const NormalizedApp = App || function (props: any) {
   return props.children
 }
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <NormalizedApp
     Component={'div'}
-    pageProps={{ style: { backgroundColor: 'blue' } }}
+    pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
   />,
   document.getElementById(APP_CONTAINER_ID)
 )

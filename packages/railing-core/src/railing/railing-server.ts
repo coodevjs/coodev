@@ -10,12 +10,12 @@ import Railing from './base'
 class RailingServer extends Railing {
 
   private devServer?: null | DevServer
-  private readonly railingConfig: IInternalRailingConfig
+  private readonly internalRailingConfig: IInternalRailingConfig
   private readonly internalMiddlewares!: connect.Server
 
   constructor(options: IRailingOptions) {
     super(options)
-    this.railingConfig = loadRailingConfig()
+    this.internalRailingConfig = loadRailingConfig()
     this.internalMiddlewares = connect()
 
     this.applyPlugins(this.railingConfig.plugins)
@@ -24,6 +24,10 @@ class RailingServer extends Railing {
 
   public get middlewares() {
     return this.internalMiddlewares
+  }
+
+  public get railingConfig() {
+    return this.internalRailingConfig
   }
 
   public start() {

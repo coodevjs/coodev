@@ -20,8 +20,8 @@ export interface IRailingPlugin {
 
 export interface IRailingHooks {
   initializeMiddlewares: IInitializeMiddlewaresSyncHook
-  htmlTemplate: IHtmlTemplateSyncHook
-  htmlRendered: IHtmlRenderedSyncHook
+  htmlTemplate: IHtmlTemplateSyncWaterfallHook
+  htmlRendered: IHtmlRenderedSyncWaterfallHook
   clientWebpackConfig: IWebpackConfigSyncHook
   serverWebpackConfig: IWebpackConfigSyncHook
 }
@@ -38,7 +38,8 @@ export class IRailing {
   constructor(options: IRailingOptions)
   public readonly options: IRailingOptions
   public readonly hooks: IRailingHooks
-  public readonly middlewares: any
+  public readonly middlewares: Server
+  public readonly railingConfig: IInternalRailingConfig
   public start(options: IRailingStartOptions): void
 }
 

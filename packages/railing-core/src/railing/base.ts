@@ -1,11 +1,13 @@
 import { SyncHook, SyncWaterfallHook } from 'tapable'
-import {
+import type { Server } from 'connect'
+import type {
   IRailing,
   IRailingOptions,
   IHtmlTemplateSyncWaterfallHook,
   IHtmlRenderedSyncWaterfallHook,
   IInitializeMiddlewaresSyncHook,
-  IWebpackConfigSyncHook
+  IWebpackConfigSyncHook,
+  IInternalRailingConfig
 } from '@railing/types'
 
 abstract class Railing implements IRailing {
@@ -25,7 +27,9 @@ abstract class Railing implements IRailing {
     this.serverWebpackConfig = new SyncHook(['webpackConfig'])
   }
 
-  public abstract get middlewares(): any
+  public abstract get middlewares(): Server
+
+  public abstract get railingConfig(): IInternalRailingConfig
 
   public get hooks() {
     return {
