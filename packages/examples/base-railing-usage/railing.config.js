@@ -9,7 +9,7 @@ class TestPlugin {
       console.log('htmlTemplate')
       return html + '<div>Content By TestPlugin</div>';
     });
-    railing.hooks.middlewareInitialized.tap('TestPlugin', (middlewares) => {
+    railing.hooks.initializeMiddlewares.tap('TestPlugin', (middlewares) => {
       console.log('sdasdsads');
       middlewares.use((req, res, next) => {
         console.log('this is TestPlugin middleware', req.url);
@@ -20,7 +20,7 @@ class TestPlugin {
 }
 
 const railingConfig = {
-  ssr: true,
+  ssr: false,
   entry: '',
   outputDir: '',
   runtimeConfig: {},
