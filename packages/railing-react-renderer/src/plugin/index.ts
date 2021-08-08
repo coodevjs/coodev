@@ -31,20 +31,15 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     railing.hooks.clientWebpackConfig.tap(
       'RailingReactRendererPlugin',
-      webpackConfig => {
-        if (!webpackConfig.resolve) {
-          webpackConfig.resolve = {}
-        }
-        if (!webpackConfig.resolve.alias) {
-          webpackConfig.resolve.alias = {}
-        }
-        // @ts-ignore
-        webpackConfig.resolve.alias['__RAILING__/react/app'] = path.join(rootDir, 'app.tsx')
-        webpackConfig.entry = {
-          app: path.resolve(__dirname, '../client.js')
-        }
-
-        return webpackConfig
+      config => {
+        config
+          .entry('app')
+          .add(path.resolve(__dirname, '../client.js'))
+          .end()
+        config
+          .resolve.alias
+          .set('__RAILING__/react/app', path.join(rootDir, 'app'))
+          .end()
       }
     )
   }

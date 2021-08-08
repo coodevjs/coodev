@@ -10,7 +10,8 @@
   "license": "MIT",
   "scripts": {
     "build": "lerna run build",
-    "dev": "lerna run dev"
+    "clean": "lerna exec -- rm -rf lib",
+    "dev": "lerna run dev --scope @railing/core --scope @railing/scripts --scope @railing/react-renderer --parallel"
   },
   "devDependencies": {
     "lerna": "^4.0.0",

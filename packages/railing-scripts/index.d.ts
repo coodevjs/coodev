@@ -1,8 +1,7 @@
-import type { Configuration as WebpackConfiguration } from 'webpack'
-import type { IRailingConfig } from '@railing/types'
+import type { IRailingConfig, IWebpackChainConfig } from '@railing/types'
 import type { ICreateWebpackConfigOptions } from './src/types'
 
-export function createWebpackConfig(
+export function createWebpackChainConfig(
   railingConfig: IRailingConfig,
   options: ICreateWebpackConfigOptions
-): WebpackConfiguration
+): IWebpackChainConfig

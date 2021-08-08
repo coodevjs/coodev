@@ -1,9 +1,19 @@
 import { RAILING_CONFIG } from '../constants'
-import { IRailingConfig } from '@railing/types'
+import { IRailingConfig, IInternalRailingConfig } from '@railing/types'
 import * as fs from 'fs'
 import * as path from 'path'
 
 const validExtensions = ['.js']
+
+function normalizeRailingConfig(railingConfig: IRailingConfig): IInternalRailingConfig {
+  return {
+    rootDir: process.cwd(),
+    outputDir: railingConfig.outputDir ?? 'build',
+    ssr: railingConfig.ssr ?? true,
+    runtimeConfig: railingConfig.runtimeConfig ?? {},
+    plugins: railingConfig.plugins ?? []
+  }
+}
 
 export function loadRailingConfig() {
   const rootDir = process.cwd()
@@ -20,5 +30,5 @@ export function loadRailingConfig() {
     railingConfig = require(configPath)
   }
 
-  return railingConfig
+  return normalizeRailingConfig(railingConfig)
 }

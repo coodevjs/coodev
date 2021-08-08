@@ -1,16 +1,18 @@
-import type { Configuration } from 'webpack'
+import * as Config from 'webpack-chain'
 import type { SyncHook, SyncWaterfallHook } from 'tapable'
 import type { Server } from 'connect'
 
+export type IWebpackChainConfig = Config
+
 export type IRuntimeConfig = Record<string, any>
 
-export type IInitializeMiddlewaresSyncHook = SyncHook<[Server], void>
+export type IInitializeMiddlewaresSyncHook = SyncHook<[Server]>
 
 export type IHtmlTemplateSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
-export type IWebpackConfigSyncWaterfallHook = SyncWaterfallHook<[Configuration], Configuration>
+export type IWebpackConfigSyncHook = SyncHook<[IWebpackChainConfig]>
 
 export interface IRailingPlugin {
   apply(railingServerInstance: IRailing): void
@@ -20,8 +22,8 @@ export interface IRailingHooks {
   initializeMiddlewares: IInitializeMiddlewaresSyncHook
   htmlTemplate: IHtmlTemplateSyncHook
   htmlRendered: IHtmlRenderedSyncHook
-  clientWebpackConfig: IWebpackConfigSyncWaterfallHook
-  serverWebpackConfig: IWebpackConfigSyncWaterfallHook
+  clientWebpackConfig: IWebpackConfigSyncHook
+  serverWebpackConfig: IWebpackConfigSyncHook
 }
 
 export interface IRailingOptions {
@@ -44,8 +46,11 @@ export type IRailingConfigEntry = string | { client?: string, server?: string }
 
 export interface IRailingConfig {
   ssr?: boolean
-  entry?: IRailingConfigEntry
   outputDir?: string
   runtimeConfig?: IRuntimeConfig
   plugins?: IRailingPlugin[]
+}
+
+export interface IInternalRailingConfig extends Required<IRailingConfig> {
+  rootDir: string;
 }

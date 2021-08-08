@@ -1,7 +1,7 @@
 import * as path from 'path'
-import * as webpack from 'webpack'
-import { IRailingConfig } from '@railing/types'
+import { IInternalRailingConfig, IWebpackChainConfig } from '@railing/types'
 import * as nodeExternals from 'webpack-node-externals'
+import * as Config from 'webpack-chain'
 import type { ICreateWebpackConfigOptions } from '../../types'
 
 function createBabelLoaderOptions(isServer: boolean) {
@@ -37,55 +37,46 @@ function createBabelLoaderOptions(isServer: boolean) {
   }
 }
 
-export function createWebpackConfig(
-  railingConfig: IRailingConfig,
+export function createWebpackChainConfig(
+  railingConfig: IInternalRailingConfig,
   options: ICreateWebpackConfigOptions
-): webpack.Configuration {
-  const rootDir = process.cwd()
+): IWebpackChainConfig {
+  const config = new Config()
 
-  const resolveAppPath = (...paths: string[]) => path.resolve(rootDir, ...paths)
+  const resolveAppPath = (...paths: string[]) => path.resolve(railingConfig.rootDir, ...paths)
 
-  const outputDir = railingConfig.outputDir || 'build'
-  console.log(path.join(outputDir, options.isServer ? 'server' : 'client'));
+  config
+    .bail(options.isDev)
+    .mode(options.isDev ? 'development' : 'production')
+    .devtool((options.isDev && !options.isServer) ? 'source-map' : false)
+    .stats(options.isServer ? 'none' : 'normal')
+    .target(options.isServer ? 'node' : 'web')
 
+  config.output
+    .path(resolveAppPath(railingConfig.outputDir, options.isServer ? 'server' : 'client'))
+    .publicPath('./')
+    .filename((!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].js' : '[name].js')
+    .chunkFilename((!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].chunk.js' : '[name].chunk.js')
+    .libraryTarget(options.isServer ? 'commonjs' : 'umd')
+    .end()
 
-  const webpackConfig: webpack.Configuration = {
-    bail: options.isDev,
-    mode: options.isDev ? 'development' : 'production',
-    // only client and in development mode
-    devtool: (options.isDev && !options) ? 'cheap-module-eval-source-map' : false,
-    stats: options.isServer ? 'none' : 'normal',
-    target: options.isServer ? 'node' : 'web',
-    entry: {
-      app: resolveAppPath('app.tsx')
-    },
-    output: {
-      path: resolveAppPath(outputDir, options.isServer ? 'server' : 'client'),
-      // TODO
-      publicPath: '/',
-      filename: (!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].js' : '[name].js',
-      chunkFilename: (!options.isServer && !options.isDev) ? 'js/[name].[chunkhash:5].chunk.js' : '[name].chunk.js',
-      libraryTarget: options.isServer ? 'commonjs' : 'umd',
-    },
-    resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      alias: {
-        src: resolveAppPath('src'),
-      },
-    },
-    module: {
-      rules: [
-        {
-          test: /\.(t|j)sx?$/,
-          exclude: /node_modules/,
-          loader: require.resolve('babel-loader'),
-          options: createBabelLoaderOptions(options.isServer),
-        }
-      ]
-    },
-    externals: options.isServer ? [nodeExternals()] : undefined,
-    // plugins: []
-  }
+  config.resolve.extensions
+    .add('.js')
+    .add('.jsx')
+    .add('.ts')
+    .add('.tsx')
+    .end()
 
-  return webpackConfig
+  config.module
+    .rule('compile')
+    .test(/\.(t|j)sx?$/)
+    .exclude.add(/node_modules/).end()
+    .include.add(railingConfig.rootDir).end()
+    .use('babel-loader')
+    .loader(require.resolve('babel-loader'))
+    .options(createBabelLoaderOptions(options.isServer))
+
+  config.externals(options.isServer ? [nodeExternals()] : undefined)
+
+  return config
 }

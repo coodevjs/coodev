@@ -5,7 +5,7 @@ import {
   IHtmlTemplateSyncWaterfallHook,
   IHtmlRenderedSyncWaterfallHook,
   IInitializeMiddlewaresSyncHook,
-  IWebpackConfigSyncWaterfallHook
+  IWebpackConfigSyncHook
 } from '@railing/types'
 
 abstract class Railing implements IRailing {
@@ -13,16 +13,16 @@ abstract class Railing implements IRailing {
   private readonly htmlTemplate: IHtmlTemplateSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
   private readonly initializeMiddlewares: IInitializeMiddlewaresSyncHook
-  private readonly clientWebpackConfig: IWebpackConfigSyncWaterfallHook
-  private readonly serverWebpackConfig: IWebpackConfigSyncWaterfallHook
+  private readonly clientWebpackConfig: IWebpackConfigSyncHook
+  private readonly serverWebpackConfig: IWebpackConfigSyncHook
 
   constructor(options: IRailingOptions) {
     this.options = options
     this.htmlTemplate = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])
     this.initializeMiddlewares = new SyncHook(['middlewares'])
-    this.clientWebpackConfig = new SyncWaterfallHook(['webpackConfig'])
-    this.serverWebpackConfig = new SyncWaterfallHook(['webpackConfig'])
+    this.clientWebpackConfig = new SyncHook(['webpackConfig'])
+    this.serverWebpackConfig = new SyncHook(['webpackConfig'])
   }
 
   public abstract get middlewares(): any

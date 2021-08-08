@@ -1,5 +1,5 @@
-import { IRailingConfig, IRailingOptions, IRailingPlugin } from '@railing/types'
-import { createWebpackConfig } from '@railing/scripts'
+import { IInternalRailingConfig, IRailingOptions, IRailingPlugin } from '@railing/types'
+import { createWebpackChainConfig } from '@railing/scripts'
 import * as WebpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpack from 'webpack'
 import * as connect from 'connect'
@@ -10,7 +10,7 @@ import Railing from './base'
 class RailingServer extends Railing {
 
   private devServer?: null | DevServer
-  private readonly railingConfig: IRailingConfig
+  private readonly railingConfig: IInternalRailingConfig
   private readonly internalMiddlewares!: connect.Server
 
   constructor(options: IRailingOptions) {
@@ -39,8 +39,8 @@ class RailingServer extends Railing {
     }
   }
 
-  private applyPlugins(plugins?: IRailingPlugin[]) {
-    if (plugins?.length) {
+  private applyPlugins(plugins: IRailingPlugin[]) {
+    if (plugins.length) {
       for (const plugin of plugins) {
         plugin.apply(this)
       }
@@ -61,22 +61,22 @@ class RailingServer extends Railing {
   }
 
   private createWebpackCompiler() {
-    const clientWebpackConfig = this.hooks.clientWebpackConfig.call(
-      createWebpackConfig(this.railingConfig, {
-        isDev: true,
-        isServer: false
-      })
-    )
+    const clientWebpackConfig = createWebpackChainConfig(this.railingConfig, {
+      isDev: true,
+      isServer: false
+    })
+    this.hooks.clientWebpackConfig.call(clientWebpackConfig)
     if (this.railingConfig.ssr === false) {
-      return webpack(clientWebpackConfig)
+      return webpack(clientWebpackConfig.toConfig())
     }
-    const serverWebpackConfig = this.hooks.serverWebpackConfig.call(
-      createWebpackConfig(this.railingConfig, {
-        isDev: true,
-        isServer: true
-      })
+    const serverWebpackConfig = createWebpackChainConfig(this.railingConfig, {
+      isDev: true,
+      isServer: true
+    })
+    this.hooks.serverWebpackConfig.call(serverWebpackConfig)
+    return webpack(
+      [clientWebpackConfig.toConfig(), serverWebpackConfig.toConfig()]
     )
-    return webpack([clientWebpackConfig, serverWebpackConfig])
   }
 
 }
