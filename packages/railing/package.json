@@ -1,9 +1,0 @@
-{
-  "name": "railing",
-  "version": "1.0.0-alpha.1",
-  "main": "index.js",
-  "license": "MIT",
-  "devDependencies": {
-    "webpack": "^5.49.0"
-  }
-}

@@ -1,21 +1,12 @@
 {
   "name": "@railing/scripts",
-  "version": "1.0.0-alpha.1",
-  "description": "TODO",
-  "author": "wokeyi <444172954@qq.com>",
+  "version": "1.0.0",
   "homepage": "https://github.com/wokeyi/server-renderer#readme",
   "license": "MIT",
   "types": "./index.d.ts",
   "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
   "publishConfig": {
-    "registry": "https://registry.yarnpkg.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",

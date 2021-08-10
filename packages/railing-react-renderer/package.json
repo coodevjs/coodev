@@ -1,6 +1,6 @@
 {
   "name": "@railing/react-renderer",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "html-webpack-plugin": "^5.3.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
