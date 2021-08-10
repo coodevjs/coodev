@@ -1,6 +1,6 @@
 {
   "name": "@railing/core",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.1",
   "main": "./lib/railing/railing-server.js",
   "license": "MIT",
   "types": "index.d.ts",
@@ -9,8 +9,8 @@
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
-    "@railing/scripts": "^1.0.0",
-    "@railing/types": "^1.0.0",
+    "@railing/scripts": "^1.0.0-alpha.1",
+    "@railing/types": "^1.0.0-alpha.1",
     "connect": "^3.7.0",
     "ts-node": "^10.1.0"
   },
