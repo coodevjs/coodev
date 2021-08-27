@@ -7,6 +7,7 @@ const validExtensions = ['.js']
 
 function normalizeRailingConfig(railingConfig: IRailingConfig): IInternalRailingConfig {
   return {
+    dev: railingConfig.dev ?? process.env.NODE_ENV !== 'production',
     rootDir: process.cwd(),
     outputDir: railingConfig.outputDir ?? 'build',
     ssr: railingConfig.ssr ?? true,

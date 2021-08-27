@@ -7,7 +7,7 @@ class TestPlugin {
     railing.hooks.htmlTemplate.tap('TestPlugin', (html) => {
       return html + '<div>Content By TestPlugin</div>';
     });
-    railing.hooks.initializeMiddlewares.tap('TestPlugin', (middlewares) => {
+    railing.hooks.middlewaresInitialized.tap('TestPlugin', (middlewares) => {
       middlewares.use((req, res, next) => {
         console.log('this is TestPlugin middleware', req.url);
         next();
@@ -19,9 +19,12 @@ class TestPlugin {
 const railingConfig = {
   ssr: true,
   runtimeConfig: {},
-  plugins: [new TestPlugin(), new RailingReactRendererPlugin({
-    template: 'index.html'
-  })],
+  plugins: [
+    new TestPlugin(),
+    new RailingReactRendererPlugin({
+      template: './src/index.html',
+    }),
+  ],
 };
 
 module.exports = railingConfig;

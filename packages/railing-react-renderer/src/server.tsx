@@ -2,13 +2,13 @@ import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 // @ts-ignore
 import App from '__RAILING__/react/app'
-import type { IncomingMessage } from 'http'
+import { IRenderToHTMLOptions } from './types'
 
 const NormalizedApp = App || function (props: any) {
   return props.children
 }
 
-export function renderToHTML({ req }: { req: IncomingMessage }) {
+export async function renderToHTML({ req }: IRenderToHTMLOptions) {
   return ReactDOMServer.renderToString(
     <NormalizedApp
       Component={'div'}

@@ -5,16 +5,17 @@ import type {
   IRailingOptions,
   IHtmlTemplateSyncWaterfallHook,
   IHtmlRenderedSyncWaterfallHook,
-  IInitializeMiddlewaresSyncHook,
+  IMiddlewaresInitializedSyncHook,
   IWebpackConfigSyncHook,
-  IInternalRailingConfig
+  IInternalRailingConfig,
+  IRailingRenderer
 } from '@railing/types'
 
 abstract class Railing implements IRailing {
   public readonly options: IRailingOptions
   private readonly htmlTemplate: IHtmlTemplateSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
-  private readonly initializeMiddlewares: IInitializeMiddlewaresSyncHook
+  private readonly middlewaresInitialized: IMiddlewaresInitializedSyncHook
   private readonly clientWebpackConfig: IWebpackConfigSyncHook
   private readonly serverWebpackConfig: IWebpackConfigSyncHook
 
@@ -22,7 +23,7 @@ abstract class Railing implements IRailing {
     this.options = options
     this.htmlTemplate = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])
-    this.initializeMiddlewares = new SyncHook(['middlewares'])
+    this.middlewaresInitialized = new SyncHook(['middlewares'])
     this.clientWebpackConfig = new SyncHook(['webpackConfig'])
     this.serverWebpackConfig = new SyncHook(['webpackConfig'])
   }
@@ -33,7 +34,7 @@ abstract class Railing implements IRailing {
 
   public get hooks() {
     return {
-      initializeMiddlewares: this.initializeMiddlewares,
+      middlewaresInitialized: this.middlewaresInitialized,
       htmlTemplate: this.htmlTemplate,
       htmlRendered: this.htmlRendered,
       clientWebpackConfig: this.clientWebpackConfig,
@@ -42,6 +43,8 @@ abstract class Railing implements IRailing {
   }
 
   public abstract start(): void
+
+  public abstract setRenderer(renderer: IRailingRenderer): void
 }
 
 export default Railing
