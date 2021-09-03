@@ -2,7 +2,11 @@ import * as path from 'path'
 import { IInternalRailingConfig, IWebpackChainConfig } from '@railing/types'
 import * as nodeExternals from 'webpack-node-externals'
 import * as Config from 'webpack-chain'
-import type { ICreateWebpackConfigOptions } from '../../types'
+
+export interface ICreateWebpackConfigOptions {
+  isDev: boolean
+  isServer: boolean
+}
 
 function createBabelLoaderOptions(isServer: boolean) {
   const presets = [

@@ -3,7 +3,7 @@ import type {
   IInternalRailingConfig,
   IRailingMiddlewares
 } from '@railing/types'
-import { createWebpackChainConfig } from '@railing/scripts'
+import { createWebpackChainConfig } from '../webpack'
 import * as createWebpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpack from 'webpack'
 import * as http from 'http'
@@ -43,10 +43,6 @@ class DevServer {
     const devMiddleware = createWebpackDevMiddleware(compiler, {
       writeToDisk: true
     })
-    // middlewares.stack.unshift({
-    //   route: '__webpack-dev-middleware__',
-    //   handle: devMiddleware
-    // })
     middlewares.use(devMiddleware)
   }
 

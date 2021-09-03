@@ -19,12 +19,9 @@
     "moduleResolution": "node",
     "target": "es6",
     "paths": {
-      "@railing/scripts": ["./packages/railing-scripts/lib/*"],
       "@railing/core/*": ["./packages/railing-core/lib/*"],
       "@railing/types": ["./packages/railing-types/*"],
-      "@railing/react-renderer/*": [
-        "./packages/railing-react-renderer/lib/*"
-      ]
+      "@railing/react-renderer/*": ["./packages/railing-react-renderer/lib/*"]
     }
   },
   "exclude": ["node_modules", "lib"]
