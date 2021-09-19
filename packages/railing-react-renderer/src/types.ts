@@ -12,3 +12,8 @@ export type IHTMLRenderer = (options: IRenderToHTMLOptions) => Promise<string>
 export interface IServerEntry {
   renderToHTML: IHTMLRenderer;
 }
+
+export interface IRailingReactRouteConfig {
+  path: string
+  component: string
+}
