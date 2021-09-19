@@ -11,7 +11,7 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna exec -- rm -rf lib",
-    "dev": "lerna run dev --scope @railing/core --scope @railing/scripts --scope @railing/react-renderer --parallel"
+    "dev": "lerna run dev --scope @railing/core --scope @railing/react-renderer --parallel"
   },
   "devDependencies": {
     "lerna": "^4.0.0",
