@@ -75,7 +75,7 @@ export function createWebpackChainConfig(
     .rule('compile')
     .test(/\.(t|j)sx?$/)
     .exclude.add(/node_modules/).end()
-    .include.add(railingConfig.rootDir).end()
+    .include.add(railingConfig.rootDir).add(/railing/).end()
     .use('babel-loader')
     .loader(require.resolve('babel-loader'))
     .options(createBabelLoaderOptions(options.isServer))

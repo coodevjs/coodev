@@ -1,18 +1,18 @@
 const {
   RailingReactRendererPlugin,
-} = require('@railing/react-renderer/lib/plugin');
+} = require('@railing/react-renderer/lib/plugin')
 
 class TestPlugin {
   apply(railing) {
-    railing.hooks.htmlTemplate.tap('TestPlugin', (html) => {
-      return html + '<div>Content By TestPlugin</div>';
-    });
-    railing.hooks.middlewaresInitialized.tap('TestPlugin', (middlewares) => {
+    railing.hooks.documentHtml.tap('TestPlugin', html => {
+      return html + '<div>Content By TestPlugin</div>'
+    })
+    railing.hooks.middlewares.tap('TestPlugin', middlewares => {
       middlewares.use((req, res, next) => {
-        console.log('this is TestPlugin middleware', req.url);
-        next();
-      });
-    });
+        console.log('this is TestPlugin middleware', req.url)
+        next()
+      })
+    })
   }
 }
 
@@ -26,15 +26,15 @@ const railingConfig = {
       routes: [
         {
           path: '/',
-          component: './src/home'
+          component: './src/home',
         },
         {
           path: '/other',
-          component: './src/other'
-        }
-      ]
+          component: './src/other',
+        },
+      ],
     }),
   ],
-};
+}
 
-module.exports = railingConfig;
+module.exports = railingConfig

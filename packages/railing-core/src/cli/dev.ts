@@ -1,7 +1,7 @@
-import Railing from '../railing/railing-server'
+import Railing from '../railing'
 
 const railing = new Railing({
-  dev: true
+  dev: true,
 })
 
 railing.start()

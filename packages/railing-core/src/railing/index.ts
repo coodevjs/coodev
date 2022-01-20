@@ -3,18 +3,15 @@ import type {
   IRailingOptions,
   IRailingPlugin,
   IRailingRenderer,
-  IRailingMiddlewares
+  IRailingMiddlewares,
 } from '@railing/types'
-import type { IncomingMessage, ServerResponse } from 'http'
 import * as connect from 'connect'
 import { loadRailingConfig } from '../config'
 import DevServer from './dev-server'
-import Railing from './base'
+import BaseRailing from './base'
 
-class RailingServer extends Railing {
-
+class Railing extends BaseRailing {
   private renderer?: IRailingRenderer
-  private devServer?: DevServer
   private readonly internalRailingConfig: IInternalRailingConfig
   private readonly internalMiddlewares: IRailingMiddlewares
 
@@ -24,9 +21,6 @@ class RailingServer extends Railing {
     this.internalMiddlewares = connect()
 
     this.applyPlugins(this.railingConfig.plugins)
-    this.initializeMiddlewares(this.internalMiddlewares)
-
-    this.hooks.middlewaresInitialized.call(this.internalMiddlewares)
   }
 
   public get middlewares() {
@@ -39,15 +33,19 @@ class RailingServer extends Railing {
 
   public start() {
     if (this.options.dev) {
-      this.devServer = new DevServer({
+      if (!this.renderer) {
+        throw new Error('Please `setRenderer` first before start')
+      }
+      const devServer = new DevServer({
         railingConfig: this.internalRailingConfig,
         middlewares: this.internalMiddlewares,
-        hooks: this.hooks
+        renderer: this.renderer,
+        hooks: this.hooks,
       })
 
-      this.devServer.start()
+      devServer.start()
     } else {
-      // createHttpServer()
+      // createProdServer()
     }
   }
 
@@ -65,28 +63,6 @@ class RailingServer extends Railing {
       }
     }
   }
-
-  private initializeMiddlewares(middlewares: IRailingMiddlewares) {
-    middlewares.use(this.handleRenderToHTML.bind(this))
-  }
-
-  private async handleRenderToHTML(
-    req: IncomingMessage,
-    res: ServerResponse,
-    next: connect.NextFunction
-  ) {
-    if (this.renderer) {
-      const html = await this.renderer.render({ req, res, next })
-      if (html === undefined) {
-        next()
-      } else if (!res.writableEnded) {
-        res.end(html)
-      }
-    } else {
-      next()
-    }
-  }
-
 }
 
-export default RailingServer
+export default Railing

@@ -7,9 +7,9 @@ export type IWebpackChainConfig = Config
 
 export type IRuntimeConfig = Record<string, any>
 
-export type IMiddlewaresInitializedSyncHook = SyncHook<[Server]>
+export type IMiddlewaresSyncHook = SyncHook<[Server]>
 
-export type IHtmlTemplateSyncWaterfallHook = SyncWaterfallHook<[string], string>
+export type IDocumentHtmlSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
@@ -20,8 +20,8 @@ export interface IRailingPlugin {
 }
 
 export interface IRailingHooks {
-  middlewaresInitialized: IMiddlewaresInitializedSyncHook
-  htmlTemplate: IHtmlTemplateSyncWaterfallHook
+  middlewares: IMiddlewaresSyncHook
+  documentHtml: IDocumentHtmlSyncWaterfallHook
   htmlRendered: IHtmlRenderedSyncWaterfallHook
   clientWebpackConfig: IWebpackConfigSyncHook
   serverWebpackConfig: IWebpackConfigSyncHook
@@ -45,7 +45,7 @@ export class IRailing {
   public setRenderer(renderer: IRailingRenderer): void
 }
 
-export type IRailingConfigEntry = string | { client?: string, server?: string }
+export type IRailingConfigEntry = string | { client?: string; server?: string }
 
 export interface IRailingConfig {
   dev?: boolean
@@ -69,5 +69,9 @@ export interface IRailingRenderContext {
 
 export interface IRailingRenderer {
   initialize(railing: IRailing): void
-  render(context: IRailingRenderContext): Promise<string | undefined>
+  getDocumentHtml(context: IRailingRenderContext): Promise<string>
+  render(
+    documentHtml: string,
+    context: IRailingRenderContext,
+  ): Promise<string | null>
 }

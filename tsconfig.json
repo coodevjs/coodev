@@ -17,7 +17,7 @@
     "jsx": "react",
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es6",
+    "target": "es2019",
     "paths": {
       "@railing/core/*": ["./packages/railing-core/lib/*"],
       "@railing/types": ["./packages/railing-types/*"],

@@ -1,6 +1,5 @@
 import { IRailingPlugin, IRailing, IWebpackChainConfig } from '@railing/types'
 import * as path from 'path'
-import * as fs from 'fs'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import { EMITTED_HTML_FILENAME } from './constants'
 import { IRailingReactRouteConfig } from './types'
@@ -12,7 +11,6 @@ export interface IRailingReactRendererPluginOptions {
 }
 
 export class RailingReactRendererPlugin implements IRailingPlugin {
-
   private readonly options: IRailingReactRendererPluginOptions
 
   constructor(options: IRailingReactRendererPluginOptions) {
@@ -25,70 +23,52 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     railing.setRenderer(new RailingReactRenderer())
 
-    this.createRouteConfigFile(rootDir, this.options.routes || [])
-
     railing.hooks.clientWebpackConfig.tap(
       'RailingReactRendererPlugin',
       config => {
-        config
-          .entry('main')
-          .add(path.resolve(__dirname, './client.js'))
-          .end()
+        config.entry('main').add(path.resolve(__dirname, './client.js')).end()
 
-        config
-          .plugin('html-webpack-plugin')
-          .use(HtmlWebpackPlugin, [{
+        config.plugin('html-webpack-plugin').use(HtmlWebpackPlugin, [
+          {
             template: this.options.template,
-            filename: EMITTED_HTML_FILENAME
-          }])
+            filename: EMITTED_HTML_FILENAME,
+          },
+        ])
 
         this.addWebpackResolveAlias(config, rootDir)
-      }
+        this.addBabelLoaderPlugin(config, rootDir)
+      },
     )
 
     railing.hooks.serverWebpackConfig.tap(
       'RailingReactRendererPlugin',
       config => {
-        config
-          .entry('main')
-          .add(path.resolve(__dirname, './server.js'))
-          .end()
+        config.entry('main').add(path.resolve(__dirname, './server.js')).end()
+
         this.addWebpackResolveAlias(config, rootDir)
-      }
+        this.addBabelLoaderPlugin(config, rootDir)
+      },
     )
   }
 
   private addWebpackResolveAlias(config: IWebpackChainConfig, rootDir: string) {
-    config
-      .resolve.alias
+    config.resolve.alias
       .set('__RAILING__/react/app', path.join(rootDir, 'src', 'app'))
       .end()
-
-    config
-      .resolve.alias
-      .set('__RAILING__/react/routes', path.join(rootDir, '.railing', 'routes'))
-      .end()
   }
 
-  private createRouteConfigFile(rootDir: string, routes: IRailingReactRouteConfig[]) {
-    const baseDir = path.join(rootDir, '.railing')
-    const routeConfigPath = path.join(baseDir, 'routes.js')
+  private addBabelLoaderPlugin(config: IWebpackChainConfig, rootDir: string) {
+    const babelLoaderConfig = config.module.rules
+      .get('compile')
+      .uses.get('babel-loader')
 
-    const content = routes.map(route => {
-      const fullPath = path.resolve(rootDir, route.component)
-      const relativePath = path.relative(rootDir, fullPath).replace(/\\/, '/')
-      return `{path:'${route.path}', component: require('../${relativePath}')}`
-    })
+    const options = babelLoaderConfig.get('options')
 
-    if (!fs.existsSync(baseDir)) {
-      fs.mkdirSync(baseDir, { recursive: true })
-    }
+    options.plugins.unshift([
+      path.resolve(__dirname, './babel/babel-plugin-railing-routes'),
+      { routes: this.options.routes, rootDir },
+    ])
 
-    if (fs.existsSync(routeConfigPath)) {
-      fs.unlinkSync(routeConfigPath)
-    }
-
-    fs.writeFileSync(routeConfigPath, `export default [${content.join(',')}]`)
+    babelLoaderConfig.set('options', options)
   }
-
 }
