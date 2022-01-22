@@ -1,11 +1,12 @@
 import * as React from 'react'
+import { getRuntimeConfig } from '@railing/core'
 
 const App: React.FC = ({ Component, pageProps }: any) => {
   const handleClick = () => {
-    console.log('clicked')
+    console.log('clicked', getRuntimeConfig())
   }
   return (
-    <div id='app' onClick={handleClick}>
+    <div id='app' style={{ width: 200, height: 300, background: 'red' }} onClick={handleClick}>
       <Component {...pageProps} />
     </div>
   )

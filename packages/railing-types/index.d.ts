@@ -9,7 +9,19 @@ export type IRuntimeConfig = Record<string, any>
 
 export type IMiddlewaresSyncHook = SyncHook<[Server]>
 
+export type INextFunction = NextFunction
+
+export interface IGlobalData {
+  runtimeConfig: IRuntimeConfig
+  [key: string]: any
+}
+
 export type IDocumentHtmlSyncWaterfallHook = SyncWaterfallHook<[string], string>
+
+export type IGlobalDataSyncWaterfallHook = SyncWaterfallHook<
+  [IGlobalData],
+  IGlobalData
+>
 
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
@@ -25,6 +37,7 @@ export interface IRailingHooks {
   htmlRendered: IHtmlRenderedSyncWaterfallHook
   clientWebpackConfig: IWebpackConfigSyncHook
   serverWebpackConfig: IWebpackConfigSyncHook
+  globalData: IGlobalDataSyncWaterfallHook
 }
 
 export interface IRailingOptions {

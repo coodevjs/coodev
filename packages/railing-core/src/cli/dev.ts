@@ -1,6 +1,6 @@
-import Railing from '../railing'
+import { createRailing } from '../railing'
 
-const railing = new Railing({
+const railing = createRailing({
   dev: true,
 })
 

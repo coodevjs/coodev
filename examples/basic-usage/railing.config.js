@@ -18,7 +18,9 @@ class TestPlugin {
 
 const railingConfig = {
   ssr: true,
-  runtimeConfig: {},
+  runtimeConfig: {
+    name: 'Test',
+  },
   plugins: [
     new TestPlugin(),
     new RailingReactRendererPlugin({

@@ -85,5 +85,5 @@ package-lock.json
 /.workspace
 **/tmp/
 
-lib
+packages/*/lib
 .railing

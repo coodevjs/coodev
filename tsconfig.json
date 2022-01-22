@@ -19,7 +19,7 @@
     "moduleResolution": "node",
     "target": "es2019",
     "paths": {
-      "@railing/core/*": ["./packages/railing-core/lib/*"],
+      "@railing/core": ["./packages/railing-core/index.d.ts"],
       "@railing/types": ["./packages/railing-types/*"],
       "@railing/react-renderer/*": ["./packages/railing-react-renderer/lib/*"]
     }

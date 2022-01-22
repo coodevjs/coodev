@@ -1,7 +1,1 @@
-import App from './App'
-
-export class ReactRenderer { }
-
-export {
-  App
-}
+export { App, Html, Head, Title } from './components'

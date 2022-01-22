@@ -1,7 +1,5 @@
 import { IRailingPlugin, IRailing, IWebpackChainConfig } from '@railing/types'
 import * as path from 'path'
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import { EMITTED_HTML_FILENAME } from './constants'
 import { IRailingReactRouteConfig } from './types'
 import RailingReactRenderer from './renderer'
 
@@ -27,13 +25,6 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
       'RailingReactRendererPlugin',
       config => {
         config.entry('main').add(path.resolve(__dirname, './client.js')).end()
-
-        config.plugin('html-webpack-plugin').use(HtmlWebpackPlugin, [
-          {
-            template: this.options.template,
-            filename: EMITTED_HTML_FILENAME,
-          },
-        ])
 
         this.addWebpackResolveAlias(config, rootDir)
         this.addBabelLoaderPlugin(config, rootDir)

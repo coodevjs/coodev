@@ -6,6 +6,7 @@ import App from '__RAILING__/react/app'
 import * as routes from '__RAILING__/react/routes'
 import { IRailingRenderContext } from '@railing/types'
 import { IRailingReactRouteConfig } from './types'
+import Document from './document'
 
 const NormalizedApp = App || function (props: any) {
   return props.children
@@ -26,9 +27,5 @@ export async function renderToHtml({ req }: IRailingRenderContext) {
 }
 
 export async function getDocumentHtml(ctx: IRailingRenderContext) {
-  return `
-    <html>
-      <body></body>
-    </html>
-    `
+  return ReactDOMServer.renderToString(<Document />).replace('data-reactroot=""', '')
 }

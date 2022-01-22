@@ -14,7 +14,6 @@ const NormalizedApp = App || function (props: any) {
 const matched = (routes as IRailingReactRouteConfig[]).find(route => {
   return route.path === '/'
 })
-console.log(matched)
 
 ReactDOM.hydrate(
   <NormalizedApp
