@@ -83,6 +83,7 @@ export function createWebpackChainConfig(
       '@railing/core',
       `@railing/core/lib/${options.isServer ? 'server.js' : 'client.js'}`,
     )
+    .set('src', resolveAppPath('src'))
     .end()
 
   config.resolve.extensions

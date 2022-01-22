@@ -4,7 +4,6 @@ import { IRailingReactRouteConfig } from './types'
 import RailingReactRenderer from './renderer'
 
 export interface IRailingReactRendererPluginOptions {
-  template?: string
   routes?: IRailingReactRouteConfig[]
 }
 

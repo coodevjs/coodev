@@ -1,7 +1,6 @@
 import type { CallExpression } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
 import type { IRailingReactRouteConfig } from '../types'
-import * as path from 'path'
 import * as parser from '@babel/parser'
 
 interface PluginOptions {
@@ -14,7 +13,7 @@ export default function () {
     visitor: {
       CallExpression(
         nodePath: NodePath<CallExpression>,
-        state: { opts: PluginOptions },
+        { opts }: { opts: PluginOptions },
       ) {
         if (
           'name' in nodePath.node.callee &&
@@ -25,14 +24,11 @@ export default function () {
             argument.type === 'StringLiteral' &&
             argument.value === '__RAILING__/react/routes'
           ) {
-            const rootDir = state.opts.rootDir
-            const content = state.opts.routes.map(route => {
-              const fullPath = path.join(rootDir, route.component)
-              const componentPath = fullPath.replace(/\\/, '/')
+            const content = opts.routes.map(route => {
               return `
                 { 
                   path: '${route.path}', 
-                  component: require('${componentPath}').default 
+                  component: require('${route.component}').default 
                 }
               `
             })

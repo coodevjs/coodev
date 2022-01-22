@@ -24,15 +24,14 @@ const railingConfig = {
   plugins: [
     new TestPlugin(),
     new RailingReactRendererPlugin({
-      template: './src/index.html',
       routes: [
         {
           path: '/',
-          component: './src/home',
+          component: 'src/home',
         },
         {
           path: '/other',
-          component: './src/other',
+          component: 'src/other',
         },
       ],
     }),
