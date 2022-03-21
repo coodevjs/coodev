@@ -1,4 +1,9 @@
-import { IRailingPlugin, IRailing, IWebpackChainConfig } from '@railing/types'
+import {
+  IRailingPlugin,
+  IRailing,
+  IWebpackChainConfig,
+  IRailingConfig,
+} from '@railing/types'
 import * as path from 'path'
 import { IRailingReactRouteConfig } from './types'
 import RailingReactRenderer from './renderer'
@@ -9,13 +14,17 @@ export interface IRailingReactRendererPluginOptions {
 
 export class RailingReactRendererPlugin implements IRailingPlugin {
   private readonly options: IRailingReactRendererPluginOptions
+  private railingConfig: IRailingConfig
 
   constructor(options: IRailingReactRendererPluginOptions) {
     // TODO validate options
     this.options = options
+    this.railingConfig = {}
   }
 
   public apply(railing: IRailing) {
+    this.railingConfig = railing.railingConfig
+
     const { rootDir } = railing.railingConfig
 
     railing.setRenderer(new RailingReactRenderer())
@@ -57,6 +66,16 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
     options.plugins.unshift([
       path.resolve(__dirname, './babel/babel-plugin-railing-routes'),
       { routes: this.options.routes, rootDir },
+    ])
+
+    options.plugins.unshift([
+      path.resolve(__dirname, './babel/babel-plugin-railing-config'),
+      {
+        railingConfig: {
+          dev: this.railingConfig.dev,
+          ssr: this.railingConfig.ssr,
+        },
+      },
     ])
 
     babelLoaderConfig.set('options', options)

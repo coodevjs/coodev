@@ -1,24 +1,30 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 // @ts-ignore
-import App from '__RAILING__/react/app'
-// @ts-ignore
 import * as routes from '__RAILING__/react/routes'
+// @ts-ignore
+import * as railingConfig from '__RAILING__/config'
+// @ts-ignore
+import App from '__RAILING__/react/app'
 import { APP_CONTAINER_ID } from './constants'
 import { IRailingReactRouteConfig } from './types'
-
-const NormalizedApp = App || function (props: any) {
-  return props.children
-}
+// import { App } from './App'
 
 const matched = (routes as IRailingReactRouteConfig[]).find(route => {
   return route.path === '/'
 })
 
-ReactDOM.hydrate(
-  <NormalizedApp
+const container = document.getElementById(APP_CONTAINER_ID)
+const content = (
+  <App
+    // @ts-ignore
     Component={matched ? matched.component : 'div'}
     pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
-  />,
-  document.getElementById(APP_CONTAINER_ID)
+  />
 )
+
+if (railingConfig.ssr) {
+  ReactDOM.hydrate(content, container)
+} else {
+  ReactDOM.render(content, container)
+}

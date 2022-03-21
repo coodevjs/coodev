@@ -1,3 +1,4 @@
+import type * as React from 'react'
 import { IRailingRenderContext } from '@railing/types'
 
 export interface IServerEntryModule {
@@ -8,4 +9,9 @@ export interface IServerEntryModule {
 export interface IRailingReactRouteConfig {
   path: string
   component: string
+}
+
+export interface IRailingReactAppProps {
+  Component: React.FC
+  pageProps: object
 }

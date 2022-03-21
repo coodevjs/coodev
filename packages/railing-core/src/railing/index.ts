@@ -111,7 +111,7 @@ class Railing extends BaseRailing {
     next: INextFunction,
   ) {
     if (!this.renderer) {
-      throw new Error('Please `setRenderer` first before start')
+      throw new Error('Please set a renderer first before railing.start()')
     }
 
     let documentHtml = await this.renderer.getDocumentHtml({

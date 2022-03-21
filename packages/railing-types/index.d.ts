@@ -82,7 +82,7 @@ export interface IRailingRenderContext {
 
 export interface IRailingRenderer {
   initialize(railing: IRailing): void
-  getDocumentHtml(context: IRailingRenderContext): Promise<string>
+  getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
   render(
     documentHtml: string,
     context: IRailingRenderContext,

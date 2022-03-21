@@ -5,7 +5,7 @@ const Document: React.FC = () => {
   return (
     <Html>
       <Head>
-        <Title title='Title' />
+        <Title title='Document Title' />
       </Head>
       <body>
         <App />
