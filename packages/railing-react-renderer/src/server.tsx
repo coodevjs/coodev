@@ -2,10 +2,11 @@ import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 // @ts-ignore
 import * as routes from '__RAILING__/react/routes'
+// @ts-ignore
+import App from '__RAILING__/react/app'
 import { IRailingRenderContext } from '@railing/types'
 import { getDefaultDocumentHtml } from './html'
 import { IRailingReactRouteConfig } from './types'
-import { App } from './App'
 
 export async function renderToHtml({ req }: IRailingRenderContext) {
   const matched = (routes as IRailingReactRouteConfig[]).find(route => {

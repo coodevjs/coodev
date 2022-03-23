@@ -1,14 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 // @ts-ignore
+import App from '__RAILING__/react/app'
+// @ts-ignore
 import * as routes from '__RAILING__/react/routes'
 // @ts-ignore
 import * as railingConfig from '__RAILING__/config'
-// @ts-ignore
-import App from '__RAILING__/react/app'
 import { APP_CONTAINER_ID } from './constants'
 import { IRailingReactRouteConfig } from './types'
-// import { App } from './App'
 
 const matched = (routes as IRailingReactRouteConfig[]).find(route => {
   return route.path === '/'

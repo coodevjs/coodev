@@ -5,6 +5,7 @@ import {
   IRailingConfig,
 } from '@railing/types'
 import * as path from 'path'
+import * as fs from 'fs'
 import { IRailingReactRouteConfig } from './types'
 import RailingReactRenderer from './renderer'
 
@@ -51,9 +52,39 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
   }
 
   private addWebpackResolveAlias(config: IWebpackChainConfig, rootDir: string) {
-    config.resolve.alias
-      .set('__RAILING__/react/app', path.join(rootDir, 'src', 'app'))
-      .end()
+    if (this.checkFileIsExist(path.join(rootDir, 'src'), 'app')) {
+      config.resolve.alias
+        .set('__RAILING__/react/app', path.join(rootDir, 'src', 'app'))
+        .end()
+    } else {
+      config.resolve.alias
+        .set('__RAILING__/react/app', path.resolve(__dirname, './app'))
+        .end()
+    }
+
+    if (this.checkFileIsExist(path.join(rootDir, 'src'), 'document')) {
+      config.resolve.alias
+        .set(
+          '__RAILING__/react/document',
+          path.join(rootDir, 'src', 'document'),
+        )
+        .end()
+    } else {
+      config.resolve.alias
+        .set(
+          '__RAILING__/react/document',
+          path.resolve(__dirname, './document'),
+        )
+        .end()
+    }
+  }
+
+  private checkFileIsExist(dir: string, name: string) {
+    const availableExtensions = ['.tsx', '.ts', '.jsx', '.js']
+    return availableExtensions.some(ext => {
+      const formattedPath = path.format({ dir, name, ext })
+      return fs.existsSync(formattedPath)
+    })
   }
 
   private addBabelLoaderPlugin(config: IWebpackChainConfig, rootDir: string) {

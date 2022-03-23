@@ -122,7 +122,7 @@ class Railing extends BaseRailing {
     documentHtml = this.hooks.documentHtml.call(documentHtml)
 
     const html = await this.renderer.render(documentHtml, { req, res, next })
-    console.log('html response', html)
+
     if (html === null) {
       next()
     } else if (!res.writableEnded) {
