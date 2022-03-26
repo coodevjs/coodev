@@ -1,22 +1,25 @@
+import { HTMLDocument, HTMLScriptElement } from '@railing/document'
 import type {
   IRailingRenderer,
   IRailingRenderContext,
   IRailing,
 } from '@railing/types'
+import type { AssetsInfo } from '@railing/webpack'
 import type { IServerEntryModule, IRailingReactRouteConfig } from './types'
 import { CONTENT_REPLACEMENT } from './constants'
-import { getDefaultDocumentHtml } from './html'
 import * as path from 'path'
 
 class RailingReactRenderer implements IRailingRenderer {
   private railing: IRailing | null
   private serverEntryPath: string | null
+  private assetsInfo: AssetsInfo | null
   private ssr: boolean
   private routes: IRailingReactRouteConfig[]
 
   constructor() {
     this.serverEntryPath = null
     this.railing = null
+    this.assetsInfo = null
     this.ssr = false
     // TODO routes
     this.routes = []
@@ -33,10 +36,9 @@ class RailingReactRenderer implements IRailingRenderer {
   public getDocumentHtml(
     context: IRailingRenderContext,
   ): Promise<string> | string {
-    if (this.ssr) {
-      return this.getSSRDocumentHtml(context)
-    }
-    return this.getCSRDocumentHtml(context)
+    const { getDocumentHtml } = this.getServerEntryModule()
+
+    return getDocumentHtml(context)
   }
 
   public async render(
@@ -44,15 +46,18 @@ class RailingReactRenderer implements IRailingRenderer {
     { req, res, next }: IRailingRenderContext,
   ) {
     if (!this.ssr) {
-      return documentHtml
+      return this.normalizeHtml(documentHtml.replace(CONTENT_REPLACEMENT, ''))
     }
+
     if (!this.railing || !this.serverEntryPath) {
       return null
     }
 
     const { renderToHtml } = this.getServerEntryModule()
     const appString = await renderToHtml({ req, res, next })
-    return documentHtml.replace(CONTENT_REPLACEMENT, appString)
+    return this.normalizeHtml(
+      documentHtml.replace(CONTENT_REPLACEMENT, appString),
+    )
   }
 
   private getServerEntryModule() {
@@ -62,14 +67,30 @@ class RailingReactRenderer implements IRailingRenderer {
     return require(this.serverEntryPath) as IServerEntryModule
   }
 
-  public getSSRDocumentHtml(context: IRailingRenderContext) {
-    const { getDocumentHtml } = this.getServerEntryModule()
-
-    return getDocumentHtml(context)
+  public setAssetsInfo(assetsInfo: AssetsInfo) {
+    this.assetsInfo = assetsInfo
   }
 
-  public getCSRDocumentHtml(context: IRailingRenderContext) {
-    return getDefaultDocumentHtml().replace(CONTENT_REPLACEMENT, '')
+  private async normalizeHtml(html: string) {
+    const document = new HTMLDocument(html)
+
+    if (this.assetsInfo) {
+      const { scripts } = await this.assetsInfo
+
+      const body = document.getElementByTagName('body')
+      if (!body) {
+        throw new Error('`<body/>` not found')
+      }
+      for (const scriptUrl of scripts) {
+        const script = new HTMLScriptElement({
+          src: scriptUrl,
+          type: 'text/javascript',
+        })
+        body.appendChild(script)
+      }
+    }
+
+    return document.toHtml()
   }
 }
 

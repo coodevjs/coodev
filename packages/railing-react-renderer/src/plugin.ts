@@ -1,11 +1,16 @@
 import {
   IRailingPlugin,
   IRailing,
-  IWebpackChainConfig,
   IRailingConfig,
+  IInternalRailingConfig,
 } from '@railing/types'
 import * as path from 'path'
 import * as fs from 'fs'
+import {
+  createWebpackChainConfig,
+  EntrypointAssetsPlugin,
+  IWebpackChainConfig,
+} from '@railing/webpack'
 import { IRailingReactRouteConfig } from './types'
 import RailingReactRenderer from './renderer'
 
@@ -15,40 +20,69 @@ export interface IRailingReactRendererPluginOptions {
 
 export class RailingReactRendererPlugin implements IRailingPlugin {
   private readonly options: IRailingReactRendererPluginOptions
+  private readonly renderer: RailingReactRenderer
   private railingConfig: IRailingConfig
 
   constructor(options: IRailingReactRendererPluginOptions) {
     // TODO validate options
     this.options = options
+    this.renderer = new RailingReactRenderer()
     this.railingConfig = {}
   }
 
   public apply(railing: IRailing) {
     this.railingConfig = railing.railingConfig
 
-    const { rootDir } = railing.railingConfig
+    railing.setRenderer(this.renderer)
 
-    railing.setRenderer(new RailingReactRenderer())
+    railing.hooks.webpackConfig.tap('RailingReactRendererPlugin', () => {
+      const clientWebpackConfig = this.createClientWebpackConfig(
+        railing.railingConfig,
+      )
+      const serverWebpackConfig = this.createServerWebpackConfig(
+        railing.railingConfig,
+      )
 
-    railing.hooks.clientWebpackConfig.tap(
-      'RailingReactRendererPlugin',
-      config => {
-        config.entry('main').add(path.resolve(__dirname, './client.js')).end()
+      return [clientWebpackConfig, serverWebpackConfig]
+    })
+  }
 
-        this.addWebpackResolveAlias(config, rootDir)
-        this.addBabelLoaderPlugin(config, rootDir)
-      },
-    )
+  private createClientWebpackConfig(railingConfig: IInternalRailingConfig) {
+    const config = createWebpackChainConfig(railingConfig, {
+      isDev: true,
+      isServer: false,
+    })
 
-    railing.hooks.serverWebpackConfig.tap(
-      'RailingReactRendererPlugin',
-      config => {
-        config.entry('main').add(path.resolve(__dirname, './server.js')).end()
+    config.entry('main').add(path.resolve(__dirname, './client.js')).end()
 
-        this.addWebpackResolveAlias(config, rootDir)
-        this.addBabelLoaderPlugin(config, rootDir)
-      },
-    )
+    config
+      .plugin('Railing/EntrypointAssetsPlugin')
+      .use(EntrypointAssetsPlugin, [
+        {
+          onAssetsCallback: assets => {
+            this.renderer.setAssetsInfo(assets)
+          },
+        },
+      ])
+
+    this.addWebpackResolveAlias(config, railingConfig.rootDir)
+    this.addBabelLoaderPlugin(config, railingConfig.rootDir)
+
+    return config.toConfig()
+  }
+
+  private createServerWebpackConfig(railingConfig: IInternalRailingConfig) {
+    const config = createWebpackChainConfig(railingConfig, {
+      isDev: true,
+      isServer: true,
+    })
+
+    config.entry('main').add(path.resolve(__dirname, './server.js')).end()
+
+    this.addWebpackResolveAlias(config, railingConfig.rootDir)
+    this.addBabelLoaderPlugin(config, railingConfig.rootDir)
+
+    return config.toConfig()
   }
 
   private addWebpackResolveAlias(config: IWebpackChainConfig, rootDir: string) {

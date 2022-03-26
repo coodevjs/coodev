@@ -8,36 +8,16 @@ import type {
   IRailingMiddlewares,
   INextFunction,
 } from '@railing/types'
-import {
-  EntrypointAssetsPlugin,
-  AssetsInfo,
-} from '../webpack/plugin/entrypoint-assets'
-import { createWebpackChainConfig } from '../webpack'
-import { Defer, createDefer } from '../lib/defer'
-import { HTMLDocument, HTMLScriptElement } from '../lib/elements'
+import { HTMLDocument, HTMLScriptElement } from '@railing/document'
 import { setRuntimeConfig, getRuntimeConfig } from './runtime-config'
 import BaseRailing from './base'
 import { GLOBAL_DATA_ELEMENT_ID } from '../constants'
 
 class Railing extends BaseRailing {
   private renderer?: IRailingRenderer
-  private readonly assetsInfoDefer: Defer<AssetsInfo>
 
   constructor(options: IRailingOptions) {
     super(options)
-    this.assetsInfoDefer = createDefer()
-
-    this.hooks.clientWebpackConfig.tap('railing/entrypoint-asset', config => {
-      config
-        .plugin('Railing/EntrypointAssetsPlugin')
-        .use(EntrypointAssetsPlugin, [
-          {
-            onAssetsCallback: assets => {
-              this.assetsInfoDefer.resolve(assets)
-            },
-          },
-        ])
-    })
 
     this.applyPlugins(this.railingConfig.plugins)
 
@@ -84,25 +64,9 @@ class Railing extends BaseRailing {
   }
 
   private createWebpackCompiler() {
-    const clientWebpackConfig = createWebpackChainConfig(this.railingConfig, {
-      isDev: true,
-      isServer: false,
-    })
-    this.hooks.clientWebpackConfig.call(clientWebpackConfig)
-    if (this.railingConfig.ssr === false) {
-      return webpack(clientWebpackConfig.toConfig())
-    }
-    const serverWebpackConfig = createWebpackChainConfig(this.railingConfig, {
-      isDev: true,
-      isServer: true,
-    })
+    const webpackConfig = this.hooks.webpackConfig.call([])
 
-    // call server webpack config hooks
-    this.hooks.serverWebpackConfig.call(serverWebpackConfig)
-    return webpack([
-      clientWebpackConfig.toConfig(),
-      serverWebpackConfig.toConfig(),
-    ])
+    return webpack(webpackConfig)
   }
 
   private async renderToHtml(
@@ -138,6 +102,7 @@ class Railing extends BaseRailing {
     const runtimeConfig = getRuntimeConfig()
     const globalData = this.hooks.globalData.call({ runtimeConfig })
     const stringified = JSON.stringify(globalData)
+
     const globalDataScript = new HTMLScriptElement(
       { id: GLOBAL_DATA_ELEMENT_ID, type: 'application/json' },
       stringified,
@@ -147,20 +112,6 @@ class Railing extends BaseRailing {
       throw new Error('`<head/>` not found')
     }
     head.appendChild(globalDataScript)
-
-    const { scripts } = await this.assetsInfoDefer.promise
-
-    const body = document.getElementByTagName('body')
-    if (!body) {
-      throw new Error('`<body/>` not found')
-    }
-    for (const scriptUrl of scripts) {
-      const script = new HTMLScriptElement({
-        src: scriptUrl,
-        type: 'text/javascript',
-      })
-      body.appendChild(script)
-    }
 
     return document.toHtml()
   }

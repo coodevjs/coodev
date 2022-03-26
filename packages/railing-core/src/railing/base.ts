@@ -7,7 +7,7 @@ import type {
   IHtmlRenderedSyncWaterfallHook,
   IMiddlewaresSyncHook,
   IGlobalDataSyncWaterfallHook,
-  IWebpackConfigSyncHook,
+  IWebpackConfigSyncWaterfallHook,
   IInternalRailingConfig,
   IRailingRenderer,
   IRailingMiddlewares,
@@ -19,8 +19,7 @@ abstract class Railing implements IRailing {
   private readonly documentHtml: IDocumentHtmlSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
   private readonly middlewaresHooks: IMiddlewaresSyncHook
-  private readonly clientWebpackConfig: IWebpackConfigSyncHook
-  private readonly serverWebpackConfig: IWebpackConfigSyncHook
+  private readonly webpackConfig: IWebpackConfigSyncWaterfallHook
   private readonly globalDataHook: IGlobalDataSyncWaterfallHook
 
   private readonly internalRailingConfig: IInternalRailingConfig
@@ -32,8 +31,7 @@ abstract class Railing implements IRailing {
     this.htmlRendered = new SyncWaterfallHook(['html'])
     this.middlewaresHooks = new SyncHook(['middlewares'])
     this.globalDataHook = new SyncWaterfallHook(['globalData'])
-    this.clientWebpackConfig = new SyncHook(['webpackConfig'])
-    this.serverWebpackConfig = new SyncHook(['webpackConfig'])
+    this.webpackConfig = new SyncWaterfallHook(['configs'])
 
     this.internalRailingConfig = loadRailingConfig()
     this.internalMiddlewares = connect()
@@ -53,8 +51,7 @@ abstract class Railing implements IRailing {
       documentHtml: this.documentHtml,
       htmlRendered: this.htmlRendered,
       globalData: this.globalDataHook,
-      clientWebpackConfig: this.clientWebpackConfig,
-      serverWebpackConfig: this.serverWebpackConfig,
+      webpackConfig: this.webpackConfig,
     }
   }
 

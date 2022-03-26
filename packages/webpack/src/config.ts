@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { IInternalRailingConfig, IWebpackChainConfig } from '@railing/types'
+import { IInternalRailingConfig } from '@railing/types'
 import * as nodeExternals from 'webpack-node-externals'
 import * as Config from 'webpack-chain'
 
@@ -7,6 +7,8 @@ export interface ICreateWebpackConfigOptions {
   isDev: boolean
   isServer: boolean
 }
+
+export type IWebpackChainConfig = Config
 
 function createBabelLoaderOptions(isServer: boolean) {
   const presets = [
@@ -44,7 +46,7 @@ function createBabelLoaderOptions(isServer: boolean) {
 export function createWebpackChainConfig(
   railingConfig: IInternalRailingConfig,
   options: ICreateWebpackConfigOptions,
-): IWebpackChainConfig {
+): Config {
   const config = new Config()
 
   const resolveAppPath = (...paths: string[]) =>

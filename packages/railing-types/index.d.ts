@@ -1,9 +1,7 @@
-import * as Config from 'webpack-chain'
 import type { SyncHook, SyncWaterfallHook } from 'tapable'
+import type { Configuration, MultiCompilerOptions } from 'webpack'
 import type { Server, NextFunction } from 'connect'
 import type { ServerResponse, IncomingMessage } from 'http'
-
-export type IWebpackChainConfig = Config
 
 export type IRuntimeConfig = Record<string, any>
 
@@ -25,7 +23,10 @@ export type IGlobalDataSyncWaterfallHook = SyncWaterfallHook<
 
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
-export type IWebpackConfigSyncHook = SyncHook<[IWebpackChainConfig]>
+export type IWebpackConfigSyncWaterfallHook = SyncWaterfallHook<
+  [Configuration[]],
+  Configuration[]
+>
 
 export interface IRailingPlugin {
   apply(railingServerInstance: IRailing): void
@@ -35,8 +36,7 @@ export interface IRailingHooks {
   middlewares: IMiddlewaresSyncHook
   documentHtml: IDocumentHtmlSyncWaterfallHook
   htmlRendered: IHtmlRenderedSyncWaterfallHook
-  clientWebpackConfig: IWebpackConfigSyncHook
-  serverWebpackConfig: IWebpackConfigSyncHook
+  webpackConfig: IWebpackConfigSyncWaterfallHook
   globalData: IGlobalDataSyncWaterfallHook
 }
 
