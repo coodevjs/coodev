@@ -1,12 +1,17 @@
 import * as React from 'react'
 
 const Page: React.FC = () => {
+  const [count, setCount] = React.useState(0)
   const handleClick = () => {
-    console.log('home clicked')
+    setTimeout(() => {
+      setCount(count + 1)
+      setCount(count + 1)
+    }, 0);
   }
+  console.count('render')
   return (
     <div id='home' onClick={handleClick}>
-      <h1>Home</h1>
+      <h1>Home {count}</h1>
     </div>
   )
 }
