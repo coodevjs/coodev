@@ -52,9 +52,12 @@ class Railing extends BaseRailing {
   private initializeMiddlewares(middlewares: IRailingMiddlewares) {
     console.log('Initializing middlewares...')
 
-    this.hooks.middlewares.call(this.middlewares)
-
-    middlewares.use(this.renderToHtml.bind(this))
+    this.hooks.middlewares.callAsync(middlewares, error => {
+      if (error) {
+        throw error
+      }
+      middlewares.use(this.renderToHtml.bind(this))
+    })
   }
 
   private async renderToHtml(

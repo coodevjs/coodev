@@ -1,4 +1,9 @@
-import type { SyncHook, SyncWaterfallHook } from 'tapable'
+import type {
+  SyncHook,
+  SyncWaterfallHook,
+  AsyncHook,
+  AsyncSeriesHook,
+} from 'tapable'
 import type { Server, NextFunction } from 'connect'
 import type { ServerResponse, IncomingMessage } from 'http'
 
@@ -6,7 +11,7 @@ export type IRuntimeConfig = Record<string, any>
 
 export type IRailingMiddlewares = Server
 
-export type IMiddlewaresSyncHook = SyncHook<[IRailingMiddlewares]>
+export type IMiddlewaresHook = AsyncSeriesHook<[IRailingMiddlewares]>
 
 export type INextFunction = NextFunction
 
@@ -29,7 +34,7 @@ export interface IRailingPlugin {
 }
 
 export interface IRailingHooks {
-  middlewares: IMiddlewaresSyncHook
+  middlewares: IMiddlewaresHook
   documentHtml: IDocumentHtmlSyncWaterfallHook
   htmlRendered: IHtmlRenderedSyncWaterfallHook
   globalData: IGlobalDataSyncWaterfallHook

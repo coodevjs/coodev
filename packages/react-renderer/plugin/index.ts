@@ -3,18 +3,17 @@ import {
   IRailing,
   IRailingConfig,
   IInternalRailingConfig,
-} from 'packages/types'
+} from '@railing/types'
 import * as path from 'path'
 import * as fs from 'fs'
-import * as webpack from 'webpack'
-import * as createWebpackDevMiddleware from 'webpack-dev-middleware'
-import {
-  createWebpackChainConfig,
-  EntrypointAssetsPlugin,
-  IWebpackChainConfig,
-} from '@railing/webpack'
-import { IRailingReactRouteConfig } from './types'
+import { createWebpackChainConfig, IWebpackChainConfig } from '@railing/webpack'
+import { createViteServer } from './vite'
 import RailingReactRenderer from './renderer'
+
+export interface IRailingReactRouteConfig {
+  path: string
+  component: string
+}
 
 export interface IRailingReactRendererPluginOptions {
   routes?: IRailingReactRouteConfig[]
@@ -37,21 +36,22 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     railing.setRenderer(this.renderer)
 
-    railing.hooks.middlewares.tap('RailingReactRendererPlugin', middlewares => {
-      const clientWebpackConfig = this.createClientWebpackConfig(
-        railing.railingConfig,
-      )
-      const serverWebpackConfig = this.createServerWebpackConfig(
-        railing.railingConfig,
-      )
+    railing.hooks.middlewares.tapPromise(
+      'RailingReactRendererPlugin',
+      async middlewares => {
+        const vite = await createViteServer({
+          railingConfig: {
+            ssr: railing.railingConfig.ssr,
+            dev: railing.railingConfig.dev,
+          },
+          routes: this.options.routes ?? [],
+        })
 
-      const compiler = webpack([clientWebpackConfig, serverWebpackConfig])
-      const devMiddleware = createWebpackDevMiddleware(compiler, {
-        writeToDisk: true,
-      })
+        middlewares.use(vite.middlewares)
 
-      middlewares.use(devMiddleware)
-    })
+        this.renderer.setViteDevServer(vite)
+      },
+    )
   }
 
   private createClientWebpackConfig(railingConfig: IInternalRailingConfig) {
@@ -62,15 +62,15 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     config.entry('main').add(path.resolve(__dirname, './client.js')).end()
 
-    config
-      .plugin('Railing/EntrypointAssetsPlugin')
-      .use(EntrypointAssetsPlugin, [
-        {
-          onAssetsCallback: assets => {
-            this.renderer.setAssetsInfo(assets)
-          },
-        },
-      ])
+    // config
+    //   .plugin('Railing/EntrypointAssetsPlugin')
+    //   .use(EntrypointAssetsPlugin, [
+    //     {
+    //       onAssetsCallback: assets => {
+    //         this.renderer.setAssetsInfo(assets)
+    //       },
+    //     },
+    //   ])
 
     this.addWebpackResolveAlias(config, railingConfig.rootDir)
     this.addBabelLoaderPlugin(config, railingConfig.rootDir)

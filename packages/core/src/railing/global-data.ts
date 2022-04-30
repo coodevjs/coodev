@@ -1,4 +1,4 @@
-import { IGlobalData } from 'packages/types'
+import { IGlobalData } from '@railing/types'
 import { GLOBAL_DATA_ELEMENT_ID } from '../constants'
 
 let gloablData: IGlobalData | null = null

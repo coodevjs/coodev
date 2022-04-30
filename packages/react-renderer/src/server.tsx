@@ -1,18 +1,27 @@
 import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 // @ts-ignore
-import * as routes from '__RAILING__/react/routes'
+import routes from '__RAILING__/react/routes'
 // @ts-ignore
 import App from '__RAILING__/react/app'
 // @ts-ignore
 import Document from '__RAILING__/react/document'
-import { IRailingRenderContext } from 'packages/types'
+// @ts-ignore
+import railingConfig from '__RAILING__/config'
+import { IRailingRenderContext } from '@railing/types'
 import { IRailingReactRouteConfig } from './types'
 
 export async function renderToHtml({ req }: IRailingRenderContext) {
-  const matched = (routes as IRailingReactRouteConfig[]).find(route => {
+  console.log(railingConfig);
+
+  console.log(routes)
+  const matched = (routes as IRailingReactRouteConfig[] || []).find(route => {
     return route.path === '/'
   })
+
+  console.log(matched);
+
+
 
   return ReactDOMServer.renderToString(
     <App
@@ -23,6 +32,6 @@ export async function renderToHtml({ req }: IRailingRenderContext) {
   )
 }
 
-export async function getDocumentHtml(ctx: IRailingRenderContext) {
+export function getDocumentHtml(ctx: IRailingRenderContext) {
   return ReactDOMServer.renderToString(<Document />).replace('data-reactroot=""', '')
 }

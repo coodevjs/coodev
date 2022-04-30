@@ -1,11 +1,11 @@
-import { SyncHook, SyncWaterfallHook } from 'tapable'
+import { SyncHook, SyncWaterfallHook, AsyncSeriesHook } from 'tapable'
 import * as connect from 'connect'
 import type {
   IRailing,
   IRailingOptions,
   IDocumentHtmlSyncWaterfallHook,
   IHtmlRenderedSyncWaterfallHook,
-  IMiddlewaresSyncHook,
+  IMiddlewaresHook,
   IGlobalDataSyncWaterfallHook,
   IInternalRailingConfig,
   IRailingRenderer,
@@ -17,7 +17,7 @@ abstract class Railing implements IRailing {
   public readonly options: IRailingOptions
   private readonly documentHtml: IDocumentHtmlSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
-  private readonly middlewaresHooks: IMiddlewaresSyncHook
+  private readonly middlewaresHooks: IMiddlewaresHook
   private readonly globalDataHook: IGlobalDataSyncWaterfallHook
 
   private readonly internalRailingConfig: IInternalRailingConfig
@@ -27,7 +27,7 @@ abstract class Railing implements IRailing {
     this.options = options
     this.documentHtml = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])
-    this.middlewaresHooks = new SyncHook(['middlewares'])
+    this.middlewaresHooks = new AsyncSeriesHook(['middlewares'])
     this.globalDataHook = new SyncWaterfallHook(['globalData'])
 
     this.internalRailingConfig = loadRailingConfig()

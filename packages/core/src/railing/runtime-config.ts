@@ -1,4 +1,4 @@
-import { IRailingConfig, IRuntimeConfig } from 'packages/types'
+import { IRailingConfig, IRuntimeConfig } from '@railing/types'
 import { IS_SERVER } from '../constants'
 import { getClientGlobalData } from './global-data'
 

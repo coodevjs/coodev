@@ -1,6 +1,4 @@
-const {
-  RailingReactRendererPlugin,
-} = require('@railing/react-renderer/lib/plugin')
+const { RailingReactRendererPlugin } = require('@railing/react-renderer/lib')
 
 class TestPlugin {
   apply(railing) {

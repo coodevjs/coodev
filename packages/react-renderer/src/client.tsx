@@ -4,9 +4,9 @@ import * as ReactDOM from 'react-dom/client'
 // @ts-ignore
 import App from '__RAILING__/react/app'
 // @ts-ignore
-import * as routes from '__RAILING__/react/routes'
+import routes from '__RAILING__/react/routes'
 // @ts-ignore
-import * as railingConfig from '__RAILING__/config'
+import railingConfig from '__RAILING__/config'
 import { APP_CONTAINER_ID } from './constants'
 import { IRailingReactRouteConfig } from './types'
 

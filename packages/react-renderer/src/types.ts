@@ -1,5 +1,5 @@
 import type * as React from 'react'
-import { IRailingRenderContext } from 'packages/types'
+import { IRailingRenderContext } from '@railing/types'
 
 export interface IServerEntryModule {
   getDocumentHtml: (context: IRailingRenderContext) => Promise<string>
