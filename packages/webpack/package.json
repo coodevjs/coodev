@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@types/webpack-node-externals": "^2.5.3",
+    "webpack-chain": "^6.5.1",
     "webpack-node-externals": "^3.0.0"
   }
 }

@@ -1,5 +1,3 @@
-import * as createWebpackDevMiddleware from 'webpack-dev-middleware'
-import * as webpack from 'webpack'
 import * as http from 'http'
 import type {
   IRailingOptions,
@@ -22,8 +20,6 @@ class Railing extends BaseRailing {
     this.applyPlugins(this.railingConfig.plugins)
 
     this.initializeMiddlewares(this.middlewares)
-
-    this.hooks.middlewares.call(this.middlewares)
 
     // set initial runtime config
     setRuntimeConfig(this.railingConfig.runtimeConfig)
@@ -54,19 +50,11 @@ class Railing extends BaseRailing {
   }
 
   private initializeMiddlewares(middlewares: IRailingMiddlewares) {
-    console.log('Creating webpack compiler...')
-    const compiler = this.createWebpackCompiler()
-    const devMiddleware = createWebpackDevMiddleware(compiler, {
-      writeToDisk: true,
-    })
-    middlewares.use(devMiddleware)
+    console.log('Initializing middlewares...')
+
+    this.hooks.middlewares.call(this.middlewares)
+
     middlewares.use(this.renderToHtml.bind(this))
-  }
-
-  private createWebpackCompiler() {
-    const webpackConfig = this.hooks.webpackConfig.call([])
-
-    return webpack(webpackConfig)
   }
 
   private async renderToHtml(

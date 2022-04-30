@@ -6,6 +6,8 @@ import {
 } from 'packages/types'
 import * as path from 'path'
 import * as fs from 'fs'
+import * as webpack from 'webpack'
+import * as createWebpackDevMiddleware from 'webpack-dev-middleware'
 import {
   createWebpackChainConfig,
   EntrypointAssetsPlugin,
@@ -35,7 +37,7 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
 
     railing.setRenderer(this.renderer)
 
-    railing.hooks.webpackConfig.tap('RailingReactRendererPlugin', () => {
+    railing.hooks.middlewares.tap('RailingReactRendererPlugin', middlewares => {
       const clientWebpackConfig = this.createClientWebpackConfig(
         railing.railingConfig,
       )
@@ -43,7 +45,12 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
         railing.railingConfig,
       )
 
-      return [clientWebpackConfig, serverWebpackConfig]
+      const compiler = webpack([clientWebpackConfig, serverWebpackConfig])
+      const devMiddleware = createWebpackDevMiddleware(compiler, {
+        writeToDisk: true,
+      })
+
+      middlewares.use(devMiddleware)
     })
   }
 

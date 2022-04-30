@@ -7,7 +7,6 @@ import type {
   IHtmlRenderedSyncWaterfallHook,
   IMiddlewaresSyncHook,
   IGlobalDataSyncWaterfallHook,
-  IWebpackConfigSyncWaterfallHook,
   IInternalRailingConfig,
   IRailingRenderer,
   IRailingMiddlewares,
@@ -19,7 +18,6 @@ abstract class Railing implements IRailing {
   private readonly documentHtml: IDocumentHtmlSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
   private readonly middlewaresHooks: IMiddlewaresSyncHook
-  private readonly webpackConfig: IWebpackConfigSyncWaterfallHook
   private readonly globalDataHook: IGlobalDataSyncWaterfallHook
 
   private readonly internalRailingConfig: IInternalRailingConfig
@@ -31,7 +29,6 @@ abstract class Railing implements IRailing {
     this.htmlRendered = new SyncWaterfallHook(['html'])
     this.middlewaresHooks = new SyncHook(['middlewares'])
     this.globalDataHook = new SyncWaterfallHook(['globalData'])
-    this.webpackConfig = new SyncWaterfallHook(['configs'])
 
     this.internalRailingConfig = loadRailingConfig()
     this.internalMiddlewares = connect()
@@ -51,7 +48,6 @@ abstract class Railing implements IRailing {
       documentHtml: this.documentHtml,
       htmlRendered: this.htmlRendered,
       globalData: this.globalDataHook,
-      webpackConfig: this.webpackConfig,
     }
   }
 

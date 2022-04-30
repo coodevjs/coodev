@@ -1,11 +1,12 @@
 import type { SyncHook, SyncWaterfallHook } from 'tapable'
-import type { Configuration, MultiCompilerOptions } from 'webpack'
 import type { Server, NextFunction } from 'connect'
 import type { ServerResponse, IncomingMessage } from 'http'
 
 export type IRuntimeConfig = Record<string, any>
 
-export type IMiddlewaresSyncHook = SyncHook<[Server]>
+export type IRailingMiddlewares = Server
+
+export type IMiddlewaresSyncHook = SyncHook<[IRailingMiddlewares]>
 
 export type INextFunction = NextFunction
 
@@ -23,11 +24,6 @@ export type IGlobalDataSyncWaterfallHook = SyncWaterfallHook<
 
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
-export type IWebpackConfigSyncWaterfallHook = SyncWaterfallHook<
-  [Configuration[]],
-  Configuration[]
->
-
 export interface IRailingPlugin {
   apply(railingServerInstance: IRailing): void
 }
@@ -36,7 +32,6 @@ export interface IRailingHooks {
   middlewares: IMiddlewaresSyncHook
   documentHtml: IDocumentHtmlSyncWaterfallHook
   htmlRendered: IHtmlRenderedSyncWaterfallHook
-  webpackConfig: IWebpackConfigSyncWaterfallHook
   globalData: IGlobalDataSyncWaterfallHook
 }
 
@@ -52,7 +47,7 @@ export class IRailing {
   constructor(options: IRailingOptions)
   public readonly options: IRailingOptions
   public readonly hooks: IRailingHooks
-  public readonly middlewares: Server
+  public readonly middlewares: IRailingMiddlewares
   public readonly railingConfig: IInternalRailingConfig
   public start(options: IRailingStartOptions): void
   public setRenderer(renderer: IRailingRenderer): void
@@ -67,8 +62,6 @@ export interface IRailingConfig {
   runtimeConfig?: IRuntimeConfig
   plugins?: IRailingPlugin[]
 }
-
-export type IRailingMiddlewares = Server
 
 export interface IInternalRailingConfig extends Required<IRailingConfig> {
   rootDir: string
