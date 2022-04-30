@@ -21,7 +21,7 @@
     "target": "ES2017",
     "paths": {
       "@railing/core": ["./packages/core/index.d.ts"],
-      "@railing/types": ["packages/types/*"],
+      "@railing/types": ["./packages/types/index.d.ts"],
       "@railing/react-renderer/*": ["./packages/react-renderer/lib/*"],
       "@railing/webpack": ["./packages/webpack/lib/index.d.ts"],
       "@railing/document": ["./packages/document/lib/index.d.ts"]

@@ -32,6 +32,6 @@ export async function renderToHtml({ req }: IRailingRenderContext) {
   )
 }
 
-export function getDocumentHtml(ctx: IRailingRenderContext) {
+export async function getDocumentHtml(ctx: IRailingRenderContext) {
   return ReactDOMServer.renderToString(<Document />).replace('data-reactroot=""', '')
 }

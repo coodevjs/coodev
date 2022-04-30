@@ -5,7 +5,10 @@ import { getClientGlobalData } from './global-data'
 let runtimeConfig: IRailingConfig | null = null
 
 export function setRuntimeConfig(newRuntimeConfig: IRuntimeConfig) {
-  runtimeConfig = newRuntimeConfig
+  runtimeConfig = {
+    ...runtimeConfig,
+    ...newRuntimeConfig,
+  }
 }
 
 export function getRuntimeConfig(): IRuntimeConfig {

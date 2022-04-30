@@ -69,16 +69,39 @@ class Railing extends BaseRailing {
       throw new Error('Please set a renderer first before railing.start()')
     }
 
+    let hasCalledNext = false
+
+    const wrappedNext = () => {
+      hasCalledNext = true
+      next()
+    }
+
     let documentHtml = await this.renderer.getDocumentHtml({
       req,
       res,
-      next,
+      next: wrappedNext,
     })
+
+    if (hasCalledNext) {
+      return
+    }
+
     documentHtml = this.hooks.documentHtml.call(documentHtml)
 
-    const html = await this.renderer.render(documentHtml, { req, res, next })
+    const html = await this.renderer.render(documentHtml, {
+      req,
+      res,
+      next: wrappedNext,
+    })
 
-    if (html === null) {
+    if (hasCalledNext) {
+      return
+    }
+
+    if (html === null || html === undefined) {
+      console.warn(
+        'Renderer returned null or undefined, skipping response, You can directly call next() in your renderer',
+      )
       next()
     } else if (!res.writableEnded) {
       const normalized = await this.normalizeHtml(html)

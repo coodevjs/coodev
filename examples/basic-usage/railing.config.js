@@ -1,4 +1,6 @@
-const { RailingReactRendererPlugin } = require('@railing/react-renderer/lib')
+const {
+  RailingReactRendererPlugin,
+} = require('@railing/react-renderer/lib/plugin')
 
 class TestPlugin {
   apply(railing) {
@@ -7,7 +9,7 @@ class TestPlugin {
     })
     railing.hooks.middlewares.tap('TestPlugin', middlewares => {
       middlewares.use((req, res, next) => {
-        console.log('this is TestPlugin middleware', req.url)
+        // console.log('this is TestPlugin middleware', req.url)
         next()
       })
     })

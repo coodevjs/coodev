@@ -6,13 +6,9 @@ import type {
 } from '@railing/types'
 import type { AssetsInfo } from '@railing/webpack'
 import type { ViteDevServer } from 'vite'
-// import type { IServerEntryModule, IRailingReactRouteConfig } from '../types'
-// import { CONTENT_REPLACEMENT } from '../constants'
+import type { IServerEntryModule, IRailingReactRouteConfig } from '../types'
+import { railingSourceDir, CONTENT_REPLACEMENT } from './constants'
 import * as path from 'path'
-
-type IServerEntryModule = any
-
-const CONTENT_REPLACEMENT = '__RAILING_SSR_OUTLET__'
 
 class RailingReactRenderer implements IRailingRenderer {
   private railing: IRailing | null
@@ -20,7 +16,7 @@ class RailingReactRenderer implements IRailingRenderer {
   private assetsInfo: AssetsInfo | null
   private ssr: boolean
   private vite: ViteDevServer | null = null
-  private routes: any[]
+  private routes: IRailingReactRouteConfig[]
 
   constructor() {
     this.serverEntryPath = null
@@ -35,8 +31,8 @@ class RailingReactRenderer implements IRailingRenderer {
     this.railing = railing
     this.ssr = railing.railingConfig.ssr
 
-    const { rootDir, outputDir } = railing.railingConfig
-    this.serverEntryPath = path.join(rootDir, outputDir, 'server', 'main.js')
+    this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
+    console.log(this.serverEntryPath)
   }
 
   public async getDocumentHtml(
@@ -45,16 +41,18 @@ class RailingReactRenderer implements IRailingRenderer {
     if (!this.vite) {
       throw new Error('Vite dev server not initialized')
     }
-    const serverEntryPath = path.join(__dirname, '..', 'src', 'server.tsx')
-    const { getDocumentHtml } = await this.vite.ssrLoadModule(serverEntryPath)
+    const { getDocumentHtml } = await this.getServerEntryModule()
 
-    const html = getDocumentHtml()
+    const html = await getDocumentHtml(context)
 
-    console.log('get document html', html)
-
-    console.log(html)
-
-    return html
+    return this.vite.transformIndexHtml(
+      context.req.url as string,
+      html +
+        `<script type="module" src="${path.join(
+          railingSourceDir,
+          'client.tsx',
+        )}"></script>`,
+    )
   }
 
   public async render(
@@ -65,18 +63,10 @@ class RailingReactRenderer implements IRailingRenderer {
       return this.normalizeHtml(documentHtml.replace(CONTENT_REPLACEMENT, ''))
     }
 
-    if (!this.railing || !this.serverEntryPath) {
-      return null
-    }
-
-    if (!this.vite) {
-      throw new Error('Vite dev server not initialized')
-    }
-
-    const serverEntryPath = path.join(__dirname, '..', 'src', 'server.tsx')
-    const { renderToHtml } = await this.vite.ssrLoadModule(serverEntryPath)
+    const { renderToHtml } = await this.getServerEntryModule()
 
     const appString = await renderToHtml({ req, res, next })
+
     return this.normalizeHtml(
       documentHtml.replace(CONTENT_REPLACEMENT, appString),
     )
@@ -86,7 +76,12 @@ class RailingReactRenderer implements IRailingRenderer {
     if (!this.serverEntryPath) {
       throw new Error('No server entry path')
     }
-    return require(this.serverEntryPath) as IServerEntryModule
+    if (!this.vite) {
+      throw new Error('Vite dev server not initialized')
+    }
+    return this.vite.ssrLoadModule(
+      this.serverEntryPath,
+    ) as Promise<IServerEntryModule>
   }
 
   public setViteDevServer(vite: ViteDevServer) {
