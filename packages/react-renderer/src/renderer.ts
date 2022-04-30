@@ -3,7 +3,7 @@ import type {
   IRailingRenderer,
   IRailingRenderContext,
   IRailing,
-} from '@railing/types'
+} from 'packages/types'
 import type { AssetsInfo } from '@railing/webpack'
 import type { IServerEntryModule, IRailingReactRouteConfig } from './types'
 import { CONTENT_REPLACEMENT } from './constants'

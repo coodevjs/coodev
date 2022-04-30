@@ -8,20 +8,15 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/babel__traverse": "^7.14.2",
     "@types/react": "^17.0.16",
     "@types/react-dom": "^17.0.9",
-    "react": "^18.0.0-rc.3",
-    "react-dom": "^18.0.0-rc.3"
-  },
-  "devDependencies": {
-    "@types/babel__traverse": "^7.14.2"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "react": "^18.0.0-rc.3",
-    "react-dom": "^18.0.0-rc.3"
-  }
+  "peerDependencies": {}
 }

@@ -20,9 +20,9 @@
     "moduleResolution": "node",
     "target": "ES2017",
     "paths": {
-      "@railing/core": ["./packages/railing-core/index.d.ts"],
-      "@railing/types": ["./packages/railing-types/*"],
-      "@railing/react-renderer/*": ["./packages/railing-react-renderer/lib/*"],
+      "@railing/core": ["./packages/core/index.d.ts"],
+      "@railing/types": ["packages/types/*"],
+      "@railing/react-renderer/*": ["./packages/react-renderer/lib/*"],
       "@railing/webpack": ["./packages/webpack/lib/index.d.ts"],
       "@railing/document": ["./packages/document/lib/index.d.ts"]
     }

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "railing dev",
-    "start": "rm -rf ./build && node ../../packages/railing-core/lib/cli/dev.js"
+    "start": "rm -rf ./build && node ../../packages/core/lib/cli/dev.js"
   },
   "dependencies": {},
   "devDependencies": {

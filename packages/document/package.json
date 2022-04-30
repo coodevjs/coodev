@@ -4,6 +4,7 @@
   "description": "> TODO: description",
   "author": "wokeyi <wokeyifrontend@gmail.com>",
   "homepage": "https://github.com/wokeyi/railing#readme",
+  "typings": "./src/index.ts",
   "license": "MIT",
   "main": "lib/index.js",
   "directories": {

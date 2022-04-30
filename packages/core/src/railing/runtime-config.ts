@@ -1,6 +1,6 @@
-import { IRailingConfig, IRuntimeConfig } from '@railing/types'
+import { IRailingConfig, IRuntimeConfig } from 'packages/types'
 import { IS_SERVER } from '../constants'
-import { getClientGlobalData } from './gloabl-data'
+import { getClientGlobalData } from './global-data'
 
 let runtimeConfig: IRailingConfig | null = null
 

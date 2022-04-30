@@ -1,5 +1,5 @@
 import { RAILING_CONFIG } from '../constants'
-import { IRailingConfig, IInternalRailingConfig } from '@railing/types'
+import { IRailingConfig, IInternalRailingConfig } from 'packages/types'
 import * as fs from 'fs'
 import * as path from 'path'
 

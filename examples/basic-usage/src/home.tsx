@@ -4,8 +4,8 @@ const Page: React.FC = () => {
   const [count, setCount] = React.useState(0)
   const handleClick = () => {
     setTimeout(() => {
-      setCount(count + 1)
-      setCount(count + 1)
+      setCount(count => count + 1)
+      setCount(count => count + 1)
     }, 0);
   }
   console.count('render')

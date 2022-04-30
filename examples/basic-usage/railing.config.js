@@ -17,7 +17,7 @@ class TestPlugin {
 }
 
 const railingConfig = {
-  ssr: false,
+  ssr: true,
   runtimeConfig: {
     name: 'Test',
   },

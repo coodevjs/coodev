@@ -6,7 +6,7 @@
   "homepage": "https://github.com/wokeyi/railing#readme",
   "license": "MIT",
   "main": "lib/index.js",
-  "typings": "index.d.ts",
+  "typings": "./src/index.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

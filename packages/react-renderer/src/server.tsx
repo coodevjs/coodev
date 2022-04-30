@@ -6,7 +6,7 @@ import * as routes from '__RAILING__/react/routes'
 import App from '__RAILING__/react/app'
 // @ts-ignore
 import Document from '__RAILING__/react/document'
-import { IRailingRenderContext } from '@railing/types'
+import { IRailingRenderContext } from 'packages/types'
 import { IRailingReactRouteConfig } from './types'
 
 export async function renderToHtml({ req }: IRailingRenderContext) {

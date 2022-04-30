@@ -3,7 +3,7 @@ import {
   IRailing,
   IRailingConfig,
   IInternalRailingConfig,
-} from '@railing/types'
+} from 'packages/types'
 import * as path from 'path'
 import * as fs from 'fs'
 import {

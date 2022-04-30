@@ -1,6 +1,6 @@
 import type { CallExpression } from '@babel/types'
 import type { NodePath } from '@babel/traverse'
-import type { IRailingConfig } from '@railing/types'
+import type { IRailingConfig } from 'packages/types'
 import * as parser from '@babel/parser'
 
 interface PluginOptions {
