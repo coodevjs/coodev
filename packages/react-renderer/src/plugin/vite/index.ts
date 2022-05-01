@@ -31,7 +31,7 @@ export function createViteServer(opts: ServerOptions) {
     plugins: [react(), railingReactPlugin(opts)],
     configFile: false,
     server: {
-      middlewareMode: opts.ssr ? 'ssr' : 'html',
+      middlewareMode: 'ssr',
     },
   })
 }

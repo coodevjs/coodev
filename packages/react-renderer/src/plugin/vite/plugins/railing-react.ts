@@ -64,7 +64,7 @@ export function railingReactPlugin(
           `
         })
 
-        return `
+        const code = `
         import * as React from 'react'
 
         function lazyload(loader: () => Promise<{ default: React.ComponentType<any> }>) {
@@ -81,6 +81,10 @@ export function railingReactPlugin(
 
         export default [${content.join(',')}]
       `
+        return {
+          code,
+          map: null,
+        }
       }
       if (RAILING_CONFIG === id) {
         return `export default ${JSON.stringify(opts.railingConfig)}`

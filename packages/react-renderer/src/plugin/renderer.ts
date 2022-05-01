@@ -29,7 +29,6 @@ class RailingReactRenderer implements IRailingRenderer {
     this.ssr = railing.railingConfig.ssr
 
     this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
-    console.log(this.serverEntryPath)
   }
 
   public async getDocumentHtml(
@@ -38,6 +37,7 @@ class RailingReactRenderer implements IRailingRenderer {
     if (!this.vite) {
       throw new Error('Vite dev server not initialized')
     }
+
     const { getDocumentHtml } = await this.getServerEntryModule()
 
     const html = await getDocumentHtml(context)
@@ -45,6 +45,7 @@ class RailingReactRenderer implements IRailingRenderer {
     const normalized = await this.normalizeHtml(html)
 
     const url = context.req.url ?? '/'
+
     return this.vite.transformIndexHtml(url, normalized)
   }
 
