@@ -7,10 +7,15 @@ import {
 import * as path from 'path'
 import { railingSourceDir } from '../constants'
 
-export interface ServerOptions extends IViteRailingReactPluginOptions {}
+export interface ServerOptions extends IViteRailingReactPluginOptions {
+  root: string
+  ssr: boolean
+  dev: boolean
+}
 
 export function createViteServer(opts: ServerOptions) {
   return createServer({
+    root: opts.root,
     resolve: {},
     optimizeDeps: {
       include: ['@railing/core'],
@@ -26,7 +31,7 @@ export function createViteServer(opts: ServerOptions) {
     plugins: [react(), railingReactPlugin(opts)],
     configFile: false,
     server: {
-      middlewareMode: 'ssr',
+      middlewareMode: opts.ssr ? 'ssr' : 'html',
     },
   })
 }

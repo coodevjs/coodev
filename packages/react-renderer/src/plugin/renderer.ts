@@ -4,7 +4,6 @@ import type {
   IRailingRenderContext,
   IRailing,
 } from '@railing/types'
-import type { AssetsInfo } from '@railing/webpack'
 import type { ViteDevServer } from 'vite'
 import type { IServerEntryModule, IRailingReactRouteConfig } from '../types'
 import { railingSourceDir, CONTENT_REPLACEMENT } from './constants'
@@ -13,7 +12,6 @@ import * as path from 'path'
 class RailingReactRenderer implements IRailingRenderer {
   private railing: IRailing | null
   private serverEntryPath: string | null
-  private assetsInfo: AssetsInfo | null
   private ssr: boolean
   private vite: ViteDevServer | null = null
   private routes: IRailingReactRouteConfig[]
@@ -21,7 +19,6 @@ class RailingReactRenderer implements IRailingRenderer {
   constructor() {
     this.serverEntryPath = null
     this.railing = null
-    this.assetsInfo = null
     this.ssr = false
     // TODO routes
     this.routes = []
@@ -45,14 +42,10 @@ class RailingReactRenderer implements IRailingRenderer {
 
     const html = await getDocumentHtml(context)
 
-    return this.vite.transformIndexHtml(
-      context.req.url as string,
-      html +
-        `<script type="module" src="${path.join(
-          railingSourceDir,
-          'client.tsx',
-        )}"></script>`,
-    )
+    const normalized = await this.normalizeHtml(html)
+
+    const url = context.req.url ?? '/'
+    return this.vite.transformIndexHtml(url, normalized)
   }
 
   public async render(
@@ -67,9 +60,7 @@ class RailingReactRenderer implements IRailingRenderer {
 
     const appString = await renderToHtml({ req, res, next })
 
-    return this.normalizeHtml(
-      documentHtml.replace(CONTENT_REPLACEMENT, appString),
-    )
+    return documentHtml.replace(CONTENT_REPLACEMENT, appString)
   }
 
   private getServerEntryModule() {
@@ -91,21 +82,16 @@ class RailingReactRenderer implements IRailingRenderer {
   private async normalizeHtml(html: string) {
     const document = new HTMLDocument(html)
 
-    if (this.assetsInfo) {
-      const { scripts } = await this.assetsInfo
-
-      const body = document.getElementByTagName('body')
-      if (!body) {
-        throw new Error('`<body/>` not found')
-      }
-      for (const scriptUrl of scripts) {
-        const script = new HTMLScriptElement({
-          src: scriptUrl,
-          type: 'text/javascript',
-        })
-        body.appendChild(script)
-      }
+    const body = document.getElementByTagName('body')
+    if (!body) {
+      throw new Error('`<body/>` not found')
     }
+    const script = new HTMLScriptElement({
+      src: path.join(railingSourceDir, 'client.tsx'),
+      type: 'module',
+    })
+
+    body.appendChild(script)
 
     return document.toHtml()
   }

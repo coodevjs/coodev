@@ -31,10 +31,14 @@ export class RailingReactRendererPlugin implements IRailingPlugin {
     railing.hooks.middlewares.tapPromise(
       'RailingReactRendererPlugin',
       async middlewares => {
+        const { rootDir, ssr, dev } = railing.railingConfig
         const vite = await createViteServer({
+          root: rootDir,
+          ssr,
+          dev,
           railingConfig: {
-            ssr: railing.railingConfig.ssr,
-            dev: railing.railingConfig.dev,
+            ssr,
+            dev,
           },
           routes: this.options.routes ?? [],
         })

@@ -11,6 +11,11 @@ export interface IRailingReactRouteConfig {
   component: string
 }
 
+export interface __NormalizedRouteConfig__
+  extends Omit<IRailingReactRouteConfig, 'component'> {
+  component: React.FC
+}
+
 export interface IRailingReactAppProps {
   Component: React.FC
   pageProps: object

@@ -5,14 +5,13 @@ import { userSourceDir, railingSourceDir } from '../../constants'
 import type { IRailingConfig } from '@railing/types'
 import type { IRailingReactRouteConfig } from '../../../types'
 
-const railingVirtualModuleIds = {
-  config: '__RAILING__/config',
-  routes: '__RAILING__/react/routes',
-  app: '__RAILING__/react/app',
-  document: '__RAILING__/react/document',
-} as const
+const RAILING_CONFIG = '__RAILING__/config'
+const RAILING_REACT_ROUTES = '__RAILING__/react/routes'
+const RAILING_REACT_APP = '__RAILING__/react/app'
+const RAILING_REACT_DOCUMENT = '__RAILING__/react/document'
 
 export interface IViteRailingReactPluginOptions {
+  root: string
   railingConfig: IRailingConfig
   routes: IRailingReactRouteConfig[]
 }
@@ -30,40 +29,60 @@ export function railingReactPlugin(
 ): Plugin {
   return {
     name: 'railing-react',
-    resolveId(id, importer, options) {
+    resolveId(id) {
       switch (id) {
-        case railingVirtualModuleIds.app:
+        case RAILING_REACT_APP:
           if (checkHasCustomizeFile(userSourceDir, 'app')) {
             return path.join(userSourceDir, 'app')
           }
           return path.join(railingSourceDir, 'app.tsx')
-        case railingVirtualModuleIds.document:
+        case RAILING_REACT_DOCUMENT:
           if (checkHasCustomizeFile(userSourceDir, 'document')) {
             return path.join(userSourceDir, 'document')
           }
           return path.join(railingSourceDir, 'document.tsx')
-        case railingVirtualModuleIds.config:
-        case railingVirtualModuleIds.routes:
+        case RAILING_REACT_ROUTES:
+          return `${RAILING_REACT_ROUTES}.tsx`
+        case RAILING_CONFIG:
           return id
       }
       return null
     },
     load(id) {
-      if (railingVirtualModuleIds.routes === id) {
-        // const content = opts.routes.map(route => {
-        //   return `
-        //     {
-        //       path: '${route.path}',
-        //       // component: require('${route.component}').default
-        //       component: null
-        //     }
-        //   `
-        // })
+      if (`${RAILING_REACT_ROUTES}.tsx` === id) {
+        const content = opts.routes.map(route => {
+          const fullPath = path.resolve(opts.root, route.component)
+          const clientPath = path.join(railingSourceDir, 'client.tsx')
 
-        // return `export default [${content.join(',')}]`
-        return 'export default []'
+          const relativePath = path.relative(clientPath, fullPath)
+
+          return `
+            {
+              path: '${route.path}',
+              component: lazyload(() => import('${relativePath}'))
+            }
+          `
+        })
+
+        return `
+        import * as React from 'react'
+
+        function lazyload(loader: () => Promise<{ default: React.ComponentType<any> }>) {
+          const LazyComponent = React.lazy(loader)
+          const Lazyload: React.FC = (props: any) => {
+            return (
+              <React.Suspense fallback={<div>Loading</div>}>
+                <LazyComponent {...props} />
+              </React.Suspense>
+            )
+          }
+          return Lazyload
+        }
+
+        export default [${content.join(',')}]
+      `
       }
-      if (railingVirtualModuleIds.config === id) {
+      if (RAILING_CONFIG === id) {
         return `export default ${JSON.stringify(opts.railingConfig)}`
       }
       return null

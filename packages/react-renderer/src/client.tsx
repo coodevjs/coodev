@@ -1,5 +1,4 @@
 import * as React from 'react'
-// @ts-ignore
 import * as ReactDOM from 'react-dom/client'
 // @ts-ignore
 import App from '__RAILING__/react/app'
@@ -8,10 +7,10 @@ import routes from '__RAILING__/react/routes'
 // @ts-ignore
 import railingConfig from '__RAILING__/config'
 import { APP_CONTAINER_ID } from './constants'
-import { IRailingReactRouteConfig } from './types'
+import { __NormalizedRouteConfig__ } from './types'
 
-const matched = (routes as IRailingReactRouteConfig[]).find(route => {
-  return route.path === '/'
+const matched = (routes as __NormalizedRouteConfig__[]).find(route => {
+  return route.path === location.pathname
 })
 
 const content = (
@@ -27,7 +26,5 @@ const container = document.getElementById(APP_CONTAINER_ID)
 if (railingConfig.ssr) {
   ReactDOM.hydrateRoot(container, content)
 } else {
-  const root = ReactDOM.createRoot(container)
-
-  root.render(content)
+  ReactDOM.createRoot(container).render(content)
 }

@@ -7,9 +7,12 @@
     "dev": "railing dev",
     "start": "rm -rf ./build && node ../../packages/core/lib/cli/dev.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  },
   "devDependencies": {
-    "@types/react": "^17.0.43",
-    "@types/react-dom": "^17.0.14"
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3"
   }
 }
