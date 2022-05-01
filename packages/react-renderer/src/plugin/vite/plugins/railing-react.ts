@@ -42,14 +42,13 @@ export function railingReactPlugin(
           }
           return path.join(railingSourceDir, 'document.tsx')
         case RAILING_REACT_ROUTES:
-          return `${RAILING_REACT_ROUTES}.tsx`
         case RAILING_CONFIG:
           return id
       }
       return null
     },
     load(id) {
-      if (`${RAILING_REACT_ROUTES}.tsx` === id) {
+      if (RAILING_REACT_ROUTES === id) {
         const content = opts.routes.map(route => {
           const fullPath = path.resolve(opts.root, route.component)
           const clientPath = path.join(railingSourceDir, 'client.tsx')
@@ -67,13 +66,15 @@ export function railingReactPlugin(
         const code = `
         import * as React from 'react'
 
-        function lazyload(loader: () => Promise<{ default: React.ComponentType<any> }>) {
+        function lazyload(loader) {
           const LazyComponent = React.lazy(loader)
-          const Lazyload: React.FC = (props: any) => {
-            return (
-              <React.Suspense fallback={<div>Loading</div>}>
-                <LazyComponent {...props} />
-              </React.Suspense>
+          const Lazyload = (props) => {
+            return React.createElement(
+              React.Suspense, 
+              { 
+                fallback: React.createElement('div', { children: 'Loading'}), 
+                children: React.createElement(LazyComponent, props)
+              },
             )
           }
           return Lazyload

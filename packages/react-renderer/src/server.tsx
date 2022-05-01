@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOMServer from 'react-dom/server'
+import { renderToString } from 'react-dom/server'
 // @ts-ignore
 import routes from '__RAILING__/react/routes'
 // @ts-ignore
@@ -15,7 +15,7 @@ export async function renderToHtml({ req }: IRailingRenderContext) {
     return route.path === req.url
   })
 
-  return ReactDOMServer.renderToString(
+  return renderToString(
     <App
       Component={matched ? matched.component : 'div'}
       pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
@@ -24,5 +24,5 @@ export async function renderToHtml({ req }: IRailingRenderContext) {
 }
 
 export async function getDocumentHtml(ctx: IRailingRenderContext) {
-  return ReactDOMServer.renderToString(<Document />).replace('data-reactroot=""', '')
+  return renderToString(<Document />).replace('data-reactroot=""', '')
 }

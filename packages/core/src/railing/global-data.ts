@@ -9,7 +9,7 @@ export function getClientGlobalData(): IGlobalData {
       const str = document.getElementById(GLOBAL_DATA_ELEMENT_ID)?.innerText
       globalData = str ? JSON.parse(str) : {}
     } catch (error) {
-      throw new Error('Something wrong happend with parse railing global data')
+      throw new Error('Something wrong happened with parse railing global data')
     }
   }
   return globalData as IGlobalData
