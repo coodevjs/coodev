@@ -7,7 +7,6 @@ import { createViteServer } from './vite'
 import { HTMLDocument, HTMLScriptElement } from '@railing/document'
 import type { ViteDevServer } from 'vite'
 import type { Readable } from 'stream'
-import type { IServerEntryModule, IRailingReactRouteConfig } from '../types'
 import { railingSourceDir, CONTENT_REPLACEMENT } from './constants'
 import * as path from 'path'
 
@@ -66,26 +65,17 @@ export class RailingReactRendererPlugin implements IRailingRendererPlugin {
 
     const html = await getDocumentHtml(context)
 
-    const normalized = await this.normalizeHtml(html)
-
     const url = context.req.url ?? '/'
 
-    return this.vite.transformIndexHtml(url, normalized)
+    return this.vite.transformIndexHtml(url, html)
   }
 
-  public async renderToString(
-    documentHtml: string,
-    { req, res, next }: IRailingRenderContext,
-  ) {
-    if (!this.ssr) {
-      return this.normalizeHtml(documentHtml.replace(CONTENT_REPLACEMENT, ''))
-    }
-
+  public async renderToString({ req, res, next }: IRailingRenderContext) {
     const { renderToHtml } = await this.getServerEntryModule()
 
-    const appString = await renderToHtml({ req, res, next })
+    const html = await renderToHtml({ req, res, next })
 
-    return documentHtml.replace(CONTENT_REPLACEMENT, appString)
+    return html
   }
 
   public async renderToStream(
@@ -108,22 +98,5 @@ export class RailingReactRendererPlugin implements IRailingRendererPlugin {
     return this.vite.ssrLoadModule(
       this.serverEntryPath,
     ) as Promise<IServerEntryModule>
-  }
-
-  private async normalizeHtml(html: string) {
-    const document = new HTMLDocument(html)
-
-    const body = document.getElementByTagName('body')
-    if (!body) {
-      throw new Error('`<body/>` not found')
-    }
-    const script = new HTMLScriptElement({
-      src: path.join(railingSourceDir, 'client.tsx'),
-      type: 'module',
-    })
-
-    body.appendChild(script)
-
-    return document.toHtml()
   }
 }

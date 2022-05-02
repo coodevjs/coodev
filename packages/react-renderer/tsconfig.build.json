@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib/plugin",
+    "module": "CommonJS"
+  },
+  "include": ["plugin", "global.d.ts"]
+}

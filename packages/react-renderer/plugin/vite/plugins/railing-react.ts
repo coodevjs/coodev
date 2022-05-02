@@ -4,12 +4,12 @@ import * as path from 'path'
 import { userSourceDir, railingSourceDir } from '../../constants'
 import type { Plugin } from 'vite'
 import type { IRailingConfig } from '@railing/types'
-import type { IRailingReactRouteConfig } from '../../../types'
 
 const RAILING_CONFIG = '__RAILING__/config'
 const RAILING_REACT_ROUTES = '__RAILING__/react/routes'
 const RAILING_REACT_APP = '__RAILING__/react/app'
 const RAILING_REACT_DOCUMENT = '__RAILING__/react/document'
+const RAILING_REACT_CLIENT = '__RAILING__/react/client'
 
 export interface IViteRailingReactPluginOptions {
   root: string
@@ -43,7 +43,10 @@ export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
         case RAILING_REACT_ROUTES:
         case RAILING_CONFIG:
           return id
+        case `/${RAILING_REACT_CLIENT}`:
+          return path.join(railingSourceDir, 'client.tsx')
       }
+
       return null
     },
     load(id) {

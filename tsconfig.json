@@ -4,7 +4,7 @@
     "outDir": "lib",
     "allowJs": true,
     "checkJs": false,
-    "declaration": true,
+    "declaration": false,
     "allowSyntheticDefaultImports": false,
     "alwaysStrict": true,
     "noImplicitAny": true,
@@ -22,7 +22,7 @@
     "paths": {
       "@railing/core": ["./packages/core/index.d.ts"],
       "@railing/types": ["./packages/types/index.d.ts"],
-      "@railing/react-renderer/*": ["./packages/react-renderer/lib/*"],
+      "@railing/react-renderer/*": ["./packages/react-renderer/*"],
       "@railing/webpack": ["./packages/webpack/lib/index.d.ts"],
       "@railing/document": ["./packages/document/lib/index.d.ts"]
     }

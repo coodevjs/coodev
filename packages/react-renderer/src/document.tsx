@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { App, Html, Head, Title } from './components'
+import { Main, Html, Head, Title, RailingScript } from './components'
 
 const Document: React.FC = () => {
   return (
@@ -8,7 +8,8 @@ const Document: React.FC = () => {
         <Title title='Document Title' />
       </Head>
       <body>
-        <App />
+        <Main />
+        <RailingScript />
       </body>
     </Html>
   )

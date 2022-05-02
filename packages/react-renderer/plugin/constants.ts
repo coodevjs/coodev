@@ -4,4 +4,4 @@ export const railingSourceDir = path.resolve(__dirname, '..', '..', 'src')
 
 export const userSourceDir = path.resolve(process.cwd(), 'src')
 
-export { CONTENT_REPLACEMENT } from '../constants'
+export const CONTENT_REPLACEMENT = '__RAILING_SSR_OUTLET__'

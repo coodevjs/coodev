@@ -61,19 +61,19 @@ class Railing extends BaseRailing {
   }
 
   private initializeMiddlewares(middlewares: IRailingMiddlewares) {
-    let isEnableStreamingHtml = false
-    if (
-      typeof this.railingConfig.ssr === 'object' &&
-      this.railingConfig.ssr.streamingHtml
-    ) {
-      isEnableStreamingHtml = true
+    const ssr = this.railingConfig.ssr
+
+    if (ssr === false) {
+      middlewares.use(this.getDocumentHtml.bind(this))
+      return
     }
 
-    if (isEnableStreamingHtml) {
-      middlewares.use(this.renderToStream.bind(this))
-    } else {
-      middlewares.use(this.renderToHtml.bind(this))
+    if (ssr === true) {
+      middlewares.use(this.renderToString.bind(this))
+      return
     }
+
+    middlewares.use(this.renderToStream.bind(this))
   }
 
   private async renderToStream(
@@ -87,7 +87,7 @@ class Railing extends BaseRailing {
     throw new Error('Not implemented')
   }
 
-  private async renderToHtml(
+  private async renderToString(
     req: http.IncomingMessage,
     res: http.ServerResponse,
     next: INextFunction,
@@ -103,19 +103,7 @@ class Railing extends BaseRailing {
       next(...args)
     }
 
-    let documentHtml = await this.renderer.getDocumentHtml({
-      req,
-      res,
-      next: wrappedNext,
-    })
-
-    if (hasCalledNext) {
-      return
-    }
-
-    documentHtml = this.hooks.documentHtml.call(documentHtml)
-
-    const html = await this.renderer.renderToString(documentHtml, {
+    const html = await this.renderer.renderToString({
       req,
       res,
       next: wrappedNext,
@@ -133,6 +121,35 @@ class Railing extends BaseRailing {
     } else {
       res.end(html)
     }
+  }
+
+  private async getDocumentHtml(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    next: INextFunction,
+  ) {
+    if (!this.renderer) {
+      throw new Error('Please provide a renderer first before railing.start()')
+    }
+
+    let hasCalledNext = false
+
+    const wrappedNext = (...args: any[]) => {
+      hasCalledNext = true
+      next(...args)
+    }
+
+    const documentHtml = await this.renderer.getDocumentHtml({
+      req,
+      res,
+      next: wrappedNext,
+    })
+
+    if (hasCalledNext) {
+      return
+    }
+
+    res.end(this.hooks.documentHtml.call(documentHtml))
   }
 }
 

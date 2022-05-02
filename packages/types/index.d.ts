@@ -37,10 +37,7 @@ export interface IRailingRendererPlugin extends IRailingPlugin {
   __IS_RENDERER_PLUGIN__: true
   renderToStream(context: IRailingRenderContext): Promise<Readable>
   getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
-  renderToString(
-    documentHtml: string,
-    context: IRailingRenderContext,
-  ): Promise<string | null>
+  renderToString(context: IRailingRenderContext): Promise<string | null>
 }
 
 export interface IRailingHooks {
