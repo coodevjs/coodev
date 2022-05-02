@@ -60,6 +60,7 @@ export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
           const relativePath = normalizePath(
             path.relative(clientPath, fullPath),
           )
+
           return `
             {
               path: '${route.path}',
@@ -72,15 +73,8 @@ export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
         import * as React from 'react'
 
         function lazyload(loader) {
-          const LazyComponent = React.lazy(() => {
-            return new Promise((resolve, reject) => {
-              loader().then((module) => {
-                setTimeout(() => {
-                  resolve(module)
-                }, 3000)
-              }).catch(reject)
-            })
-          })
+          const LazyComponent = React.lazy(loader)
+          
           const Lazyload = (props) => {
             return React.createElement(
               React.Suspense, 
