@@ -41,7 +41,7 @@ class HTMLElement implements IHTMLElement {
 export class HTMLDocument extends HTMLElement {
   constructor(html: string) {
     const element = parseDocument(html)
-    super(element as Element)
+    super(element as unknown as Element)
   }
 }
 

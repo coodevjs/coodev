@@ -1,14 +1,12 @@
-import { SyncHook, SyncWaterfallHook, AsyncSeriesHook } from 'tapable'
+import { SyncWaterfallHook } from 'tapable'
 import * as connect from 'connect'
 import type {
   IRailing,
   IRailingOptions,
   IDocumentHtmlSyncWaterfallHook,
   IHtmlRenderedSyncWaterfallHook,
-  IMiddlewaresHook,
   IGlobalDataSyncWaterfallHook,
   IInternalRailingConfig,
-  IRailingRenderer,
   IRailingMiddlewares,
 } from '@railing/types'
 import { loadRailingConfig } from './railing-config'
@@ -17,34 +15,31 @@ abstract class Railing implements IRailing {
   public readonly options: IRailingOptions
   private readonly documentHtml: IDocumentHtmlSyncWaterfallHook
   private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
-  private readonly middlewaresHooks: IMiddlewaresHook
   private readonly globalDataHook: IGlobalDataSyncWaterfallHook
 
-  private readonly internalRailingConfig: IInternalRailingConfig
-  private readonly internalMiddlewares: IRailingMiddlewares
+  private readonly _railingConfig: IInternalRailingConfig
+  private readonly _middlewares: IRailingMiddlewares
 
   constructor(options: IRailingOptions) {
     this.options = options
     this.documentHtml = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])
-    this.middlewaresHooks = new AsyncSeriesHook(['middlewares'])
     this.globalDataHook = new SyncWaterfallHook(['globalData'])
 
-    this.internalRailingConfig = loadRailingConfig()
-    this.internalMiddlewares = connect()
+    this._railingConfig = loadRailingConfig()
+    this._middlewares = connect()
   }
 
   public get middlewares() {
-    return this.internalMiddlewares
+    return this._middlewares
   }
 
   public get railingConfig() {
-    return this.internalRailingConfig
+    return this._railingConfig
   }
 
   public get hooks() {
     return {
-      middlewares: this.middlewaresHooks,
       documentHtml: this.documentHtml,
       htmlRendered: this.htmlRendered,
       globalData: this.globalDataHook,
@@ -52,8 +47,6 @@ abstract class Railing implements IRailing {
   }
 
   public abstract start(): void
-
-  public abstract setRenderer(renderer: IRailingRenderer): void
 }
 
 export default Railing

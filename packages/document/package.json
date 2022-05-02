@@ -27,5 +27,8 @@
   },
   "bugs": {
     "url": "https://github.com/wokeyi/railing/issues"
+  },
+  "dependencies": {
+    "htmlparser2": "^8.0.1"
   }
 }

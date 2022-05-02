@@ -2,27 +2,22 @@ import * as http from 'http'
 import type {
   IRailingOptions,
   IRailingPlugin,
-  IRailingRenderer,
+  IRailingRendererPlugin,
   IRailingMiddlewares,
   INextFunction,
 } from '@railing/types'
-import { HTMLDocument, HTMLScriptElement } from '@railing/document'
-import { setRuntimeConfig, getRuntimeConfig } from './runtime-config'
 import BaseRailing from './base'
-import { GLOBAL_DATA_ELEMENT_ID } from '../constants'
 
 class Railing extends BaseRailing {
-  private renderer?: IRailingRenderer
+  private readonly prePlugins: IRailingPlugin[] = []
+  private readonly postPlugins: IRailingPlugin[] = []
+  private renderer?: IRailingRendererPlugin
 
   constructor(options: IRailingOptions) {
     super(options)
 
-    this.applyPlugins(this.railingConfig.plugins)
-
-    this.initializeMiddlewares(this.middlewares)
-
-    // set initial runtime config
-    setRuntimeConfig(this.railingConfig.runtimeConfig)
+    this.classifyPlugins(this.railingConfig.plugins)
+    this.applyPlugins()
   }
 
   public start() {
@@ -34,30 +29,62 @@ class Railing extends BaseRailing {
     console.log('Railing server listen on http://localhost:3000')
   }
 
-  public setRenderer(renderer: IRailingRenderer) {
-    if (!this.renderer) {
-      this.renderer = renderer
-      this.renderer.initialize(this)
+  private classifyPlugins(
+    plugins: (IRailingPlugin | IRailingRendererPlugin)[],
+  ) {
+    for (const plugin of plugins) {
+      if ('__IS_RENDERER_PLUGIN__' in plugin && plugin.__IS_RENDERER_PLUGIN__) {
+        if (this.renderer) {
+          throw new Error('Only one renderer plugin can be set')
+        }
+        this.renderer = plugin
+      }
+
+      if (plugin.enforce === 'pre') {
+        this.prePlugins.push(plugin)
+      } else {
+        this.postPlugins.push(plugin)
+      }
     }
   }
 
-  private applyPlugins(plugins: IRailingPlugin[]) {
-    if (plugins.length) {
-      for (const plugin of plugins) {
-        plugin.apply(this)
-      }
+  private async applyPlugins() {
+    for (const plugin of this.prePlugins) {
+      await plugin.apply(this)
+    }
+
+    this.initializeMiddlewares(this.middlewares)
+
+    for (const plugin of this.postPlugins) {
+      await plugin.apply(this)
     }
   }
 
   private initializeMiddlewares(middlewares: IRailingMiddlewares) {
-    console.log('Initializing middlewares...')
+    let isEnableStreamingHtml = false
+    if (
+      typeof this.railingConfig.ssr === 'object' &&
+      this.railingConfig.ssr.streamingHtml
+    ) {
+      isEnableStreamingHtml = true
+    }
 
-    this.hooks.middlewares.callAsync(middlewares, error => {
-      if (error) {
-        throw error
-      }
+    if (isEnableStreamingHtml) {
+      middlewares.use(this.renderToStream.bind(this))
+    } else {
       middlewares.use(this.renderToHtml.bind(this))
-    })
+    }
+  }
+
+  private async renderToStream(
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    next: INextFunction,
+  ) {
+    if (!this.renderer) {
+      throw new Error('Please provide a renderer first before railing.start()')
+    }
+    throw new Error('Not implemented')
   }
 
   private async renderToHtml(
@@ -66,14 +93,14 @@ class Railing extends BaseRailing {
     next: INextFunction,
   ) {
     if (!this.renderer) {
-      throw new Error('Please set a renderer first before railing.start()')
+      throw new Error('Please provide a renderer first before railing.start()')
     }
 
     let hasCalledNext = false
 
-    const wrappedNext = () => {
+    const wrappedNext = (...args: any[]) => {
       hasCalledNext = true
-      next()
+      next(...args)
     }
 
     let documentHtml = await this.renderer.getDocumentHtml({
@@ -88,46 +115,24 @@ class Railing extends BaseRailing {
 
     documentHtml = this.hooks.documentHtml.call(documentHtml)
 
-    const html = await this.renderer.render(documentHtml, {
+    const html = await this.renderer.renderToString(documentHtml, {
       req,
       res,
       next: wrappedNext,
     })
 
-    if (hasCalledNext) {
+    if (hasCalledNext || res.writableEnded) {
       return
     }
 
-    if (html === null || html === undefined) {
+    if (html == null) {
       console.warn(
         'Renderer returned null or undefined, skipping response, You can directly call next() in your renderer',
       )
       next()
-    } else if (!res.writableEnded) {
-      const normalized = await this.normalizeHtml(html)
-      res.end(normalized)
+    } else {
+      res.end(html)
     }
-  }
-
-  private async normalizeHtml(html: string) {
-    const document = new HTMLDocument(html)
-
-    // append global data script
-    const runtimeConfig = getRuntimeConfig()
-    const globalData = this.hooks.globalData.call({ runtimeConfig })
-    const stringified = JSON.stringify(globalData)
-
-    const globalDataScript = new HTMLScriptElement(
-      { id: GLOBAL_DATA_ELEMENT_ID, type: 'application/json' },
-      stringified,
-    )
-    const head = document.getElementByTagName('head')
-    if (!head) {
-      throw new Error('`<head/>` not found')
-    }
-    head.appendChild(globalDataScript)
-
-    return document.toHtml()
   }
 }
 

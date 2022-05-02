@@ -1,7 +1,8 @@
-import { Plugin } from 'vite'
+import { normalizePath } from 'vite'
 import * as fs from 'fs'
 import * as path from 'path'
 import { userSourceDir, railingSourceDir } from '../../constants'
+import type { Plugin } from 'vite'
 import type { IRailingConfig } from '@railing/types'
 import type { IRailingReactRouteConfig } from '../../../types'
 
@@ -24,9 +25,7 @@ function checkHasCustomizeFile(dir: string, name: string) {
   })
 }
 
-export function railingReactPlugin(
-  opts: IViteRailingReactPluginOptions,
-): Plugin {
+export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
   return {
     name: 'railing-react',
     resolveId(id) {
@@ -49,12 +48,14 @@ export function railingReactPlugin(
     },
     load(id) {
       if (RAILING_REACT_ROUTES === id) {
+        const clientPath = path.resolve(railingSourceDir, 'client.tsx')
+
         const content = opts.routes.map(route => {
           const fullPath = path.resolve(opts.root, route.component)
-          const clientPath = path.join(railingSourceDir, 'client.tsx')
 
-          const relativePath = path.relative(clientPath, fullPath)
-
+          const relativePath = normalizePath(
+            path.relative(clientPath, fullPath),
+          )
           return `
             {
               path: '${route.path}',
@@ -67,14 +68,22 @@ export function railingReactPlugin(
         import * as React from 'react'
 
         function lazyload(loader) {
-          const LazyComponent = React.lazy(loader)
+          const LazyComponent = React.lazy(() => {
+            return new Promise((resolve, reject) => {
+              loader().then((module) => {
+                setTimeout(() => {
+                  resolve(module)
+                }, 3000)
+              }).catch(reject)
+            })
+          })
           const Lazyload = (props) => {
             return React.createElement(
               React.Suspense, 
               { 
-                fallback: React.createElement('div', { children: 'Loading'}), 
-                children: React.createElement(LazyComponent, props)
+                fallback: React.createElement('div', {}, 'Loading...')
               },
+              React.createElement(LazyComponent, props)
             )
           }
           return Lazyload

@@ -1,23 +1,46 @@
 import * as React from 'react'
-import { renderToString } from 'react-dom/server'
-// @ts-ignore
-import routes from '__RAILING__/react/routes'
-// @ts-ignore
-import App from '__RAILING__/react/app'
-// @ts-ignore
-import Document from '__RAILING__/react/document'
+import { renderToString, renderToPipeableStream } from 'react-dom/server'
 import { IRailingRenderContext } from '@railing/types'
-import { __NormalizedRouteConfig__ } from './types'
+import routes from '__RAILING__/react/routes'
+import Document from '__RAILING__/react/document'
+import App from '__RAILING__/react/app'
 
-
-export async function renderToHtml({ req }: IRailingRenderContext) {
-  const matched = (routes as __NormalizedRouteConfig__[]).find(route => {
+export async function renderToStream({ req, res, next }: IRailingRenderContext) {
+  const matched = routes.find(route => {
     return route.path === req.url
   })
 
+  if (!matched) {
+    next()
+    return
+  }
+
+  return renderToPipeableStream((
+    <App
+      Component={matched.component}
+      pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
+    />
+  ), {
+    onShellReady: () => {
+      console.log('shell ready');
+
+    }
+  })
+}
+
+export async function renderToHtml({ req, next }: IRailingRenderContext) {
+  const matched = routes.find(route => {
+    return route.path === req.url
+  })
+
+  if (!matched) {
+    next()
+    return
+  }
+
   return renderToString(
     <App
-      Component={matched ? matched.component : 'div'}
+      Component={matched.component}
       pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
     />
   )

@@ -4,14 +4,13 @@ const {
 
 class TestPlugin {
   apply(railing) {
+    railing.middlewares.use((req, res, next) => {
+      console.log('this is TestPlugin middleware', req.url)
+      next()
+    })
+
     railing.hooks.documentHtml.tap('TestPlugin', html => {
       return html + '<div>Content By TestPlugin</div>'
-    })
-    railing.hooks.middlewares.tap('TestPlugin', middlewares => {
-      middlewares.use((req, res, next) => {
-        // console.log('this is TestPlugin middleware', req.url)
-        next()
-      })
     })
   }
 }

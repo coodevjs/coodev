@@ -1,9 +1,11 @@
-import type * as React from 'react'
-import { IRailingRenderContext } from '@railing/types'
+import type { FunctionComponent } from 'react'
+import type { PipeableStream } from 'react-dom/server'
+import type { IRailingRenderContext } from '@railing/types'
 
 export interface IServerEntryModule {
   getDocumentHtml: (context: IRailingRenderContext) => Promise<string>
   renderToHtml: (context: IRailingRenderContext) => Promise<string>
+  renderToStream: (context: IRailingRenderContext) => Promise<PipeableStream>
 }
 
 export interface IRailingReactRouteConfig {
@@ -11,12 +13,7 @@ export interface IRailingReactRouteConfig {
   component: string
 }
 
-export interface __NormalizedRouteConfig__
-  extends Omit<IRailingReactRouteConfig, 'component'> {
-  component: React.FC
-}
-
 export interface IRailingReactAppProps {
-  Component: React.FC
+  Component: FunctionComponent
   pageProps: object
 }

@@ -1,7 +1,7 @@
 import { createServer } from 'vite'
 import react from '@vitejs/plugin-react'
 import {
-  railingReactPlugin,
+  railingReact,
   IViteRailingReactPluginOptions,
 } from './plugins/railing-react'
 import * as path from 'path'
@@ -17,9 +17,6 @@ export function createViteServer(opts: ServerOptions) {
   return createServer({
     root: opts.root,
     resolve: {},
-    optimizeDeps: {
-      include: ['@railing/core'],
-    },
     build: {
       rollupOptions: {
         input: [
@@ -28,7 +25,7 @@ export function createViteServer(opts: ServerOptions) {
         ],
       },
     },
-    plugins: [react(), railingReactPlugin(opts)],
+    plugins: [react(), railingReact(opts)],
     configFile: false,
     server: {
       middlewareMode: 'ssr',

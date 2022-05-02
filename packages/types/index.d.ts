@@ -6,12 +6,11 @@ import type {
 } from 'tapable'
 import type { Server, NextFunction } from 'connect'
 import type { ServerResponse, IncomingMessage } from 'http'
+import type { Readable } from 'stream'
 
 export type IRuntimeConfig = Record<string, any>
 
 export type IRailingMiddlewares = Server
-
-export type IMiddlewaresHook = AsyncSeriesHook<[IRailingMiddlewares]>
 
 export type INextFunction = NextFunction
 
@@ -30,11 +29,21 @@ export type IGlobalDataSyncWaterfallHook = SyncWaterfallHook<
 export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
 
 export interface IRailingPlugin {
-  apply(railingServerInstance: IRailing): void
+  enforce?: 'pre' | 'post'
+  apply(railingServerInstance: IRailing): Promise<void> | void
+}
+
+export interface IRailingRendererPlugin extends IRailingPlugin {
+  __IS_RENDERER_PLUGIN__: true
+  renderToStream(context: IRailingRenderContext): Promise<Readable>
+  getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
+  renderToString(
+    documentHtml: string,
+    context: IRailingRenderContext,
+  ): Promise<string | null>
 }
 
 export interface IRailingHooks {
-  middlewares: IMiddlewaresHook
   documentHtml: IDocumentHtmlSyncWaterfallHook
   htmlRendered: IHtmlRenderedSyncWaterfallHook
   globalData: IGlobalDataSyncWaterfallHook
@@ -55,14 +64,13 @@ export class IRailing {
   public readonly middlewares: IRailingMiddlewares
   public readonly railingConfig: IInternalRailingConfig
   public start(options: IRailingStartOptions): void
-  public setRenderer(renderer: IRailingRenderer): void
 }
 
 export type IRailingConfigEntry = string | { client?: string; server?: string }
 
 export interface IRailingConfig {
   dev?: boolean
-  ssr?: boolean
+  ssr?: boolean | { streamingHtml?: boolean }
   outputDir?: string
   runtimeConfig?: IRuntimeConfig
   plugins?: IRailingPlugin[]
@@ -76,13 +84,4 @@ export interface IRailingRenderContext {
   req: IncomingMessage
   res: ServerResponse
   next: NextFunction
-}
-
-export interface IRailingRenderer {
-  initialize(railing: IRailing): void
-  getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
-  render(
-    documentHtml: string,
-    context: IRailingRenderContext,
-  ): Promise<string | null>
 }

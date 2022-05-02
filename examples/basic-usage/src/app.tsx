@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { getRuntimeConfig } from '@railing/core'
+import { getRuntimeConfig } from '@railing/react-renderer/config'
 
 const App: React.FC = ({ Component, pageProps }: any) => {
+
   const handleClick = () => {
     console.log('clicked', getRuntimeConfig())
   }
