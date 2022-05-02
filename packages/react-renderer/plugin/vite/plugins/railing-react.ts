@@ -9,7 +9,8 @@ const RAILING_CONFIG = '__RAILING__/config'
 const RAILING_REACT_ROUTES = '__RAILING__/react/routes'
 const RAILING_REACT_APP = '__RAILING__/react/app'
 const RAILING_REACT_DOCUMENT = '__RAILING__/react/document'
-const RAILING_REACT_CLIENT = '__RAILING__/react/client'
+
+const RAILING_RUNTIME_REACT_CLIENT = '/@railing/react/client'
 
 export interface IViteRailingReactPluginOptions {
   root: string
@@ -43,7 +44,7 @@ export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
         case RAILING_REACT_ROUTES:
         case RAILING_CONFIG:
           return id
-        case `/${RAILING_REACT_CLIENT}`:
+        case RAILING_RUNTIME_REACT_CLIENT:
           return path.join(railingSourceDir, 'client.tsx')
       }
 

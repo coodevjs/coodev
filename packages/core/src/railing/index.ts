@@ -68,12 +68,12 @@ class Railing extends BaseRailing {
       return
     }
 
-    if (ssr === true) {
-      middlewares.use(this.renderToString.bind(this))
+    if (typeof ssr === 'object' && ssr.streamingHtml) {
+      middlewares.use(this.renderToStream.bind(this))
       return
     }
 
-    middlewares.use(this.renderToStream.bind(this))
+    middlewares.use(this.renderToString.bind(this))
   }
 
   private async renderToStream(
@@ -84,7 +84,25 @@ class Railing extends BaseRailing {
     if (!this.renderer) {
       throw new Error('Please provide a renderer first before railing.start()')
     }
-    throw new Error('Not implemented')
+
+    let hasCalledNext = false
+
+    const wrappedNext = (...args: any[]) => {
+      hasCalledNext = true
+      next(...args)
+    }
+
+    const stream = await this.renderer.renderToStream({
+      req,
+      res,
+      next: wrappedNext,
+    })
+
+    if (hasCalledNext || res.writableEnded) {
+      return
+    }
+
+    stream.pipe(res)
   }
 
   private async renderToString(

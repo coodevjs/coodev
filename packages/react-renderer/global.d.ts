@@ -2,7 +2,7 @@ type IRailingRenderContext = import('@railing/types').IRailingRenderContext
 
 interface IServerEntryModule {
   getDocumentHtml: (context: IRailingRenderContext) => Promise<string>
-  renderToHtml: (context: IRailingRenderContext) => Promise<string>
+  renderToString: (context: IRailingRenderContext) => Promise<string>
   renderToStream: (
     context: IRailingRenderContext,
   ) => Promise<import('react-dom/server').PipeableStream>

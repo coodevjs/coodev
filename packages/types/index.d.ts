@@ -6,7 +6,6 @@ import type {
 } from 'tapable'
 import type { Server, NextFunction } from 'connect'
 import type { ServerResponse, IncomingMessage } from 'http'
-import type { Readable } from 'stream'
 
 export type IRuntimeConfig = Record<string, any>
 
@@ -35,7 +34,9 @@ export interface IRailingPlugin {
 
 export interface IRailingRendererPlugin extends IRailingPlugin {
   __IS_RENDERER_PLUGIN__: true
-  renderToStream(context: IRailingRenderContext): Promise<Readable>
+  renderToStream(
+    context: IRailingRenderContext,
+  ): Promise<{ pipe: (writable: NodeJS.WritableStream) => void }>
   getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
   renderToString(context: IRailingRenderContext): Promise<string | null>
 }

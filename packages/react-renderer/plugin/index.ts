@@ -4,10 +4,9 @@ import {
   IRailingRenderContext,
 } from '@railing/types'
 import { createViteServer } from './vite'
-import { HTMLDocument, HTMLScriptElement } from '@railing/document'
 import type { ViteDevServer } from 'vite'
 import type { Readable } from 'stream'
-import { railingSourceDir, CONTENT_REPLACEMENT } from './constants'
+import { railingSourceDir } from './constants'
 import * as path from 'path'
 
 export interface IRailingReactRendererPluginOptions {
@@ -17,24 +16,19 @@ export interface IRailingReactRendererPluginOptions {
 export class RailingReactRendererPlugin implements IRailingRendererPlugin {
   public readonly enforce = 'pre'
   public readonly __IS_RENDERER_PLUGIN__ = true
+
   private readonly options: IRailingReactRendererPluginOptions
   private serverEntryPath: string | null
-  private ssr: boolean
   private vite: ViteDevServer | null = null
-  private routes: IRailingReactRouteConfig[]
 
   constructor(options: IRailingReactRendererPluginOptions) {
     // TODO validate options
     this.options = options
     this.serverEntryPath = null
-    this.ssr = false
-    // TODO routes
-    this.routes = []
   }
 
   public async apply(railing: IRailing) {
     const { rootDir, ssr, dev } = railing.railingConfig
-    this.ssr = railing.railingConfig.ssr !== false
 
     this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
 
@@ -71,11 +65,17 @@ export class RailingReactRendererPlugin implements IRailingRendererPlugin {
   }
 
   public async renderToString({ req, res, next }: IRailingRenderContext) {
-    const { renderToHtml } = await this.getServerEntryModule()
+    if (!this.vite) {
+      throw new Error('Vite dev server not initialized')
+    }
 
-    const html = await renderToHtml({ req, res, next })
+    const { renderToString } = await this.getServerEntryModule()
 
-    return html
+    const html = await renderToString({ req, res, next })
+
+    const url = req.url ?? '/'
+
+    return this.vite.transformIndexHtml(url, html)
   }
 
   public async renderToStream(

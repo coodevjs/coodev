@@ -1,12 +1,10 @@
 import * as React from 'react'
-import { renderToString, renderToPipeableStream } from 'react-dom/server'
+import { renderToString as render, renderToPipeableStream } from 'react-dom/server'
 import { IRailingRenderContext } from '@railing/types'
-import { Railing } from './components'
 import routes from '__RAILING__/react/routes'
-import Document from '__RAILING__/react/document'
-import App from '__RAILING__/react/app'
+import RailingApp from './railing-app'
 
-export async function renderToStream({ req, res, next }: IRailingRenderContext) {
+export async function renderToStream({ req, next }: IRailingRenderContext) {
   const matched = routes.find(route => {
     return route.path === req.url
   })
@@ -16,14 +14,7 @@ export async function renderToStream({ req, res, next }: IRailingRenderContext) 
     return
   }
 
-  return renderToPipeableStream((
-    <Railing>
-      <App
-        Component={matched.component}
-        pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
-      />
-    </Railing>
-  ), {
+  return renderToPipeableStream(<RailingApp />, {
     onShellReady: () => {
       console.log('shell ready');
 
@@ -31,7 +22,7 @@ export async function renderToStream({ req, res, next }: IRailingRenderContext) 
   })
 }
 
-export async function renderToHtml({ req, next }: IRailingRenderContext) {
+export async function renderToString({ req, next }: IRailingRenderContext) {
   const matched = routes.find(route => {
     return route.path === req.url
   })
@@ -41,20 +32,9 @@ export async function renderToHtml({ req, next }: IRailingRenderContext) {
     return
   }
 
-  return renderToString(
-    <Railing>
-      <App
-        Component={matched.component}
-        pageProps={{ style: { backgroundColor: 'blue', height: 200 } }}
-      />
-    </Railing>
-  )
+  return render(<RailingApp />)
 }
 
 export async function getDocumentHtml(ctx: IRailingRenderContext) {
-  return renderToString(
-    <Railing>
-      <Document />
-    </Railing>
-  ).replace('data-reactroot=""', '')
+  return render(<RailingApp />).replace('data-reactroot=""', '')
 }

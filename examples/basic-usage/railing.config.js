@@ -16,7 +16,9 @@ class TestPlugin {
 }
 
 const railingConfig = {
-  ssr: false,
+  ssr: {
+    streamingHtml: true,
+  },
   runtimeConfig: {
     name: 'Test',
   },
