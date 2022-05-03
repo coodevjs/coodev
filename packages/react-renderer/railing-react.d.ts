@@ -1,4 +1,5 @@
 /// <reference path="@railing/types" />
+/// <reference path="React" />
 
 namespace Railing {
   export interface ServerEntryModule {
@@ -15,13 +16,13 @@ namespace Railing {
   }
 
   export interface AppProps {
-    Component: React.FC<{}>
+    Component: React.React.ComponentType<any> | null
     pageProps: object
   }
 
   export interface InternalRouteConfig {
     path: string
-    component: React.FC
+    component: React.ComponentType<any>
   }
 
   export type BaseRouter = import('history').History
@@ -33,7 +34,12 @@ namespace Railing {
   }
 
   export interface GlobalData {
-    runtimeConfig: RuntimeConfig
+    pageProps: object
+  }
+
+  export interface LinkProps
+    extends Omit<HTMLAttributes<HTMLAnchorElement>, 'href'> {
+    to: string
   }
 }
 
@@ -43,12 +49,12 @@ declare module '__RAILING__/react/routes' {
 }
 
 declare module '__RAILING__/react/app' {
-  const App: React.FC<Railing.AppProps>
+  const App: React.React.ComponentType<Railing.AppProps>
   export default App
 }
 
 declare module '__RAILING__/react/document' {
-  const Document: React.FC<{}>
+  const Document: React.React.ComponentType<any>
   export default Document
 }
 

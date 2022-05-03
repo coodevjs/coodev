@@ -1,1 +1,1 @@
-export { Html, Main, RailingScript, Head, Title } from './src/components'
+export { Html, Main, RailingScript, Head, Title, Link } from './src/components'

@@ -83,7 +83,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
     return stream as any
   }
 
-  private getServerEntryModule() {
+  private async getServerEntryModule() {
     if (!this.serverEntryPath) {
       throw new Error('No server entry path')
     }

@@ -4,6 +4,7 @@ import {
   railingReact,
   ViteRailingReactPluginOptions,
 } from './plugins/railing-react'
+import { ssrRefresh } from './plugins/ssr-refresh'
 import * as path from 'path'
 import { railingSourceDir } from '../constants'
 
@@ -16,16 +17,8 @@ export interface ServerOptions extends ViteRailingReactPluginOptions {
 export function createViteServer(opts: ServerOptions) {
   return createServer({
     root: opts.root,
-    resolve: {},
-    build: {
-      rollupOptions: {
-        input: [
-          path.join(railingSourceDir, 'client.tsx'),
-          path.join(railingSourceDir, 'server.tsx'),
-        ],
-      },
-    },
-    plugins: [react(), railingReact(opts)],
+    clearScreen: true,
+    plugins: [react(), railingReact(opts), ssrRefresh()],
     configFile: false,
     server: {
       middlewareMode: 'ssr',

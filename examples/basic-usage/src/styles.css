@@ -1,0 +1,13 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 20px solid yellow;
+  text-align: center;
+}
+
+body div {
+  width: 100%;
+  margin: 20px 0;
+}

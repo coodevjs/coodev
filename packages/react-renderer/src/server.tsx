@@ -3,46 +3,42 @@ import {
   renderToString as _renderToString,
   renderToPipeableStream
 } from 'react-dom/server'
-import { pathToRegexp } from 'path-to-regexp'
-import { URL } from 'url'
+import { findMatchedRoute } from './utils'
+import Root from './components/Root'
+import Document from '__RAILING__/react/document'
+import App from '__RAILING__/react/app'
 import routes from '__RAILING__/react/routes'
-import RailingApp from './railing-app'
-
-function findMatchedRoute(
-  url: string,
-  routes: Railing.InternalRouteConfig[] = []
-) {
-  // 通配符
-  const wildcard = '(.*)'
-  const parsedUrl = new URL(url)
-  const matched = routes
-    .map(route => {
-      if (route.path === '*') {
-        return {
-          ...route,
-          path: wildcard,
-        }
-      }
-      return route
-    })
-    .find(route => {
-      return pathToRegexp(route.path).test(parsedUrl.pathname)
-    })
-
-  return matched
-}
 
 async function renderApp<T>(
   { req, next }: Railing.RenderContext,
   callback: (content: React.ReactElement) => T
 ): Promise<T | void> {
-  const matched = findMatchedRoute(req.url || '/', routes)
+  const url = req.url || '/'
+
+  const matched = findMatchedRoute(url, routes)
 
   if (!matched) {
     return next()
   }
 
-  return callback(<RailingApp />)
+  let pageProps = {}
+  // @ts-ignore
+  if (App.getInitialProps) {
+    // @ts-ignore
+    pageProps = await App.getInitialProps({
+      req,
+      Component: matched.component
+    })
+  }
+
+  return callback(
+    <Root
+      url={url}
+      path={matched.path}
+      Component={matched.component as any}
+      pageProps={pageProps}
+    />
+  )
 }
 
 export function renderToStream(ctx: Railing.RenderContext) {
@@ -62,5 +58,5 @@ export async function renderToString(ctx: Railing.RenderContext) {
 }
 
 export async function getDocumentHtml(ctx: Railing.RenderContext) {
-  return _renderToString(<RailingApp />).replace('data-reactroot=""', '')
+  return _renderToString(<Document />).replace('data-reactroot=""', '')
 }
