@@ -3,6 +3,7 @@ import { router } from '@railing/react-renderer/router'
 
 const Page: React.FC = () => {
   const [count, setCount] = React.useState(0)
+
   const handleClick = () => {
     setTimeout(() => {
       setCount(count => count + 1)

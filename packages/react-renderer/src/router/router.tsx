@@ -7,7 +7,6 @@ import {
   Blocker,
   Location
 } from 'history'
-import type { IRouter } from '../types'
 
 const history = typeof window !== 'undefined'
   ? createBrowserHistory()
@@ -23,7 +22,7 @@ function matchParams(path: string, pathname: string) {
   return matched ? matched.params : {}
 }
 
-export const router: Railing.IRouter = {
+export const router: Railing.Router = {
   get action() {
     return history.action
   },
@@ -50,12 +49,13 @@ export const router: Railing.IRouter = {
     // onBeforeRouteUpdate(to, state)
     history.push(to, state)
   },
-  listen(listener: RailingReact.IRouterListener) {
+  listen(listener: Railing.RouterListener) {
     return history.listen(listener)
   },
   block(blocker: Blocker) {
     return history.block(blocker)
-  }
+  },
+  onBeforeRouteUpdate() { }
 }
 
 
@@ -67,8 +67,7 @@ export function useParams<T>(): T {
   return React.useContext(RouterContext).params as any as T
 }
 
-
-export function findMatchedRoute(url: string, routes: RailingReact.IRouteConfig[] = []) {
+export function findMatchedRoute(url: string, routes: Railing.InternalRouteConfig[] = []) {
   // 通配符
   const wildcard = '(.*)'
   const { pathname } = parseUrl(url)

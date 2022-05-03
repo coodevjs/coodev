@@ -1,13 +1,12 @@
 import { RAILING_CONFIG } from '../constants'
-import { IRailingConfig, IInternalRailingConfig } from '@railing/types'
 import * as fs from 'fs'
 import * as path from 'path'
 
 const validExtensions = ['.js']
 
 function normalizeRailingConfig(
-  railingConfig: IRailingConfig,
-): IInternalRailingConfig {
+  railingConfig: Railing.Configuration,
+): Railing.InternalConfiguration {
   return {
     dev: railingConfig.dev ?? process.env.NODE_ENV !== 'production',
     rootDir: process.cwd(),
@@ -21,7 +20,7 @@ function normalizeRailingConfig(
 export function loadRailingConfig() {
   const rootDir = process.cwd()
 
-  let railingConfig: IRailingConfig = {}
+  let railingConfig: Railing.Configuration = {}
 
   const configPath = path.format({
     dir: rootDir,

@@ -1,12 +1,17 @@
 import * as React from 'react'
-import { renderToString as _renderToString, renderToPipeableStream } from 'react-dom/server'
-import { IRailingRenderContext } from '@railing/types'
+import {
+  renderToString as _renderToString,
+  renderToPipeableStream
+} from 'react-dom/server'
 import { pathToRegexp } from 'path-to-regexp'
 import { URL } from 'url'
 import routes from '__RAILING__/react/routes'
 import RailingApp from './railing-app'
 
-function findMatchedRoute(url: string, routes: Railing.NormalizedRouteConfig[] = []) {
+function findMatchedRoute(
+  url: string,
+  routes: Railing.InternalRouteConfig[] = []
+) {
   // 通配符
   const wildcard = '(.*)'
   const parsedUrl = new URL(url)
@@ -28,7 +33,7 @@ function findMatchedRoute(url: string, routes: Railing.NormalizedRouteConfig[] =
 }
 
 async function renderApp<T>(
-  { req, next }: IRailingRenderContext,
+  { req, next }: Railing.RenderContext,
   callback: (content: React.ReactElement) => T
 ): Promise<T | void> {
   const matched = findMatchedRoute(req.url || '/', routes)
@@ -40,7 +45,7 @@ async function renderApp<T>(
   return callback(<RailingApp />)
 }
 
-export function renderToStream(ctx: IRailingRenderContext) {
+export function renderToStream(ctx: Railing.RenderContext) {
   return renderApp(ctx, content => {
     return renderToPipeableStream(content, {
       onShellReady: () => {
@@ -50,12 +55,12 @@ export function renderToStream(ctx: IRailingRenderContext) {
   })
 }
 
-export async function renderToString(ctx: IRailingRenderContext) {
+export async function renderToString(ctx: Railing.RenderContext) {
   return renderApp(ctx, content => {
     return _renderToString(content)
   })
 }
 
-export async function getDocumentHtml(ctx: IRailingRenderContext) {
+export async function getDocumentHtml(ctx: Railing.RenderContext) {
   return _renderToString(<RailingApp />).replace('data-reactroot=""', '')
 }

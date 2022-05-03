@@ -1,46 +1,49 @@
-namespace Railing {
-  type IRailingRenderContext = import('@railing/types').IRailingRenderContext
+/// <reference path="@railing/types" />
 
-  interface IServerEntryModule {
-    getDocumentHtml: (context: IRailingRenderContext) => Promise<string>
-    renderToString: (context: IRailingRenderContext) => Promise<string>
+namespace Railing {
+  export interface ServerEntryModule {
+    getDocumentHtml: (context: Railing.RenderContext) => Promise<string>
+    renderToString: (context: Railing.RenderContext) => Promise<string>
     renderToStream: (
-      context: IRailingRenderContext,
+      context: Railing.RenderContext,
     ) => Promise<import('react-dom/server').PipeableStream>
   }
 
-  interface IRouteConfig {
+  export interface RouteConfig {
     path: string
     component: string
   }
 
-  interface IAppProps {
+  export interface AppProps {
     Component: React.FC<{}>
     pageProps: object
   }
 
-  interface NormalizedRouteConfig {
+  export interface InternalRouteConfig {
     path: string
     component: React.FC
   }
 
-  type IBaseRouter = import('history').History
+  export type BaseRouter = import('history').History
 
-  type IRouterListener = import('history').Listener
+  export type RouterListener = import('history').Listener
 
-  interface IRouter extends IBaseRouter {
-    push: (to: string, state?: any) => void
-    replace: (to: string, state?: any) => void
+  export interface Router extends BaseRouter {
+    onBeforeRouteUpdate: RouterListener
+  }
+
+  export interface GlobalData {
+    runtimeConfig: RuntimeConfig
   }
 }
 
 declare module '__RAILING__/react/routes' {
-  const routes: RailingReact.NormalizedRouteConfig[]
+  const routes: Railing.InternalRouteConfig[]
   export default routes
 }
 
 declare module '__RAILING__/react/app' {
-  const App: React.FC<RailingReact.IRailingReactAppProps>
+  const App: React.FC<Railing.AppProps>
   export default App
 }
 
@@ -50,7 +53,7 @@ declare module '__RAILING__/react/document' {
 }
 
 declare module '__RAILING__/config' {
-  const config: import('@railing/types').IRailingConfig
+  const config: Railing.Configuration
 
   export default config
 }

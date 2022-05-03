@@ -1,19 +1,12 @@
 import * as http from 'http'
-import type {
-  IRailingOptions,
-  IRailingPlugin,
-  IRailingRendererPlugin,
-  IRailingMiddlewares,
-  INextFunction,
-} from '@railing/types'
 import BaseRailing from './base'
 
 class Railing extends BaseRailing {
-  private readonly prePlugins: IRailingPlugin[] = []
-  private readonly postPlugins: IRailingPlugin[] = []
-  private renderer?: IRailingRendererPlugin
+  private readonly prePlugins: Railing.Plugin[] = []
+  private readonly postPlugins: Railing.Plugin[] = []
+  private renderer?: Railing.RendererPlugin
 
-  constructor(options: IRailingOptions) {
+  constructor(options: Railing.RailingOptions) {
     super(options)
 
     this.classifyPlugins(this.railingConfig.plugins)
@@ -26,11 +19,11 @@ class Railing extends BaseRailing {
 
     server.listen(3000)
 
-    console.log('Railing server listen on http://localhost:3000')
+    console.log('Railing server is running on http://localhost:3000')
   }
 
   private classifyPlugins(
-    plugins: (IRailingPlugin | IRailingRendererPlugin)[],
+    plugins: (Railing.Plugin | Railing.RendererPlugin)[],
   ) {
     for (const plugin of plugins) {
       if ('__IS_RENDERER_PLUGIN__' in plugin && plugin.__IS_RENDERER_PLUGIN__) {
@@ -60,7 +53,7 @@ class Railing extends BaseRailing {
     }
   }
 
-  private initializeMiddlewares(middlewares: IRailingMiddlewares) {
+  private initializeMiddlewares(middlewares: Railing.RailingMiddlewares) {
     const ssr = this.railingConfig.ssr
 
     if (ssr === false) {
@@ -79,7 +72,7 @@ class Railing extends BaseRailing {
   private async renderToStream(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: INextFunction,
+    next: Railing.NextFunction,
   ) {
     if (!this.renderer) {
       throw new Error('Please provide a renderer first before railing.start()')
@@ -108,7 +101,7 @@ class Railing extends BaseRailing {
   private async renderToString(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: INextFunction,
+    next: Railing.NextFunction,
   ) {
     if (!this.renderer) {
       throw new Error('Please provide a renderer first before railing.start()')
@@ -144,7 +137,7 @@ class Railing extends BaseRailing {
   private async getDocumentHtml(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: INextFunction,
+    next: Railing.NextFunction,
   ) {
     if (!this.renderer) {
       throw new Error('Please provide a renderer first before railing.start()')
@@ -171,6 +164,6 @@ class Railing extends BaseRailing {
   }
 }
 
-export function createRailing(options: IRailingOptions) {
+export function createRailing(options: Railing.RailingOptions) {
   return new Railing(options)
 }

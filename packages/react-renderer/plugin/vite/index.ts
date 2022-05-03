@@ -2,12 +2,12 @@ import { createServer } from 'vite'
 import react from '@vitejs/plugin-react'
 import {
   railingReact,
-  IViteRailingReactPluginOptions,
+  ViteRailingReactPluginOptions,
 } from './plugins/railing-react'
 import * as path from 'path'
 import { railingSourceDir } from '../constants'
 
-export interface ServerOptions extends IViteRailingReactPluginOptions {
+export interface ServerOptions extends ViteRailingReactPluginOptions {
   root: string
   ssr: boolean
   dev: boolean

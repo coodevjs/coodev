@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { userSourceDir, railingSourceDir } from '../../constants'
 import type { Plugin } from 'vite'
-import type { IRailingConfig } from '@railing/types'
 
 const RAILING_CONFIG = '__RAILING__/config'
 const RAILING_REACT_ROUTES = '__RAILING__/react/routes'
@@ -12,10 +11,10 @@ const RAILING_REACT_DOCUMENT = '__RAILING__/react/document'
 
 const RAILING_RUNTIME_REACT_CLIENT = '/@railing/react/client'
 
-export interface IViteRailingReactPluginOptions {
+export interface ViteRailingReactPluginOptions {
   root: string
-  railingConfig: IRailingConfig
-  routes: RailingReact.IRouteConfig[]
+  railingConfig: Railing.Configuration
+  routes: Railing.RouteConfig[]
 }
 
 function checkHasCustomizeFile(dir: string, name: string) {
@@ -26,7 +25,7 @@ function checkHasCustomizeFile(dir: string, name: string) {
   })
 }
 
-export function railingReact(opts: IViteRailingReactPluginOptions): Plugin {
+export function railingReact(opts: ViteRailingReactPluginOptions): Plugin {
   return {
     name: 'railing-react',
     resolveId(id) {

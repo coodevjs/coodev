@@ -1,26 +1,17 @@
 import { SyncWaterfallHook } from 'tapable'
 import * as connect from 'connect'
-import type {
-  IRailing,
-  IRailingOptions,
-  IDocumentHtmlSyncWaterfallHook,
-  IHtmlRenderedSyncWaterfallHook,
-  IGlobalDataSyncWaterfallHook,
-  IInternalRailingConfig,
-  IRailingMiddlewares,
-} from '@railing/types'
 import { loadRailingConfig } from './railing-config'
 
-abstract class Railing implements IRailing {
-  public readonly options: IRailingOptions
-  private readonly documentHtml: IDocumentHtmlSyncWaterfallHook
-  private readonly htmlRendered: IHtmlRenderedSyncWaterfallHook
-  private readonly globalDataHook: IGlobalDataSyncWaterfallHook
+abstract class Railing implements Railing.Railing {
+  public readonly options: Railing.RailingOptions
+  private readonly documentHtml: Railing.DocumentHtmlSyncWaterfallHook
+  private readonly htmlRendered: Railing.HtmlRenderedSyncWaterfallHook
+  private readonly globalDataHook: Railing.GlobalDataSyncWaterfallHook
 
-  private readonly _railingConfig: IInternalRailingConfig
-  private readonly _middlewares: IRailingMiddlewares
+  private readonly _railingConfig: Railing.InternalConfiguration
+  private readonly _middlewares: Railing.RailingMiddlewares
 
-  constructor(options: IRailingOptions) {
+  constructor(options: Railing.RailingOptions) {
     this.options = options
     this.documentHtml = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])

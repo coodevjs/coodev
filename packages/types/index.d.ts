@@ -1,85 +1,83 @@
-import type {
-  SyncHook,
-  SyncWaterfallHook,
-  AsyncHook,
-  AsyncSeriesHook,
-} from 'tapable'
-import type { Server, NextFunction } from 'connect'
-import type { ServerResponse, IncomingMessage } from 'http'
+namespace Railing {
+  type SyncWaterfallHook = import('tapable').SyncWaterfallHook
 
-export type IRuntimeConfig = Record<string, any>
+  type AsyncHook = import('tapable').AsyncHook
 
-export type IRailingMiddlewares = Server
+  type AsyncSeriesHook = import('tapable').AsyncSeriesHook
 
-export type INextFunction = NextFunction
+  export type RuntimeConfig = Record<string, any>
 
-export interface IGlobalData {
-  runtimeConfig: IRuntimeConfig
-  [key: string]: any
-}
+  export type RailingMiddlewares = import('connect').Server
 
-export type IDocumentHtmlSyncWaterfallHook = SyncWaterfallHook<[string], string>
+  export type NextFunction = import('connect').NextFunction
 
-export type IGlobalDataSyncWaterfallHook = SyncWaterfallHook<
-  [IGlobalData],
-  IGlobalData
->
+  export interface RenderContext {
+    req: import('http').IncomingMessage
+    res: import('http').ServerResponse
+    next: NextFunction
+  }
 
-export type IHtmlRenderedSyncWaterfallHook = SyncWaterfallHook<[string], string>
+  export type DocumentHtmlSyncWaterfallHook = SyncWaterfallHook<
+    [string],
+    string
+  >
 
-export interface IRailingPlugin {
-  enforce?: 'pre' | 'post'
-  apply(railingServerInstance: IRailing): Promise<void> | void
-}
+  export type GlobalDataSyncWaterfallHook = SyncWaterfallHook<
+    [GlobalData],
+    GlobalData
+  >
 
-export interface IRailingRendererPlugin extends IRailingPlugin {
-  __IS_RENDERER_PLUGIN__: true
-  renderToStream(
-    context: IRailingRenderContext,
-  ): Promise<{ pipe: (writable: NodeJS.WritableStream) => void }>
-  getDocumentHtml(context: IRailingRenderContext): Promise<string> | string
-  renderToString(context: IRailingRenderContext): Promise<string | null>
-}
+  export type HtmlRenderedSyncWaterfallHook = SyncWaterfallHook<
+    [string],
+    string
+  >
 
-export interface IRailingHooks {
-  documentHtml: IDocumentHtmlSyncWaterfallHook
-  htmlRendered: IHtmlRenderedSyncWaterfallHook
-  globalData: IGlobalDataSyncWaterfallHook
-}
+  export interface Plugin {
+    enforce?: 'pre' | 'post'
+    apply(railingServerInstance: Railing): Promise<void> | void
+  }
 
-export interface IRailingOptions {
-  dev?: boolean
-}
+  export interface RendererPlugin extends Plugin {
+    __IS_RENDERER_PLUGIN__: true
+    renderToStream(
+      context: RenderContext,
+    ): Promise<{ pipe: (writable: NodeJS.WritableStream) => void }>
+    getDocumentHtml(context: RenderContext): Promise<string> | string
+    renderToString(context: RenderContext): Promise<string | null>
+  }
 
-export interface IRailingStartOptions {
-  port?: number
-}
+  export interface RailingHooks {
+    documentHtml: DocumentHtmlSyncWaterfallHook
+    htmlRendered: HtmlRenderedSyncWaterfallHook
+    globalData: GlobalDataSyncWaterfallHook
+  }
 
-export class IRailing {
-  constructor(options: IRailingOptions)
-  public readonly options: IRailingOptions
-  public readonly hooks: IRailingHooks
-  public readonly middlewares: IRailingMiddlewares
-  public readonly railingConfig: IInternalRailingConfig
-  public start(options: IRailingStartOptions): void
-}
+  export interface RailingOptions {
+    dev?: boolean
+  }
 
-export type IRailingConfigEntry = string | { client?: string; server?: string }
+  export interface RailingStartOptions {
+    port?: number
+  }
 
-export interface IRailingConfig {
-  dev?: boolean
-  ssr?: boolean | { streamingHtml?: boolean }
-  outputDir?: string
-  runtimeConfig?: IRuntimeConfig
-  plugins?: IRailingPlugin[]
-}
+  export class Railing {
+    constructor(options: RailingOptions)
+    public readonly options: RailingOptions
+    public readonly hooks: RailingHooks
+    public readonly middlewares: RailingMiddlewares
+    public readonly railingConfig: InternalRailingConfig
+    public start(options: RailingStartOptions): void
+  }
 
-export interface IInternalRailingConfig extends Required<IRailingConfig> {
-  rootDir: string
-}
+  export interface Configuration {
+    dev?: boolean
+    ssr?: boolean | { streamingHtml?: boolean }
+    outputDir?: string
+    runtimeConfig?: RuntimeConfig
+    plugins?: RailingPlugin[]
+  }
 
-export interface IRailingRenderContext {
-  req: IncomingMessage
-  res: ServerResponse
-  next: NextFunction
+  export interface InternalConfiguration extends Required<Configuration> {
+    rootDir: string
+  }
 }

@@ -23,7 +23,6 @@
       "@railing/core": ["./packages/core/index.d.ts"],
       "@railing/types": ["./packages/types/index.d.ts"],
       "@railing/react-renderer/*": ["./packages/react-renderer/*"],
-      "@railing/webpack": ["./packages/webpack/lib/index.d.ts"],
       "@railing/document": ["./packages/document/lib/index.d.ts"]
     }
   },
