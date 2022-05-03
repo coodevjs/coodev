@@ -4,5 +4,5 @@
     "outDir": "./lib",
     "module": "ESNext"
   },
-  "include": ["plugin", "global.d.ts", "src"]
+  "include": ["plugin", "railing-react.d.ts", "src"]
 }

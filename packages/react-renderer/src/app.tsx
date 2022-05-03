@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-const App = ({ Component, pageProps }: IRailingReactAppProps) => {
+const App = ({ Component, pageProps }: Railing.IAppProps) => {
   return <Component {...pageProps} />
 }
 

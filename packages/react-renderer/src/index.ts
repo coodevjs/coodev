@@ -1,1 +1,1 @@
-export { App, Html, Head, Title } from './components'
+export { Main, Html, Head, Title } from './components'

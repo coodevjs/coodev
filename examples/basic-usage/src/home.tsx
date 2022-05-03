@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { router } from '@railing/react-renderer/router'
 
 const Page: React.FC = () => {
   const [count, setCount] = React.useState(0)
@@ -7,6 +8,8 @@ const Page: React.FC = () => {
       setCount(count => count + 1)
       setCount(count => count + 1)
     }, 0);
+
+    router.push('/')
   }
   console.count('render')
   return (

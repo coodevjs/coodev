@@ -10,7 +10,7 @@ import { railingSourceDir } from './constants'
 import * as path from 'path'
 
 export interface IRailingReactRendererPluginOptions {
-  routes?: IRailingReactRouteConfig[]
+  routes?: RailingReact.IRouteConfig[]
 }
 
 export class RailingReactRendererPlugin implements IRailingRendererPlugin {
@@ -97,6 +97,6 @@ export class RailingReactRendererPlugin implements IRailingRendererPlugin {
     }
     return this.vite.ssrLoadModule(
       this.serverEntryPath,
-    ) as Promise<IServerEntryModule>
+    ) as Promise<RailingReact.IServerEntryModule>
   }
 }

@@ -15,7 +15,7 @@ const RAILING_RUNTIME_REACT_CLIENT = '/@railing/react/client'
 export interface IViteRailingReactPluginOptions {
   root: string
   railingConfig: IRailingConfig
-  routes: IRailingReactRouteConfig[]
+  routes: RailingReact.IRouteConfig[]
 }
 
 function checkHasCustomizeFile(dir: string, name: string) {
