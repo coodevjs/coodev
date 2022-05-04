@@ -27,7 +27,7 @@ const content = (
   <RailingApp
     url={url}
     path={matched.path}
-    Component={matched ? matched.component as any : null}
+    Component={matched ? matched.component : null}
     pageProps={globalData.pageProps || {}}
   />
 )

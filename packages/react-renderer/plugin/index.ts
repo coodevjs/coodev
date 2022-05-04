@@ -24,7 +24,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
   }
 
   public async apply(railing: Railing.Railing) {
-    const { rootDir, ssr, dev } = railing.railingConfig
+    const { rootDir, ssr, dev, runtimeConfig } = railing.railingConfig
 
     this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
 
@@ -39,6 +39,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
           railingConfig: {
             ssr,
             dev,
+            runtimeConfig,
           },
         }),
         ssrRefresh(),
@@ -80,7 +81,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
 
   public async renderToStream(
     context: Railing.RenderContext,
-  ): Promise<Railing.Pipeable> {
+  ): Promise<Railing.PipeableStream> {
     const { renderToStream } = await this.getServerEntryModule()
 
     const stream = await renderToStream(context)

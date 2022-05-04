@@ -4,9 +4,10 @@ const App = ({ Component, pageProps }: Railing.AppProps) => {
   return Component ? <Component {...pageProps} /> : null
 }
 
-// @ts-ignore
-App.getInitialProps = async ({ Component, ctx }) => {
-  const pageProps = Component ? await Component.getInitialProps(ctx) : {}
+App.getInitialProps = async ({ Component, req, res }: Railing.ReactRenderContext) => {
+  const pageProps = Component?.getInitialProps
+    ? await Component.getInitialProps({ req, res })
+    : {}
 
   return pageProps
 }

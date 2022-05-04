@@ -1,13 +1,18 @@
 /// <reference path="@railing/types" />
-/// <reference path="React" />
 
 namespace Railing {
   export interface ServerEntryModule {
-    getDocumentHtml: (context: Railing.RenderContext) => Promise<string>
-    renderToString: (context: Railing.RenderContext) => Promise<string>
+    getDocumentHtml: (ctx: Railing.RenderContext) => Promise<string>
+    renderToString: (ctx: Railing.RenderContext) => Promise<string>
     renderToStream: (
-      context: Railing.RenderContext,
-    ) => Promise<import('react-dom/server').PipeableStream>
+      ctx: Railing.RenderContext,
+    ) => Promise<Railing.PipeableStream>
+  }
+
+  export interface ReactRenderContext {
+    req: import('http').IncomingMessage
+    res: import('http').ServerResponse
+    Component: import('react').ComponentType<any> | null
   }
 
   export interface RouteConfig {
@@ -16,13 +21,13 @@ namespace Railing {
   }
 
   export interface AppProps {
-    Component: React.React.ComponentType<any> | null
+    Component: import('react').ComponentType<any> | null
     pageProps: object
   }
 
   export interface InternalRouteConfig {
     path: string
-    component: React.ComponentType<any>
+    component: import('react').ComponentType<any>
   }
 
   export type Location = import('history').Location
@@ -45,18 +50,27 @@ namespace Railing {
   }
 }
 
+namespace React {
+  interface ComponentClass<P = {}> {
+    getInitialProps?: (...args: any[]) => any
+  }
+  interface FunctionComponent<P = {}> {
+    getInitialProps?: (...args: any[]) => any
+  }
+}
+
 declare module '__RAILING__/react/routes' {
   const routes: Railing.InternalRouteConfig[]
   export default routes
 }
 
 declare module '__RAILING__/react/app' {
-  const App: React.React.ComponentType<Railing.AppProps>
+  const App: import('react').ComponentType<Railing.AppProps>
   export default App
 }
 
 declare module '__RAILING__/react/document' {
-  const Document: React.React.ComponentType<any>
+  const Document: import('react').ComponentType<any>
   export default Document
 }
 

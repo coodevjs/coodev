@@ -85,9 +85,9 @@ export function railingReact(opts: ViteRailingReactPluginOptions): Plugin {
           }
 
           Lazyload.getInitialProps = async (props) => {
-            const component = (await loader()).default
+            const Component = (await loader()).default
             
-            return component.getInitialProps(props)
+            return Component.getInitialProps(props)
           }
 
           return Lazyload

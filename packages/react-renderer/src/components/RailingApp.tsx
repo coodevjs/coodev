@@ -50,7 +50,7 @@ function RailingApp(props: RailingAppProps) {
           routes
         )
         if (matched) {
-          configRef.current.Component = matched.component as any
+          configRef.current.Component = matched.component
           configRef.current.path = matched.path
           configRef.current.params = matchParams(matched.path, location.pathname)
         } else {
@@ -59,7 +59,6 @@ function RailingApp(props: RailingAppProps) {
         }
 
         let pageProps = {}
-        // @ts-ignore
         if (App.getInitialProps) {
           pageProps = await App.getInitialProps({
             Component: configRef.current.Component

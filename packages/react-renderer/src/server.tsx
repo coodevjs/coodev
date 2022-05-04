@@ -21,9 +21,7 @@ async function renderApp<T>(
   }
 
   let pageProps = {}
-  // @ts-ignore
   if (App.getInitialProps) {
-    // @ts-ignore
     pageProps = await App.getInitialProps({
       req,
       Component: matched.component
@@ -32,7 +30,7 @@ async function renderApp<T>(
 
   return callback(
     <RailingContext.Provider value={{
-      Component: matched.component as any,
+      Component: matched.component,
       path: matched.path,
       url,
       pageProps,
