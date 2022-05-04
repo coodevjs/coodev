@@ -4,6 +4,9 @@
   "main": "./lib/index.js",
   "license": "MIT",
   "types": "index.d.ts",
+  "bin": {
+    "railing": "./lib/cli/index.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w"

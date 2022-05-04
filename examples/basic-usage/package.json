@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "railing dev",
-    "start": "rm -rf ./build && node ../../packages/core/lib/cli/dev.js"
+    "dev": "railing dev"
   },
   "dependencies": {
     "react": "^18.1.0",

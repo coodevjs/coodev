@@ -1,7 +1,9 @@
 import { createRailing } from '../railing'
 
-const railing = createRailing({
-  dev: true,
-})
+export function dev() {
+  const railing = createRailing({
+    dev: true,
+  })
 
-railing.start()
+  railing.start()
+}

@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
-    "types": ["@railing/types"]
+    "outDir": "./lib"
   },
   "include": ["."],
   "exclude": ["node_modules", "build"]
