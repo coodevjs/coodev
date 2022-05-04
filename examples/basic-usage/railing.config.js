@@ -34,6 +34,10 @@ const railingConfig = {
           path: '/other',
           component: 'src/other',
         },
+        {
+          path: '/info/:id',
+          component: 'src/home',
+        },
       ],
     }),
   ],

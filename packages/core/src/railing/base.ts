@@ -6,7 +6,6 @@ abstract class Railing implements Railing.Railing {
   public readonly options: Railing.RailingOptions
   private readonly documentHtml: Railing.DocumentHtmlSyncWaterfallHook
   private readonly htmlRendered: Railing.HtmlRenderedSyncWaterfallHook
-  private readonly globalDataHook: Railing.GlobalDataSyncWaterfallHook
 
   private readonly _railingConfig: Railing.InternalConfiguration
   private readonly _middlewares: Railing.RailingMiddlewares
@@ -15,7 +14,6 @@ abstract class Railing implements Railing.Railing {
     this.options = options
     this.documentHtml = new SyncWaterfallHook(['html'])
     this.htmlRendered = new SyncWaterfallHook(['html'])
-    this.globalDataHook = new SyncWaterfallHook(['globalData'])
 
     this._railingConfig = loadRailingConfig()
     this._middlewares = connect()
@@ -33,7 +31,6 @@ abstract class Railing implements Railing.Railing {
     return {
       documentHtml: this.documentHtml,
       htmlRendered: this.htmlRendered,
-      globalData: this.globalDataHook,
     }
   }
 

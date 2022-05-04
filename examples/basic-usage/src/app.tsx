@@ -10,14 +10,14 @@ const App: React.FC = ({ Component, pageProps }: any) => {
 
   return (
     <div id='app' onClick={handleClick}>
-      <Component {...pageProps.pageProps} />
+      {Component ? <Component {...pageProps.pageProps} /> : null}
     </div>
   )
 }
 
 // @ts-ignore
 App.getInitialProps = async ({ Component, ctx }) => {
-  const pageProps = await Component.getInitialProps(ctx)
+  const pageProps = Component ? await Component.getInitialProps(ctx) : {}
   return {
     name: 'react-renderer',
     pageProps

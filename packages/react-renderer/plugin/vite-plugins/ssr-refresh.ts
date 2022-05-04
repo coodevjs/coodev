@@ -7,7 +7,6 @@ export function ssrRefresh(): Plugin {
     name: 'ssr-refresh',
     handleHotUpdate({ modules, server }) {
       for (const module of modules) {
-        console.log(module.url)
         server.moduleGraph.urlToModuleMap.delete(module.url)
       }
       // react-renderer/src/server.tsx

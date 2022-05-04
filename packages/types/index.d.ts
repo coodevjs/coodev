@@ -22,11 +22,6 @@ namespace Railing {
     string
   >
 
-  export type GlobalDataSyncWaterfallHook = SyncWaterfallHook<
-    [GlobalData],
-    GlobalData
-  >
-
   export type HtmlRenderedSyncWaterfallHook = SyncWaterfallHook<
     [string],
     string
@@ -51,7 +46,6 @@ namespace Railing {
   export interface RailingHooks {
     documentHtml: DocumentHtmlSyncWaterfallHook
     htmlRendered: HtmlRenderedSyncWaterfallHook
-    globalData: GlobalDataSyncWaterfallHook
   }
 
   export interface RailingOptions {

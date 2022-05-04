@@ -1,9 +1,11 @@
+import { parse as parseUrl } from 'url'
 import { pathToRegexp } from 'path-to-regexp'
 
 export function findMatchedRoute(
-  pathname: string,
+  path: string,
   routes: Railing.InternalRouteConfig[] = [],
 ) {
+  const pathname = parseUrl(path).pathname ?? '/'
   // 通配符
   const wildcard = '(.*)'
   const matched = routes

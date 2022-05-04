@@ -25,6 +25,8 @@ namespace Railing {
     component: React.ComponentType<any>
   }
 
+  export type Location = import('history').Location
+
   export type BaseRouter = import('history').History
 
   export type RouterListener = import('history').Listener

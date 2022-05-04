@@ -15,15 +15,17 @@ if (scriptElement) {
   globalData = JSON.parse(scriptElement!.innerText)
 }
 
+const url = location.pathname + location.search
+
 // TODO matched may be undefined
-const matched = findMatchedRoute(window.location.pathname, routes) || {
+const matched = findMatchedRoute(url, routes) || {
   component: null,
   path: null
 }
 
 const content = (
   <RailingApp
-    url={window.location.href}
+    url={url}
     path={matched.path}
     Component={matched ? matched.component as any : null}
     pageProps={globalData.pageProps || {}}

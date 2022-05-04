@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { router } from '@railing/react-renderer/router'
+import { useParams, useLocation } from '@railing/react-renderer/router'
 import { Link } from '@railing/react-renderer/app'
 
 const Page: React.FC = (props) => {
-  console.log(props);
-
+  const location = useLocation()
+  const params = useParams()
   const [count, setCount] = React.useState(0)
+
+  console.log(location, params);
 
   const handleClick = () => {
     setTimeout(() => {
@@ -15,9 +17,11 @@ const Page: React.FC = (props) => {
   }
 
   return (
-    <div id='home' onClick={handleClick}>
-      <h1>{`Home ${count}`}</h1>
-      <Link to='/other'>to 422</Link>
+    <div id='home'>
+      <h1 onClick={handleClick}>{`Home ${count}`}</h1>
+      <Link to='/other'>to other</Link>
+      <br />
+      <Link to='/info/test'>to info/test</Link>
     </div>
   )
 }

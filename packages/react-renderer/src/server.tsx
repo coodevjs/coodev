@@ -10,7 +10,7 @@ import App from '__RAILING__/react/app'
 import routes from '__RAILING__/react/routes'
 
 async function renderApp<T>(
-  { req, next }: Railing.RenderContext,
+  { req }: Railing.RenderContext,
   callback: (content: React.ReactElement) => T
 ): Promise<T | void> {
   const url = req.url || '/'
