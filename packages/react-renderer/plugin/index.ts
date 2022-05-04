@@ -1,8 +1,9 @@
-import { createViteServer } from './vite'
-import type { ViteDevServer } from 'vite'
-import type { Readable } from 'stream'
-import { railingSourceDir } from './constants'
 import * as path from 'path'
+import react from '@vitejs/plugin-react'
+import { createServer as createViteServer } from 'vite'
+import type { ViteDevServer } from 'vite'
+import { railingReact, ssrRefresh } from './vite-plugins'
+import { railingSourceDir } from './constants'
 
 export interface RailingReactRendererPluginOptions {
   routes?: Railing.RouteConfig[]
@@ -27,17 +28,25 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
 
     this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
 
-    const isEnableSSR = ssr !== false
-
     this.vite = await createViteServer({
       root: rootDir,
-      ssr: isEnableSSR,
-      dev,
-      railingConfig: {
-        ssr,
-        dev,
+      clearScreen: true,
+      plugins: [
+        react(),
+        railingReact({
+          root: rootDir,
+          routes: this.options.routes || [],
+          railingConfig: {
+            ssr,
+            dev,
+          },
+        }),
+        ssrRefresh(),
+      ],
+      configFile: false,
+      server: {
+        middlewareMode: 'ssr',
       },
-      routes: this.options.routes ?? [],
     })
 
     railing.middlewares.use(this.vite.middlewares)
@@ -54,9 +63,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
 
     const html = await getDocumentHtml(context)
 
-    const url = context.req.url ?? '/'
-
-    return this.vite.transformIndexHtml(url, html)
+    return html
   }
 
   public async renderToString({ req, res, next }: Railing.RenderContext) {
@@ -68,19 +75,17 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
 
     const html = await renderToString({ req, res, next })
 
-    const url = req.url ?? '/'
-
-    return this.vite.transformIndexHtml(url, html)
+    return html
   }
 
   public async renderToStream(
     context: Railing.RenderContext,
-  ): Promise<Readable> {
+  ): Promise<Railing.Pipeable> {
     const { renderToStream } = await this.getServerEntryModule()
 
     const stream = await renderToStream(context)
 
-    return stream as any
+    return stream
   }
 
   private async getServerEntryModule() {

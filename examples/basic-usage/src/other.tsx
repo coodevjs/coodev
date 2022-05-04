@@ -11,18 +11,8 @@ const Page: React.FC = () => {
   )
 }
 
-
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, ms)
-  })
-}
-
 // @ts-ignore
 Page.getInitialProps = async () => {
-  await sleep(2000)
   return {
     name: 'other'
   }

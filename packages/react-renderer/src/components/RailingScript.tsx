@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { RailingContext } from '../contexts/railing'
-import { GLOBAL_DATA_ELEMENT_ID } from '../constants'
+import { RAILING_DATA_ELEMENT_ID } from '../constants'
 
 const ESCAPE_LOOKUP: { [match: string]: string } = {
   '&': '\\u0026',
@@ -22,7 +22,7 @@ const RailingScript: React.FC = () => {
     <>
       <script
         type='application/json'
-        id={GLOBAL_DATA_ELEMENT_ID}
+        id={RAILING_DATA_ELEMENT_ID}
         dangerouslySetInnerHTML={{
           __html: htmlEscapeJsonString(JSON.stringify({ pageProps }))
         }}>

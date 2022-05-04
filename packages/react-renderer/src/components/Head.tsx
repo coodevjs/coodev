@@ -3,10 +3,6 @@ import railingConfig from '__RAILING__/config'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
-const isStreamingHtml = (
-  typeof railingConfig.ssr === 'object' && !!railingConfig.ssr.streamingHtml
-)
-
 const reactFashRefreshCode = `
 import RefreshRuntime from "/@react-refresh"
 RefreshRuntime.injectIntoGlobalHook(window)
@@ -19,7 +15,7 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
   return (
     <head {...otherProps}>
       {children}
-      {isStreamingHtml && (
+      {!!railingConfig.dev && (
         <>
           <script
             type='module'

@@ -9,7 +9,7 @@ import { findMatchedRoute } from '../utils'
 
 interface RailingAppProps {
   url: string
-  path: string
+  path: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
 }
@@ -28,8 +28,9 @@ function RailingApp(props: RailingAppProps) {
     path: props.path,
     Component: props.Component,
     pageProps: props.pageProps,
-    params: {},
+    params: matchParams(props.path || '/', props.url),
   })
+
   const [location, setLocation] = React.useState<any>(() => {
     const parsedUrl = parseUrl(props.url)
     return {
@@ -44,8 +45,6 @@ function RailingApp(props: RailingAppProps) {
   React.useEffect(
     () => {
       const unlisten = history.listen(async ({ location, action }) => {
-        console.log(location);
-
         const matched = findMatchedRoute(
           location.pathname,
           routes

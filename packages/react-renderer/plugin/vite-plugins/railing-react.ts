@@ -1,7 +1,7 @@
 import { normalizePath } from 'vite'
 import * as fs from 'fs'
 import * as path from 'path'
-import { userSourceDir, railingSourceDir } from '../../constants'
+import { userSourceDir, railingSourceDir } from '../constants'
 import type { Plugin } from 'vite'
 
 const RAILING_CONFIG = '__RAILING__/config'

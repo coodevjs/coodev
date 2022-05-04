@@ -37,11 +37,13 @@ namespace Railing {
     apply(railingServerInstance: Railing): Promise<void> | void
   }
 
+  export interface Pipeable {
+    pipe: (writable: NodeJS.WritableStream) => void
+  }
+
   export interface RendererPlugin extends Plugin {
     __IS_RENDERER_PLUGIN__: true
-    renderToStream(
-      context: RenderContext,
-    ): Promise<{ pipe: (writable: NodeJS.WritableStream) => void }>
+    renderToStream(context: RenderContext): Promise<Pipeable>
     getDocumentHtml(context: RenderContext): Promise<string> | string
     renderToString(context: RenderContext): Promise<string | null>
   }

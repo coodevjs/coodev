@@ -2,8 +2,8 @@ import * as React from 'react'
 
 interface RailingContextType {
   url: string
-  path: string
-  Component: React.ComponentType<any>
+  path: string | null
+  Component: React.ComponentType<any> | null
   pageProps: object
 }
 

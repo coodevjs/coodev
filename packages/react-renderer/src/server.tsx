@@ -4,7 +4,7 @@ import {
   renderToPipeableStream
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
-import Root from './components/Root'
+import { RailingContext } from './contexts/railing'
 import Document from '__RAILING__/react/document'
 import App from '__RAILING__/react/app'
 import routes from '__RAILING__/react/routes'
@@ -15,10 +15,9 @@ async function renderApp<T>(
 ): Promise<T | void> {
   const url = req.url || '/'
 
-  const matched = findMatchedRoute(url, routes)
-
-  if (!matched) {
-    return next()
+  const matched = findMatchedRoute(url, routes) || {
+    component: null,
+    path: null
   }
 
   let pageProps = {}
@@ -32,12 +31,14 @@ async function renderApp<T>(
   }
 
   return callback(
-    <Root
-      url={url}
-      path={matched.path}
-      Component={matched.component as any}
-      pageProps={pageProps}
-    />
+    <RailingContext.Provider value={{
+      Component: matched.component as any,
+      path: matched.path,
+      url,
+      pageProps,
+    }}>
+      <Document />
+    </RailingContext.Provider>
   )
 }
 
