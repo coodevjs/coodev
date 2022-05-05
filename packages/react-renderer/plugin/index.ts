@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as fs from 'fs'
 import react from '@vitejs/plugin-react'
 import { createServer as createViteServer } from 'vite'
 import type { ViteDevServer } from 'vite'
@@ -17,7 +18,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
   private serverEntryPath: string | null
   private vite: ViteDevServer | null = null
 
-  constructor(options: RailingReactRendererPluginOptions) {
+  constructor(options: RailingReactRendererPluginOptions = {}) {
     // TODO validate options
     this.options = options
     this.serverEntryPath = null
@@ -27,6 +28,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
     const { rootDir, ssr, dev, runtimeConfig } = railing.railingConfig
 
     this.serverEntryPath = path.join(railingSourceDir, 'server.tsx')
+    const routes = this.getRouteConfig(rootDir)
 
     this.vite = await createViteServer({
       root: rootDir,
@@ -35,7 +37,7 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
         react(),
         railingReact({
           root: rootDir,
-          routes: this.options.routes || [],
+          routes,
           railingConfig: {
             ssr,
             dev,
@@ -87,6 +89,60 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
     const stream = await renderToStream(context)
 
     return stream
+  }
+
+  private getRouteConfig(rootDir: string): Railing.RouteConfig[] {
+    if (Array.isArray(this.options.routes)) {
+      return this.options.routes
+    }
+
+    const basePath = path.join(rootDir, 'src', 'pages')
+
+    if (!fs.existsSync(basePath)) {
+      console.warn(`No pages directory found in ${rootDir}`)
+      return []
+    }
+
+    const routes: Railing.RouteConfig[] = []
+
+    const parseRoutes = (filePath: string) => {
+      const stats = fs.lstatSync(filePath)
+      if (stats.isDirectory()) {
+        const files = fs.readdirSync(filePath)
+        for (const file of files) {
+          const childFilePath = path.join(filePath, file)
+
+          parseRoutes(childFilePath)
+        }
+      } else if (stats.isFile()) {
+        const { ext, name } = path.parse(filePath)
+        const availableExtensions = ['.tsx', '.js', '.jsx']
+        if (availableExtensions.includes(ext)) {
+          const relativePath = path
+            .relative(
+              basePath,
+              name === 'index' ? path.dirname(filePath) : filePath,
+            )
+            .replace(/\\/g, '/')
+            .replace(new RegExp(`${ext}$`), '')
+
+          const normalized = relativePath.startsWith('/')
+            ? relativePath
+            : '/' + relativePath
+
+          routes.push({
+            path: normalized,
+            component: filePath,
+          })
+        }
+      }
+    }
+
+    parseRoutes(basePath)
+
+    console.log(routes)
+
+    return routes
   }
 
   private async getServerEntryModule() {

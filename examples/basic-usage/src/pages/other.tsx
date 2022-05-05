@@ -11,7 +11,6 @@ const Page: React.FC = () => {
   )
 }
 
-// @ts-ignore
 Page.getInitialProps = async () => {
   return {
     name: 'other'

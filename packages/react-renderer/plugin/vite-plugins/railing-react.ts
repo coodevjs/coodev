@@ -54,7 +54,9 @@ export function railingReact(opts: ViteRailingReactPluginOptions): Plugin {
         const clientPath = path.resolve(railingSourceDir, 'client.tsx')
 
         const content = opts.routes.map(route => {
-          const fullPath = path.resolve(opts.root, route.component)
+          const fullPath = path.isAbsolute(route.component)
+            ? route.component
+            : path.resolve(opts.root, route.component)
 
           const relativePath = normalizePath(
             path.relative(clientPath, fullPath),

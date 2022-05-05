@@ -22,25 +22,7 @@ const railingConfig = {
   runtimeConfig: {
     name: 'Test',
   },
-  plugins: [
-    new TestPlugin(),
-    new RailingReactRendererPlugin({
-      routes: [
-        {
-          path: '/',
-          component: 'src/home',
-        },
-        {
-          path: '/other',
-          component: 'src/other',
-        },
-        {
-          path: '/info/:id',
-          component: 'src/home',
-        },
-      ],
-    }),
-  ],
+  plugins: [new TestPlugin(), new RailingReactRendererPlugin()],
 }
 
 module.exports = railingConfig
