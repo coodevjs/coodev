@@ -7,7 +7,7 @@ const Link: React.FC<Railing.LinkProps> = ({
   const handler = React.useCallback(
     (evt: React.MouseEvent) => {
       if (onClick) {
-        onClick(evt as any)
+        onClick(evt)
       }
       if (!evt.isDefaultPrevented()) {
         evt.preventDefault()

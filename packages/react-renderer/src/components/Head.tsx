@@ -3,7 +3,7 @@ import railingConfig from '__RAILING__/config'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
-const reactFashRefreshCode = `
+const reactFastRefreshCode = `
 import RefreshRuntime from "/@react-refresh"
 RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
@@ -20,7 +20,7 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
           <script
             type='module'
             dangerouslySetInnerHTML={{
-              __html: reactFashRefreshCode
+              __html: reactFastRefreshCode
             }}
           />
           <script type='module' src='/@vite/client' />

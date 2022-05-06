@@ -1,10 +1,6 @@
 namespace Railing {
   type SyncWaterfallHook = import('tapable').SyncWaterfallHook
 
-  type AsyncHook = import('tapable').AsyncHook
-
-  type AsyncSeriesHook = import('tapable').AsyncSeriesHook
-
   export type RuntimeConfig = Record<string, any>
 
   export type RailingMiddlewares = import('connect').Server
@@ -29,7 +25,7 @@ namespace Railing {
 
   export interface Plugin {
     enforce?: 'pre' | 'post'
-    apply(railingServerInstance: Railing): Promise<void> | void
+    apply(railing: Railing): Promise<void> | void
   }
 
   export interface PipeableStream {

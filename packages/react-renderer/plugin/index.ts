@@ -140,8 +140,6 @@ export class RailingReactRendererPlugin implements Railing.RendererPlugin {
 
     parseRoutes(basePath)
 
-    console.log(routes)
-
     return routes
   }
 

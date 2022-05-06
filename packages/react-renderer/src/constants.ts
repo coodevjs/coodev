@@ -1,3 +1,3 @@
-export const APP_CONTAINER_ID = '__RAILING_APP__'
+export const RAILING_APP_ID = '__RAILING_APP__'
 
-export const RAILING_DATA_ELEMENT_ID = '__RAILING_DATA__'
+export const RAILING_DATA_ID = '__RAILING_DATA__'

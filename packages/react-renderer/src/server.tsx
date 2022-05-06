@@ -29,12 +29,13 @@ async function renderApp<T>(
   }
 
   return callback(
-    <RailingContext.Provider value={{
-      Component: matched.component,
-      path: matched.path,
-      url,
-      pageProps,
-    }}>
+    <RailingContext.Provider
+      value={{
+        Component: matched.component,
+        path: matched.path,
+        url,
+        pageProps,
+      }}>
       <Document />
     </RailingContext.Provider>
   )

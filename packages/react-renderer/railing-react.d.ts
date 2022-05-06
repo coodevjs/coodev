@@ -2,11 +2,9 @@
 
 namespace Railing {
   export interface ServerEntryModule {
-    getDocumentHtml: (ctx: Railing.RenderContext) => Promise<string>
-    renderToString: (ctx: Railing.RenderContext) => Promise<string>
-    renderToStream: (
-      ctx: Railing.RenderContext,
-    ) => Promise<Railing.PipeableStream>
+    getDocumentHtml: (ctx: RenderContext) => Promise<string>
+    renderToString: (ctx: RenderContext) => Promise<string>
+    renderToStream: (ctx: RenderContext) => Promise<PipeableStream>
   }
 
   export interface ReactRenderContext {
