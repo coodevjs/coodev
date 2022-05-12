@@ -1,6 +1,6 @@
-/// <reference path="@codell/types" />
+/// <reference path="@coodev/types" />
 
-namespace Codell {
+namespace Coodev {
   export interface ServerEntryModule {
     getDocumentHtml: (ctx: RenderContext) => Promise<string>
     renderToString: (ctx: RenderContext) => Promise<string>
@@ -57,23 +57,23 @@ namespace React {
   }
 }
 
-declare module '__CODELL__/react/routes' {
-  const routes: Codell.InternalRouteConfig[]
+declare module '__COODEV__/react/routes' {
+  const routes: Coodev.InternalRouteConfig[]
   export default routes
 }
 
-declare module '__CODELL__/react/app' {
-  const App: import('react').ComponentType<Codell.AppProps>
+declare module '__COODEV__/react/app' {
+  const App: import('react').ComponentType<Coodev.AppProps>
   export default App
 }
 
-declare module '__CODELL__/react/document' {
+declare module '__COODEV__/react/document' {
   const Document: import('react').ComponentType<any>
   export default Document
 }
 
-declare module '__CODELL__/config' {
-  const config: Codell.Configuration
+declare module '__COODEV__/config' {
+  const config: Coodev.Configuration
 
   export default config
 }

@@ -1,5 +1,5 @@
-import codellConfig from '__CODELL__/config'
+import coodevConfig from '__COODEV__/config'
 
-export function getRuntimeConfig(): Codell.RuntimeConfig {
-  return codellConfig.runtimeConfig || {}
+export function getRuntimeConfig(): Coodev.RuntimeConfig {
+  return coodevConfig.runtimeConfig || {}
 }

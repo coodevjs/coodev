@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Main, Html, Head, Title, CodellScript } from './components'
+import { Main, Html, Head, Title, CoodevScript } from './components'
 
 const Document: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const Document: React.FC = () => {
       </Head>
       <body>
         <Main />
-        <CodellScript />
+        <CoodevScript />
       </body>
     </Html>
   )

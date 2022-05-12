@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { router } from '../router'
 
-const Link: React.FC<Codell.LinkProps> = ({
+const Link: React.FC<Coodev.LinkProps> = ({
   to, onClick, ...otherProps
 }) => {
   const handler = React.useCallback(

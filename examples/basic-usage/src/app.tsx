@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { getRuntimeConfig } from '@codell/react/config'
+import { getRuntimeConfig } from '@coodev/react/config'
 import './styles.css'
 
 const App: React.FC = ({ Component, pageProps }: any) => {
@@ -15,7 +15,7 @@ const App: React.FC = ({ Component, pageProps }: any) => {
   )
 }
 
-App.getInitialProps = async ({ Component, req, res }: Codell.ReactRenderContext) => {
+App.getInitialProps = async ({ Component, req, res }: Coodev.ReactRenderContext) => {
   const pageProps = Component?.getInitialProps
     ? await Component.getInitialProps({ req, res })
     : {}

@@ -1,14 +1,14 @@
 {
-  "name": "base-codell-usage",
+  "name": "base-coodev-usage",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "codell dev"
+    "dev": "coodev dev"
   },
   "dependencies": {
-    "@codell/core": "workspace:1.0.0-dev.1",
-    "@codell/react": "workspace:1.0.0-dev.1",
+    "@coodev/core": "workspace:1.0.0-dev.1",
+    "@coodev/react": "workspace:1.0.0-dev.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },

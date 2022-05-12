@@ -1,7 +1,7 @@
-/// <reference path="./codell-react.d.ts" />
+/// <reference path="./coodev-react.d.ts" />
 
-export const router: Codell.Router
+export const router: Coodev.Router
 
-export function useLocation(): Codell.Location
+export function useLocation(): Coodev.Location
 
 export function useParams<T>(): T

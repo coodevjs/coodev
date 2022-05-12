@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "types": ["@codell/types"]
+    "types": ["@coodev/types"]
   },
   "include": ["src/**/*", "./index.d.ts"]
 }

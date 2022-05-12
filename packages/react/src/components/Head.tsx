@@ -1,5 +1,5 @@
 import * as React from 'react'
-import codellConfig from '__CODELL__/config'
+import coodevConfig from '__COODEV__/config'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
@@ -15,7 +15,7 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
   return (
     <head {...otherProps}>
       {children}
-      {!!codellConfig.dev && (
+      {!!coodevConfig.dev && (
         <>
           <script
             type='module'

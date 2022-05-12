@@ -1,18 +1,18 @@
 {
-  "name": "@codell/core",
+  "name": "@coodev/core",
   "version": "1.0.0-dev.1",
   "main": "./lib/index.js",
   "license": "MIT",
   "types": "index.d.ts",
   "bin": {
-    "codell": "./lib/cli/index.js"
+    "coodev": "./lib/cli/index.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
-    "@codell/types": "workspace:1.0.0-dev.1",
+    "@coodev/types": "workspace:1.0.0-dev.1",
     "connect": "^3.7.0",
     "tapable": "^2.2.1"
   },

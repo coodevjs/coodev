@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { CodellContext } from '../contexts/codell'
-import { CODELL_DATA_ID } from '../constants'
+import { CoodevContext } from '../contexts/coodev'
+import { COODEV_DATA_ID } from '../constants'
 
 const ESCAPE_LOOKUP: { [match: string]: string } = {
   '&': '\\u0026',
@@ -16,20 +16,20 @@ function htmlEscapeJsonString(str: string): string {
   return str.replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match])
 }
 
-const CodellScript: React.FC = () => {
-  const { pageProps = {} } = React.useContext(CodellContext)
+const CoodevScript: React.FC = () => {
+  const { pageProps = {} } = React.useContext(CoodevContext)
   return (
     <>
       <script
         type='application/json'
-        id={CODELL_DATA_ID}
+        id={COODEV_DATA_ID}
         dangerouslySetInnerHTML={{
           __html: htmlEscapeJsonString(JSON.stringify({ pageProps }))
         }}>
       </script>
-      <script type='module' src='/@codell/react/client'></script>
+      <script type='module' src='/@coodev/react/client'></script>
     </>
   )
 }
 
-export default CodellScript
+export default CoodevScript

@@ -1,10 +1,7 @@
 ```typescript
-import { Codell } from '@codell/core'
-import {
-  ReactRenderer,
-  CodellReactRendererPlugin,
-} from '@codell/react'
-import { ICodellConfigAPI } from '@codell/types'
+import { Coodev } from '@coodev/core'
+import { ReactRenderer, CoodevReactRendererPlugin } from '@coodev/react'
+import { ICoodevConfigAPI } from '@coodev/types'
 
 /**
  * only client side render
@@ -19,48 +16,48 @@ const renderer = new ReactRenderer({
 renderer.render()
 
 // only server side renderer
-const codell = new Codell({
+const coodev = new Coodev({
   renderer,
   dev,
 })
 
-codell.hooks.htmlTemplate.tap(
+coodev.hooks.htmlTemplate.tap(
   'updateHTMLTemplate',
   (a: { html: string; req: Request; res: Response }) => {},
 )
 
-codell.hooks.htmlRendered.tap(
+coodev.hooks.htmlRendered.tap(
   'updateHTML',
   (a: { html: string; req: Request; res: Response }) => {},
 )
 
-codell.middlewares // return connect middlewares
+coodev.middlewares // return connect middlewares
 
-codell.start({
+coodev.start({
   port,
 }) // create server and start
 
 // use express or others
 const app = express()
 
-app.use(codell.middlewares)
+app.use(coodev.middlewares)
 
 app.listen()
 /**
  * config
  */
-const codellConfig = {
+const coodevConfig = {
   entry: '',
   outDir: '',
   runtimeConfig: {},
   plugins: [
-    new CodellReactRendererPlugin({
+    new CoodevReactRendererPlugin({
       template: 'index.html',
     }),
-    (api: ICodellConfigAPI) => {
+    (api: ICoodevConfigAPI) => {
       api.hooks.webpack.tap('XxPlugin', webpackConfig => {})
 
-      api.hooks.codellConfig.tap('XxPlugin', codellConfig => {})
+      api.hooks.coodevConfig.tap('XxPlugin', coodevConfig => {})
     },
   ],
 }

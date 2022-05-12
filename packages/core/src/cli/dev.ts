@@ -1,9 +1,9 @@
-import { createCodell } from '../codell'
+import { createCoodev } from '../coodev'
 
 export function dev() {
-  const codell = createCodell({
+  const coodev = createCoodev({
     dev: true,
   })
 
-  codell.start()
+  coodev.start()
 }

@@ -4,5 +4,5 @@
     "outDir": "./lib/plugin",
     "module": "CommonJS"
   },
-  "include": ["plugin", "codell-react.d.ts"]
+  "include": ["plugin", "coodev-react.d.ts"]
 }

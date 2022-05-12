@@ -3,31 +3,31 @@ import * as fs from 'fs'
 import react from '@vitejs/plugin-react'
 import { createServer as createViteServer } from 'vite'
 import type { ViteDevServer } from 'vite'
-import { codellReact, ssrRefresh } from './vite-plugins'
-import { codellSourceDir } from './constants'
+import { coodevReact, ssrRefresh } from './vite-plugins'
+import { coodevSourceDir } from './constants'
 
-export interface CodellReactRendererPluginOptions {
-  routes?: Codell.RouteConfig[]
+export interface CoodevReactRendererPluginOptions {
+  routes?: Coodev.RouteConfig[]
 }
 
-export class CodellReactRendererPlugin implements Codell.RendererPlugin {
+export class CoodevReactRendererPlugin implements Coodev.RendererPlugin {
   public readonly enforce = 'pre'
   public readonly __IS_RENDERER_PLUGIN__ = true
 
-  private readonly options: CodellReactRendererPluginOptions
+  private readonly options: CoodevReactRendererPluginOptions
   private serverEntryPath: string | null
   private vite: ViteDevServer | null = null
 
-  constructor(options: CodellReactRendererPluginOptions = {}) {
+  constructor(options: CoodevReactRendererPluginOptions = {}) {
     // TODO validate options
     this.options = options
     this.serverEntryPath = null
   }
 
-  public async apply(codell: Codell.Codell) {
-    const { rootDir, ssr, dev, runtimeConfig } = codell.codellConfig
+  public async apply(coodev: Coodev.Coodev) {
+    const { rootDir, ssr, dev, runtimeConfig } = coodev.coodevConfig
 
-    this.serverEntryPath = path.join(codellSourceDir, 'server.tsx')
+    this.serverEntryPath = path.join(coodevSourceDir, 'server.tsx')
     const routes = this.getRouteConfig(rootDir)
 
     this.vite = await createViteServer({
@@ -35,10 +35,10 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
       clearScreen: true,
       plugins: [
         react(),
-        codellReact({
+        coodevReact({
           root: rootDir,
           routes,
-          codellConfig: {
+          coodevConfig: {
             ssr,
             dev,
             runtimeConfig,
@@ -52,10 +52,10 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
       },
     })
 
-    codell.middlewares.use(this.vite.middlewares)
+    coodev.middlewares.use(this.vite.middlewares)
   }
 
-  public async getDocumentHtml(context: Codell.RenderContext): Promise<string> {
+  public async getDocumentHtml(context: Coodev.RenderContext): Promise<string> {
     if (!this.vite) {
       throw new Error('Vite dev server not initialized')
     }
@@ -67,7 +67,7 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
     return html
   }
 
-  public async renderToString({ req, res, next }: Codell.RenderContext) {
+  public async renderToString({ req, res, next }: Coodev.RenderContext) {
     if (!this.vite) {
       throw new Error('Vite dev server not initialized')
     }
@@ -80,8 +80,8 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
   }
 
   public async renderToStream(
-    context: Codell.RenderContext,
-  ): Promise<Codell.PipeableStream> {
+    context: Coodev.RenderContext,
+  ): Promise<Coodev.PipeableStream> {
     const { renderToStream } = await this.getServerEntryModule()
 
     const stream = await renderToStream(context)
@@ -89,7 +89,7 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
     return stream
   }
 
-  private getRouteConfig(rootDir: string): Codell.RouteConfig[] {
+  private getRouteConfig(rootDir: string): Coodev.RouteConfig[] {
     if (Array.isArray(this.options.routes)) {
       return this.options.routes
     }
@@ -101,7 +101,7 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
       return []
     }
 
-    const routes: Codell.RouteConfig[] = []
+    const routes: Coodev.RouteConfig[] = []
 
     const parseRoutes = (filePath: string) => {
       const stats = fs.lstatSync(filePath)
@@ -150,6 +150,6 @@ export class CodellReactRendererPlugin implements Codell.RendererPlugin {
     }
     return this.vite.ssrLoadModule(
       this.serverEntryPath,
-    ) as Promise<Codell.ServerEntryModule>
+    ) as Promise<Coodev.ServerEntryModule>
   }
 }

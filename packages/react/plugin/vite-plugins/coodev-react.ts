@@ -1,20 +1,20 @@
 import { normalizePath } from 'vite'
 import * as fs from 'fs'
 import * as path from 'path'
-import { userSourceDir, codellSourceDir } from '../constants'
+import { userSourceDir, coodevSourceDir } from '../constants'
 import type { Plugin } from 'vite'
 
-const CODELL_CONFIG = '__CODELL__/config'
-const CODELL_REACT_ROUTES = '__CODELL__/react/routes'
-const CODELL_REACT_APP = '__CODELL__/react/app'
-const CODELL_REACT_DOCUMENT = '__CODELL__/react/document'
+const COODEV_CONFIG = '__COODEV__/config'
+const COODEV_REACT_ROUTES = '__COODEV__/react/routes'
+const COODEV_REACT_APP = '__COODEV__/react/app'
+const COODEV_REACT_DOCUMENT = '__COODEV__/react/document'
 
-const CODELL_RUNTIME_REACT_CLIENT = '/@codell/react/client'
+const COODEV_RUNTIME_REACT_CLIENT = '/@coodev/react/client'
 
-export interface ViteCodellReactPluginOptions {
+export interface ViteCoodevReactPluginOptions {
   root: string
-  codellConfig: Codell.Configuration
-  routes: Codell.RouteConfig[]
+  coodevConfig: Coodev.Configuration
+  routes: Coodev.RouteConfig[]
 }
 
 function checkHasCustomizeFile(dir: string, name: string) {
@@ -25,33 +25,33 @@ function checkHasCustomizeFile(dir: string, name: string) {
   })
 }
 
-export function codellReact(opts: ViteCodellReactPluginOptions): Plugin {
+export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
   return {
-    name: 'codell-react',
+    name: 'coodev-react',
     resolveId(id) {
       switch (id) {
-        case CODELL_REACT_APP:
+        case COODEV_REACT_APP:
           if (checkHasCustomizeFile(userSourceDir, 'app')) {
             return path.join(userSourceDir, 'app')
           }
-          return path.join(codellSourceDir, 'app.tsx')
-        case CODELL_REACT_DOCUMENT:
+          return path.join(coodevSourceDir, 'app.tsx')
+        case COODEV_REACT_DOCUMENT:
           if (checkHasCustomizeFile(userSourceDir, 'document')) {
             return path.join(userSourceDir, 'document')
           }
-          return path.join(codellSourceDir, 'document.tsx')
-        case CODELL_REACT_ROUTES:
-        case CODELL_CONFIG:
+          return path.join(coodevSourceDir, 'document.tsx')
+        case COODEV_REACT_ROUTES:
+        case COODEV_CONFIG:
           return id
-        case CODELL_RUNTIME_REACT_CLIENT:
-          return path.join(codellSourceDir, 'client.tsx')
+        case COODEV_RUNTIME_REACT_CLIENT:
+          return path.join(coodevSourceDir, 'client.tsx')
       }
 
       return null
     },
     load(id) {
-      if (CODELL_REACT_ROUTES === id) {
-        const clientPath = path.resolve(codellSourceDir, 'client.tsx')
+      if (COODEV_REACT_ROUTES === id) {
+        const clientPath = path.resolve(coodevSourceDir, 'client.tsx')
 
         const content = opts.routes.map(route => {
           const fullPath = path.isAbsolute(route.component)
@@ -59,7 +59,7 @@ export function codellReact(opts: ViteCodellReactPluginOptions): Plugin {
             : path.resolve(opts.root, route.component)
 
           const relativePath = normalizePath(
-            path.relative(clientPath, fullPath)
+            path.relative(clientPath, fullPath),
           )
 
           return `
@@ -102,8 +102,8 @@ export function codellReact(opts: ViteCodellReactPluginOptions): Plugin {
           map: null,
         }
       }
-      if (CODELL_CONFIG === id) {
-        return `export default ${JSON.stringify(opts.codellConfig)}`
+      if (COODEV_CONFIG === id) {
+        return `export default ${JSON.stringify(opts.coodevConfig)}`
       }
       return null
     },

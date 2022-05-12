@@ -1,15 +1,15 @@
 import * as http from 'http'
-import BaseCodell from './base'
+import BaseCoodev from './base'
 
-class Codell extends BaseCodell {
-  private readonly prePlugins: Codell.Plugin[] = []
-  private readonly postPlugins: Codell.Plugin[] = []
-  private renderer?: Codell.RendererPlugin
+class Coodev extends BaseCoodev {
+  private readonly prePlugins: Coodev.Plugin[] = []
+  private readonly postPlugins: Coodev.Plugin[] = []
+  private renderer?: Coodev.RendererPlugin
 
-  constructor(options: Codell.CodellOptions) {
+  constructor(options: Coodev.CoodevOptions) {
     super(options)
 
-    this.classifyPlugins(this.codellConfig.plugins)
+    this.classifyPlugins(this.coodevConfig.plugins)
     this.applyPlugins()
   }
 
@@ -19,10 +19,10 @@ class Codell extends BaseCodell {
 
     server.listen(3000)
 
-    console.log('Codell server is running on http://localhost:3000')
+    console.log('Coodev server is running on http://localhost:3000')
   }
 
-  private classifyPlugins(plugins: (Codell.Plugin | Codell.RendererPlugin)[]) {
+  private classifyPlugins(plugins: (Coodev.Plugin | Coodev.RendererPlugin)[]) {
     for (const plugin of plugins) {
       if ('__IS_RENDERER_PLUGIN__' in plugin && plugin.__IS_RENDERER_PLUGIN__) {
         if (this.renderer) {
@@ -51,8 +51,8 @@ class Codell extends BaseCodell {
     }
   }
 
-  private initializeMiddlewares(middlewares: Codell.CodellMiddlewares) {
-    const ssr = this.codellConfig.ssr
+  private initializeMiddlewares(middlewares: Coodev.CoodevMiddlewares) {
+    const ssr = this.coodevConfig.ssr
 
     if (ssr === false) {
       middlewares.use(this.getDocumentHtml.bind(this))
@@ -70,10 +70,10 @@ class Codell extends BaseCodell {
   private async renderToStream(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: Codell.NextFunction,
+    next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {
-      throw new Error('Please provide a renderer first before codell.start()')
+      throw new Error('Please provide a renderer first before coodev.start()')
     }
 
     let hasCalledNext = false
@@ -99,10 +99,10 @@ class Codell extends BaseCodell {
   private async renderToString(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: Codell.NextFunction,
+    next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {
-      throw new Error('Please provide a renderer first before codell.start()')
+      throw new Error('Please provide a renderer first before coodev.start()')
     }
 
     let hasCalledNext = false
@@ -135,10 +135,10 @@ class Codell extends BaseCodell {
   private async getDocumentHtml(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next: Codell.NextFunction,
+    next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {
-      throw new Error('Please provide a renderer first before codell.start()')
+      throw new Error('Please provide a renderer first before coodev.start()')
     }
 
     let hasCalledNext = false
@@ -162,6 +162,6 @@ class Codell extends BaseCodell {
   }
 }
 
-export function createCodell(options: Codell.CodellOptions) {
-  return new Codell(options)
+export function createCoodev(options: Coodev.CoodevOptions) {
+  return new Coodev(options)
 }

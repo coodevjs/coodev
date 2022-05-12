@@ -16,7 +16,7 @@ function matchParams(path: string, pathname: string) {
   return matched ? matched.params : {}
 }
 
-export const router: Codell.Router = {
+export const router: Coodev.Router = {
   get action() {
     return history.action
   },
@@ -43,7 +43,7 @@ export const router: Codell.Router = {
     // onBeforeRouteUpdate(to, state)
     history.push(to, state)
   },
-  listen(listener: Codell.RouterListener) {
+  listen(listener: Coodev.RouterListener) {
     return history.listen(listener)
   },
   block(blocker: Blocker) {

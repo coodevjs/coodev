@@ -1,3 +1,3 @@
-export const CODELL_APP_ID = '__CODELL_APP__'
+export const COODEV_APP_ID = '__COODEV_APP__'
 
-export const CODELL_DATA_ID = '__CODELL_DATA__'
+export const COODEV_DATA_ID = '__COODEV_DATA__'

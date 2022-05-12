@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { codellSourceDir } from '../constants'
+import { coodevSourceDir } from '../constants'
 import type { Plugin } from 'vite'
 
 export function ssrRefresh(): Plugin {
@@ -9,9 +9,9 @@ export function ssrRefresh(): Plugin {
       for (const module of modules) {
         server.moduleGraph.urlToModuleMap.delete(module.url)
       }
-      // @codell/react/src/server.tsx
+      // @coodev/react/src/server.tsx
       server.moduleGraph.urlToModuleMap.delete(
-        path.resolve(codellSourceDir, './server.tsx'),
+        path.resolve(coodevSourceDir, './server.tsx'),
       )
     },
   }

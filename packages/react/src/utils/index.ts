@@ -3,7 +3,7 @@ import { pathToRegexp } from 'path-to-regexp'
 
 export function findMatchedRoute(
   path: string,
-  routes: Codell.InternalRouteConfig[] = [],
+  routes: Coodev.InternalRouteConfig[] = [],
 ) {
   const pathname = parseUrl(path).pathname ?? '/'
   // 通配符

@@ -1,16 +1,16 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import routes from '__CODELL__/react/routes'
-import codellConfig from '__CODELL__/config'
-import CodellApp from './components/CodellApp'
-import { CODELL_APP_ID, CODELL_DATA_ID } from './constants'
+import routes from '__COODEV__/react/routes'
+import coodevConfig from '__COODEV__/config'
+import CoodevApp from './components/CoodevApp'
+import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
 import { findMatchedRoute } from './utils'
 
-let globalData: Codell.GlobalData = {
+let globalData: Coodev.GlobalData = {
   pageProps: {}
 }
 
-const scriptElement = document.getElementById(CODELL_DATA_ID)
+const scriptElement = document.getElementById(COODEV_DATA_ID)
 if (scriptElement) {
   globalData = JSON.parse(scriptElement!.innerText)
 }
@@ -23,7 +23,7 @@ const matched = findMatchedRoute(url, routes) || {
 }
 
 const content = (
-  <CodellApp
+  <CoodevApp
     url={url}
     path={matched.path}
     Component={matched.component}
@@ -31,9 +31,9 @@ const content = (
   />
 )
 
-const container = document.getElementById(CODELL_APP_ID) as HTMLElement
+const container = document.getElementById(COODEV_APP_ID) as HTMLElement
 
-if (codellConfig.ssr) {
+if (coodevConfig.ssr) {
   ReactDOM.hydrateRoot(container, content)
 } else {
   ReactDOM.createRoot(container).render(content)

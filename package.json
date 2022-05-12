@@ -1,17 +1,17 @@
 {
-  "name": "codell",
+  "name": "coodev",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "main": "index.js",
-  "repository": "https://github.com/wokeyi/codell",
+  "repository": "https://github.com/wokeyi/coodev",
   "license": "MIT",
   "scripts": {
     "build": "pnpm -C ./packages/core build & pnpm -C ./packages/react build",
     "clean": "lerna exec -- rm -rf lib",
-    "dev": "lerna run dev --scope @codell/core --scope @codell/react --scope @codell/document --scope @codell/webpack --parallel"
+    "dev": "lerna run dev --scope @coodev/core --scope @coodev/react --scope @coodev/document --scope @coodev/webpack --parallel"
   },
   "devDependencies": {
     "tslib": "^2.4.0",

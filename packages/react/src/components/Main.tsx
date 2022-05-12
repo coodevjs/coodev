@@ -1,18 +1,18 @@
 import * as React from 'react'
-import CodellApp from './CodellApp'
-import { CodellContext } from '../contexts/codell'
-import { CODELL_APP_ID } from '../constants'
+import CoodevApp from './CoodevApp'
+import { CoodevContext } from '../contexts/coodev'
+import { COODEV_APP_ID } from '../constants'
 
 function Main() {
-  const context = React.useContext(CodellContext)
+  const context = React.useContext(CoodevContext)
 
   if (!context.url) {
-    return <div id={CODELL_APP_ID} />
+    return <div id={COODEV_APP_ID} />
   }
 
   return (
-    <div id={CODELL_APP_ID}>
-      <CodellApp {...context} />
+    <div id={COODEV_APP_ID}>
+      <CoodevApp {...context} />
     </div>
   )
 }

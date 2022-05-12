@@ -1,11 +1,11 @@
-# `@codell/document`
+# `@coodev/document`
 
 > TODO: description
 
 ## Usage
 
 ```
-const document = require('@codell/document');
+const document = require('@coodev/document');
 
 // TODO: DEMONSTRATE API
 ```

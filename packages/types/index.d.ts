@@ -1,9 +1,9 @@
-namespace Codell {
+namespace Coodev {
   type SyncWaterfallHook = import('tapable').SyncWaterfallHook
 
   export type RuntimeConfig = Record<string, any>
 
-  export type CodellMiddlewares = import('connect').Server
+  export type CoodevMiddlewares = import('connect').Server
 
   export type NextFunction = import('connect').NextFunction
 
@@ -25,7 +25,7 @@ namespace Codell {
 
   export interface Plugin {
     enforce?: 'pre' | 'post'
-    apply(codell: Codell): Promise<void> | void
+    apply(coodev: Coodev): Promise<void> | void
   }
 
   export interface PipeableStream {
@@ -39,26 +39,26 @@ namespace Codell {
     renderToString(context: RenderContext): Promise<string | null>
   }
 
-  export interface CodellHooks {
+  export interface CoodevHooks {
     documentHtml: DocumentHtmlSyncWaterfallHook
     htmlRendered: HtmlRenderedSyncWaterfallHook
   }
 
-  export interface CodellOptions {
+  export interface CoodevOptions {
     dev?: boolean
   }
 
-  export interface CodellStartOptions {
+  export interface CoodevStartOptions {
     port?: number
   }
 
-  export class Codell {
-    constructor(options: CodellOptions)
-    public readonly options: CodellOptions
-    public readonly hooks: CodellHooks
-    public readonly middlewares: CodellMiddlewares
-    public readonly codellConfig: InternalCodellConfig
-    public start(options: CodellStartOptions): void
+  export class Coodev {
+    constructor(options: CoodevOptions)
+    public readonly options: CoodevOptions
+    public readonly hooks: CoodevHooks
+    public readonly middlewares: CoodevMiddlewares
+    public readonly coodevConfig: InternalCoodevConfig
+    public start(options: CoodevStartOptions): void
   }
 
   export interface Configuration {
@@ -66,7 +66,7 @@ namespace Codell {
     ssr?: boolean | { streamingHtml?: boolean }
     outputDir?: string
     runtimeConfig?: RuntimeConfig
-    plugins?: CodellPlugin[]
+    plugins?: CoodevPlugin[]
   }
 
   export interface InternalConfiguration extends Required<Configuration> {

@@ -2,6 +2,6 @@
 
 const document = require('..')
 
-describe('@codell/document', () => {
+describe('@coodev/document', () => {
   it('needs tests')
 })

@@ -1,20 +1,20 @@
 import * as React from 'react'
 import { match } from 'path-to-regexp'
 import { parse as parseUrl } from 'url'
-import App from '__CODELL__/react/app'
-import routes from '__CODELL__/react/routes'
+import App from '__COODEV__/react/app'
+import routes from '__COODEV__/react/routes'
 import { RouterContext } from '../contexts/router'
 import { history } from '../router/router'
 import { findMatchedRoute } from '../utils'
 
-interface CodellAppProps {
+interface CoodevAppProps {
   url: string
   path: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
 }
 
-interface Config extends Omit<CodellAppProps, 'url'> {
+interface Config extends Omit<CoodevAppProps, 'url'> {
   params: object
 }
 
@@ -23,7 +23,7 @@ function matchParams(path: string, pathname: string) {
   return matched ? matched.params : {}
 }
 
-function CodellApp(props: CodellAppProps) {
+function CoodevApp(props: CoodevAppProps) {
   const configRef = React.useRef<Config>({
     path: props.path,
     Component: props.Component,
@@ -89,4 +89,4 @@ function CodellApp(props: CodellAppProps) {
   )
 }
 
-export default CodellApp
+export default CoodevApp

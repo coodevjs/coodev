@@ -4,13 +4,13 @@ import {
   renderToPipeableStream
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
-import { CodellContext } from './contexts/codell'
-import Document from '__CODELL__/react/document'
-import App from '__CODELL__/react/app'
-import routes from '__CODELL__/react/routes'
+import { CoodevContext } from './contexts/coodev'
+import Document from '__COODEV__/react/document'
+import App from '__COODEV__/react/app'
+import routes from '__COODEV__/react/routes'
 
 async function renderApp<T>(
-  { req }: Codell.RenderContext,
+  { req }: Coodev.RenderContext,
   callback: (content: React.ReactElement) => T
 ): Promise<T | void> {
   const url = req.url || '/'
@@ -29,7 +29,7 @@ async function renderApp<T>(
   }
 
   return callback(
-    <CodellContext.Provider
+    <CoodevContext.Provider
       value={{
         Component: matched.component,
         path: matched.path,
@@ -37,11 +37,11 @@ async function renderApp<T>(
         pageProps,
       }}>
       <Document />
-    </CodellContext.Provider>
+    </CoodevContext.Provider>
   )
 }
 
-export function renderToStream(ctx: Codell.RenderContext) {
+export function renderToStream(ctx: Coodev.RenderContext) {
   return renderApp(ctx, content => {
     return renderToPipeableStream(content, {
       onShellReady: () => {
@@ -51,12 +51,12 @@ export function renderToStream(ctx: Codell.RenderContext) {
   })
 }
 
-export async function renderToString(ctx: Codell.RenderContext) {
+export async function renderToString(ctx: Coodev.RenderContext) {
   return renderApp(ctx, content => {
     return _renderToString(content)
   })
 }
 
-export async function getDocumentHtml(ctx: Codell.RenderContext) {
+export async function getDocumentHtml(ctx: Coodev.RenderContext) {
   return _renderToString(<Document />).replace('data-reactroot=""', '')
 }

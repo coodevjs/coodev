@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { useParams, useLocation } from '@codell/react/router'
-import { Link } from '@codell/react/app'
-import { getRuntimeConfig } from '@codell/react/config'
+import { useParams, useLocation } from '@coodev/react/router'
+import { Link } from '@coodev/react/app'
+import { getRuntimeConfig } from '@coodev/react/config'
 
 interface PageProps {
   name: string

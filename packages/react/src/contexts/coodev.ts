@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-interface CodellContextType {
+interface CoodevContextType {
   url: string
   path: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
 }
 
-export const CodellContext = React.createContext<CodellContextType>({} as any)
+export const CoodevContext = React.createContext<CoodevContextType>({} as any)

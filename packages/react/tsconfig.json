@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./lib",
     "module": "ESNext",
-    "types": ["@codell/types"]
+    "types": ["@coodev/types"]
   },
-  "include": ["plugin", "codell-react.d.ts", "src"]
+  "include": ["plugin", "coodev-react.d.ts", "src"]
 }

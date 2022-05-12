@@ -1,1 +1,1 @@
-export const CODELL_CONFIG = 'codell.config'
+export const COODEV_CONFIG = 'coodev.config'
