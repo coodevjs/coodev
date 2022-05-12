@@ -1,6 +1,6 @@
 {
   "name": "@codell/core",
-  "version": "1.0.0-dev.2",
+  "version": "1.0.0-dev.1",
   "main": "./lib/index.js",
   "license": "MIT",
   "types": "index.d.ts",
@@ -12,7 +12,7 @@
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
-    "@codell/types": "workspace:1.0.0-dev.2",
+    "@codell/types": "workspace:1.0.0-dev.1",
     "connect": "^3.7.0",
     "tapable": "^2.2.1"
   },
