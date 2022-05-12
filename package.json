@@ -9,12 +9,12 @@
   "repository": "https://github.com/wokeyi/server-renderer",
   "license": "MIT",
   "scripts": {
-    "build": "lerna run build",
+    "build": "pnpm -C ./packages/core build & pnpm -C ./packages/react-renderer build",
     "clean": "lerna exec -- rm -rf lib",
     "dev": "lerna run dev --scope @railing/core --scope @railing/react-renderer --scope @railing/document --scope @railing/webpack --parallel"
   },
   "devDependencies": {
-    "lerna": "^4.0.0",
+    "tslib": "^2.4.0",
     "typescript": "^4.6.4"
   }
 }

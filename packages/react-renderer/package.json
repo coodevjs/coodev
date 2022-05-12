@@ -23,6 +23,8 @@
     "react-dom": "^18.1.0"
   },
   "dependencies": {
+    "@railing/core": "workspace:1.0.0-dev.2",
+    "@railing/types": "workspace:1.0.0-dev.2",
     "history": "^5.3.0",
     "path-to-regexp": "^6.2.0",
     "url": "^0.11.0"

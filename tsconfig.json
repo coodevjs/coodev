@@ -18,13 +18,7 @@
     "jsx": "react",
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2017",
-    "paths": {
-      "@railing/core": ["./packages/core/index.d.ts"],
-      "@railing/types": ["./packages/types/index.d.ts"],
-      "@railing/react-renderer/*": ["./packages/react-renderer/*"],
-      "@railing/document": ["./packages/document/lib/index.d.ts"]
-    }
+    "target": "ES2017"
   },
   "exclude": ["node_modules", "lib"]
 }

@@ -7,6 +7,8 @@
     "dev": "railing dev"
   },
   "dependencies": {
+    "@railing/core": "workspace:1.0.0-dev.2",
+    "@railing/react-renderer": "workspace:1.0.0-dev.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },
