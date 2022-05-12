@@ -1,7 +1,10 @@
 ```typescript
-import { Railing } from '@railing/core'
-import { ReactRenderer, RailingReactRendererPlugin } from '@railing/react-renderer'
-import { IRailingConfigAPI } from '@railing/types'
+import { Codell } from '@codell/core'
+import {
+  ReactRenderer,
+  CodellReactRendererPlugin,
+} from '@codell/react'
+import { ICodellConfigAPI } from '@codell/types'
 
 /**
  * only client side render
@@ -10,59 +13,55 @@ const renderer = new ReactRenderer({
   ssr: false,
   App: null,
   routes: [],
-  config: {}
+  config: {},
 })
 
 renderer.render()
 
 // only server side renderer
-const railing = new Railing({ 
+const codell = new Codell({
   renderer,
-  dev
+  dev,
 })
 
-railing.hooks.htmlTemplate.tap('updateHTMLTemplate', (a: { html: string, req: Request, res: Response }) => {
+codell.hooks.htmlTemplate.tap(
+  'updateHTMLTemplate',
+  (a: { html: string; req: Request; res: Response }) => {},
+)
 
-})
+codell.hooks.htmlRendered.tap(
+  'updateHTML',
+  (a: { html: string; req: Request; res: Response }) => {},
+)
 
-railing.hooks.htmlRendered.tap('updateHTML', (a: { html: string, req: Request, res: Response }) => {
+codell.middlewares // return connect middlewares
 
-})
-
-railing.middlewares // return connect middlewares
-
-railing.start({
-  port
+codell.start({
+  port,
 }) // create server and start
 
 // use express or others
 const app = express()
 
-app.use(railing.middlewares)
+app.use(codell.middlewares)
 
 app.listen()
 /**
  * config
  */
-const railingConfig = {
+const codellConfig = {
   entry: '',
   outDir: '',
-  runtimeConfig: {
-
-  },
+  runtimeConfig: {},
   plugins: [
-    new RailingReactRendererPlugin({
-      template: 'index.html'
+    new CodellReactRendererPlugin({
+      template: 'index.html',
     }),
-    (api: IRailingConfigAPI) => {
-      api.hooks.webpack.tap('XxPlugin', webpackConfig => {
+    (api: ICodellConfigAPI) => {
+      api.hooks.webpack.tap('XxPlugin', webpackConfig => {})
 
-      })
-
-      api.hooks.railingConfig.tap('XxPlugin', railingConfig => {
-
-      })
-    }
-  ]
+      api.hooks.codellConfig.tap('XxPlugin', codellConfig => {})
+    },
+  ],
 }
 ```

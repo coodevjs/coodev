@@ -1,9 +1,9 @@
-import { createRailing } from '../railing'
+import { createCodell } from '../codell'
 
 export function dev() {
-  const railing = createRailing({
+  const codell = createCodell({
     dev: true,
   })
 
-  railing.start()
+  codell.start()
 }

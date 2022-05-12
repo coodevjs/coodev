@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
+    "module": "ESNext",
     "types": ["@codell/types"]
   },
-  "include": ["src/**/*", "./index.d.ts"]
+  "include": ["plugin", "codell-react.d.ts", "src"]
 }

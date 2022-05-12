@@ -1,17 +1,17 @@
 {
-  "name": "railing",
+  "name": "codell",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "main": "index.js",
-  "repository": "https://github.com/wokeyi/server-renderer",
+  "repository": "https://github.com/wokeyi/codell",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm -C ./packages/core build & pnpm -C ./packages/react-renderer build",
+    "build": "pnpm -C ./packages/core build & pnpm -C ./packages/react build",
     "clean": "lerna exec -- rm -rf lib",
-    "dev": "lerna run dev --scope @railing/core --scope @railing/react-renderer --scope @railing/document --scope @railing/webpack --parallel"
+    "dev": "lerna run dev --scope @codell/core --scope @codell/react --scope @codell/document --scope @codell/webpack --parallel"
   },
   "devDependencies": {
     "tslib": "^2.4.0",

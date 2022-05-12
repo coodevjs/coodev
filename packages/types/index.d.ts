@@ -1,9 +1,9 @@
-namespace Railing {
+namespace Codell {
   type SyncWaterfallHook = import('tapable').SyncWaterfallHook
 
   export type RuntimeConfig = Record<string, any>
 
-  export type RailingMiddlewares = import('connect').Server
+  export type CodellMiddlewares = import('connect').Server
 
   export type NextFunction = import('connect').NextFunction
 
@@ -25,7 +25,7 @@ namespace Railing {
 
   export interface Plugin {
     enforce?: 'pre' | 'post'
-    apply(railing: Railing): Promise<void> | void
+    apply(codell: Codell): Promise<void> | void
   }
 
   export interface PipeableStream {
@@ -39,26 +39,26 @@ namespace Railing {
     renderToString(context: RenderContext): Promise<string | null>
   }
 
-  export interface RailingHooks {
+  export interface CodellHooks {
     documentHtml: DocumentHtmlSyncWaterfallHook
     htmlRendered: HtmlRenderedSyncWaterfallHook
   }
 
-  export interface RailingOptions {
+  export interface CodellOptions {
     dev?: boolean
   }
 
-  export interface RailingStartOptions {
+  export interface CodellStartOptions {
     port?: number
   }
 
-  export class Railing {
-    constructor(options: RailingOptions)
-    public readonly options: RailingOptions
-    public readonly hooks: RailingHooks
-    public readonly middlewares: RailingMiddlewares
-    public readonly railingConfig: InternalRailingConfig
-    public start(options: RailingStartOptions): void
+  export class Codell {
+    constructor(options: CodellOptions)
+    public readonly options: CodellOptions
+    public readonly hooks: CodellHooks
+    public readonly middlewares: CodellMiddlewares
+    public readonly codellConfig: InternalCodellConfig
+    public start(options: CodellStartOptions): void
   }
 
   export interface Configuration {
@@ -66,7 +66,7 @@ namespace Railing {
     ssr?: boolean | { streamingHtml?: boolean }
     outputDir?: string
     runtimeConfig?: RuntimeConfig
-    plugins?: RailingPlugin[]
+    plugins?: CodellPlugin[]
   }
 
   export interface InternalConfiguration extends Required<Configuration> {

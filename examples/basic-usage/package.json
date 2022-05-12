@@ -1,14 +1,14 @@
 {
-  "name": "base-railing-usage",
+  "name": "base-codell-usage",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "railing dev"
+    "dev": "codell dev"
   },
   "dependencies": {
-    "@railing/core": "workspace:1.0.0-dev.2",
-    "@railing/react-renderer": "workspace:1.0.0-dev.2",
+    "@codell/core": "workspace:1.0.0-dev.2",
+    "@codell/react": "workspace:1.0.0-dev.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },

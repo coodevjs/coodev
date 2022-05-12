@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Main, Html, Head, Title, CodellScript } from '@codell/react/app'
+import { Main, Html, Head, Title, CodellScript } from './components'
 
 const Document: React.FC = () => {
   return (
     <Html>
       <Head>
-        <Title title='Customize' />
+        <Title title='Document Title' />
       </Head>
       <body>
         <Main />

@@ -1,1 +1,1 @@
-export const RAILING_CONFIG = 'railing.config'
+export const CODELL_CONFIG = 'codell.config'

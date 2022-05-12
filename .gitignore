@@ -86,4 +86,3 @@ package-lock.json
 **/tmp/
 
 packages/*/lib
-.railing

@@ -1,9 +1,9 @@
 {
-  "name": "@railing/document",
+  "name": "@codell/document",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "wokeyi <wokeyifrontend@gmail.com>",
-  "homepage": "https://github.com/wokeyi/railing#readme",
+  "homepage": "https://github.com/wokeyi/codell#readme",
   "typings": "./src/index.ts",
   "license": "MIT",
   "main": "lib/index.js",
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wokeyi/railing.git"
+    "url": "git+https://github.com/wokeyi/codell.git"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w "
   },
   "bugs": {
-    "url": "https://github.com/wokeyi/railing/issues"
+    "url": "https://github.com/wokeyi/codell/issues"
   },
   "dependencies": {
     "htmlparser2": "^8.0.1"

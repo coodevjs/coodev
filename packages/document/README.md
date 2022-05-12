@@ -1,11 +1,11 @@
-# `@railing/document`
+# `@codell/document`
 
 > TODO: description
 
 ## Usage
 
 ```
-const document = require('@railing/document');
+const document = require('@codell/document');
 
 // TODO: DEMONSTRATE API
 ```

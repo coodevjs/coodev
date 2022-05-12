@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./lib/plugin",
-    "module": "CommonJS"
-  },
-  "include": ["plugin", "railing-react.d.ts"]
-}

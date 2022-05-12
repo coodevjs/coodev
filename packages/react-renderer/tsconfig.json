@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./lib",
-    "module": "ESNext",
-    "types": ["@railing/types"]
-  },
-  "include": ["plugin", "railing-react.d.ts", "src"]
-}

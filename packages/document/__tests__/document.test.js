@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const document = require('..');
+const document = require('..')
 
-describe('@railing/document', () => {
-    it('needs tests');
-});
+describe('@codell/document', () => {
+  it('needs tests')
+})
