@@ -1,7 +1,7 @@
 import { normalizePath } from 'vite'
 import * as fs from 'fs'
 import * as path from 'path'
-import { userSourceDir, coodevSourceDir } from '../constants'
+import { COODEV_REACT_SOURCE_DIR } from '../constants'
 import type { Plugin } from 'vite'
 
 const COODEV_CONFIG = '__COODEV__/config'
@@ -31,27 +31,27 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     resolveId(id) {
       switch (id) {
         case COODEV_REACT_APP:
-          if (checkHasCustomizeFile(userSourceDir, 'app')) {
-            return path.join(userSourceDir, 'app')
+          if (checkHasCustomizeFile(opts.root, 'app')) {
+            return path.join(opts.root, 'app')
           }
-          return path.join(coodevSourceDir, 'app.tsx')
+          return path.join(COODEV_REACT_SOURCE_DIR, 'app.tsx')
         case COODEV_REACT_DOCUMENT:
-          if (checkHasCustomizeFile(userSourceDir, 'document')) {
-            return path.join(userSourceDir, 'document')
+          if (checkHasCustomizeFile(opts.root, 'document')) {
+            return path.join(opts.root, 'document')
           }
-          return path.join(coodevSourceDir, 'document.tsx')
+          return path.join(COODEV_REACT_SOURCE_DIR, 'document.tsx')
         case COODEV_REACT_ROUTES:
         case COODEV_CONFIG:
           return id
         case COODEV_RUNTIME_REACT_CLIENT:
-          return path.join(coodevSourceDir, 'client.tsx')
+          return path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
       }
 
       return null
     },
     load(id) {
       if (COODEV_REACT_ROUTES === id) {
-        const clientPath = path.resolve(coodevSourceDir, 'client.tsx')
+        const clientPath = path.resolve(COODEV_REACT_SOURCE_DIR, 'client.tsx')
 
         const content = opts.routes.map(route => {
           const fullPath = path.isAbsolute(route.component)

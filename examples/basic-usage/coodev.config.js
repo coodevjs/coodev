@@ -1,9 +1,7 @@
-const { CoodevReactRendererPlugin } = require('@coodev/react/lib/plugin')
-
 class TestPlugin {
   apply(coodev) {
     coodev.middlewares.use((req, res, next) => {
-      console.log('this is TestPlugin middleware', req.url)
+      // console.log('this is TestPlugin middleware', req.url)
       next()
     })
 
@@ -20,7 +18,7 @@ const coodevConfig = {
   runtimeConfig: {
     name: 'Test',
   },
-  plugins: [new TestPlugin(), new CoodevReactRendererPlugin()],
+  plugins: [new TestPlugin()],
 }
 
 module.exports = coodevConfig

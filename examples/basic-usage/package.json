@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "coodev dev"
+    "dev": "coodev-react dev"
   },
   "dependencies": {
     "@coodev/core": "workspace:1.0.0-dev.1",

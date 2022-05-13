@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib/plugin",
+    "outDir": "./lib",
     "module": "CommonJS"
   },
-  "include": ["plugin", "coodev-react.d.ts"]
+  "include": ["src/coodev/*", "coodev-react.d.ts"]
 }

@@ -3,18 +3,15 @@
   "version": "1.0.0-dev.1",
   "main": "./lib/index.js",
   "license": "MIT",
-  "types": "index.d.ts",
-  "bin": {
-    "coodev": "./lib/cli/index.js"
-  },
+  "types": "./index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
-    "@coodev/types": "workspace:1.0.0-dev.1",
     "connect": "^3.7.0",
-    "tapable": "^2.2.1"
+    "tapable": "^2.2.1",
+    "vite": "^2.9.6"
   },
   "devDependencies": {
     "@types/connect": "^3.4.35",

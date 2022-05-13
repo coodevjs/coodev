@@ -1,16 +1,25 @@
 import * as http from 'http'
+import {
+  ViteDevServer,
+  createServer as createViteServer,
+  mergeConfig,
+} from 'vite'
 import BaseCoodev from './base'
 
 class Coodev extends BaseCoodev {
-  private readonly prePlugins: Coodev.Plugin[] = []
-  private readonly postPlugins: Coodev.Plugin[] = []
-  private renderer?: Coodev.RendererPlugin
+  private readonly renderer: Coodev.Renderer
+  private viteServer: ViteDevServer | null = null
 
   constructor(options: Coodev.CoodevOptions) {
     super(options)
 
-    this.classifyPlugins(this.coodevConfig.plugins)
-    this.applyPlugins()
+    this.renderer = options.renderer
+
+    this.applyPlugins(this.coodevConfig.plugins)
+
+    if (options.dev) {
+      this.initializeViteServer()
+    }
   }
 
   public start() {
@@ -22,33 +31,37 @@ class Coodev extends BaseCoodev {
     console.log('Coodev server is running on http://localhost:3000')
   }
 
-  private classifyPlugins(plugins: (Coodev.Plugin | Coodev.RendererPlugin)[]) {
-    for (const plugin of plugins) {
-      if ('__IS_RENDERER_PLUGIN__' in plugin && plugin.__IS_RENDERER_PLUGIN__) {
-        if (this.renderer) {
-          throw new Error('Only one renderer plugin can be set')
-        }
-        this.renderer = plugin
-      }
+  public loadSSRModule(module: string) {
+    if (!this.viteServer) {
+      throw new Error('Vite server is not initialized')
+    }
+    return this.viteServer.ssrLoadModule(module) as any
+  }
 
-      if (plugin.enforce === 'pre') {
-        this.prePlugins.push(plugin)
-      } else {
-        this.postPlugins.push(plugin)
-      }
+  private async applyPlugins(plugins: Coodev.Plugin[]) {
+    for (const plugin of plugins) {
+      await plugin.apply(this)
     }
   }
 
-  private async applyPlugins() {
-    for (const plugin of this.prePlugins) {
-      await plugin.apply(this)
-    }
+  private async initializeViteServer() {
+    const viteConfig = this.hooks.viteConfig.call({
+      root: this.coodevConfig.root,
+      clearScreen: true,
+    })
+
+    this.viteServer = await createViteServer(
+      mergeConfig(viteConfig, {
+        configFile: false,
+        server: {
+          middlewareMode: 'ssr',
+        },
+      }),
+    )
+
+    this.middlewares.use(this.viteServer.middlewares)
 
     this.initializeMiddlewares(this.middlewares)
-
-    for (const plugin of this.postPlugins) {
-      await plugin.apply(this)
-    }
   }
 
   private initializeMiddlewares(middlewares: Coodev.CoodevMiddlewares) {
@@ -83,7 +96,7 @@ class Coodev extends BaseCoodev {
       next(...args)
     }
 
-    const stream = await this.renderer.renderToStream({
+    const stream = await this.renderer.renderToStream(this, {
       req,
       res,
       next: wrappedNext,
@@ -112,7 +125,7 @@ class Coodev extends BaseCoodev {
       next(...args)
     }
 
-    const html = await this.renderer.renderToString({
+    const html = await this.renderer.renderToString(this, {
       req,
       res,
       next: wrappedNext,
@@ -148,7 +161,7 @@ class Coodev extends BaseCoodev {
       next(...args)
     }
 
-    const documentHtml = await this.renderer.getDocumentHtml({
+    const documentHtml = await this.renderer.getDocumentHtml(this, {
       req,
       res,
       next: wrappedNext,

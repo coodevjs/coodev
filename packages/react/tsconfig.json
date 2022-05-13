@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./lib",
     "module": "ESNext",
-    "types": ["@coodev/types"]
+    "types": ["@coodev/core"]
   },
-  "include": ["plugin", "coodev-react.d.ts", "src"]
+  "include": ["coodev-react.d.ts", "src"]
 }

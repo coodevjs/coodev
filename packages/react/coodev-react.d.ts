@@ -1,6 +1,11 @@
-/// <reference path="@coodev/types" />
-
 namespace Coodev {
+  import { ComponentType } from 'react'
+  import {
+    Location,
+    History as BaseRouter,
+    Listener as RouteUpdateListener,
+  } from 'history'
+
   export interface ServerEntryModule {
     getDocumentHtml: (ctx: RenderContext) => Promise<string>
     renderToString: (ctx: RenderContext) => Promise<string>
@@ -8,9 +13,9 @@ namespace Coodev {
   }
 
   export interface ReactRenderContext {
-    req: import('http').IncomingMessage
-    res: import('http').ServerResponse
-    Component: import('react').ComponentType<any> | null
+    req: Request
+    res: Response
+    Component: ComponentType<any> | null
   }
 
   export interface RouteConfig {
@@ -18,24 +23,24 @@ namespace Coodev {
     component: string
   }
 
+  export interface Configuration {
+    routes?: RouteConfig[]
+  }
+
   export interface AppProps {
-    Component: import('react').ComponentType<any> | null
+    Component: ComponentType<any> | null
     pageProps: object
   }
 
   export interface InternalRouteConfig {
     path: string
-    component: import('react').ComponentType<any>
+    component: ComponentType<any>
   }
 
-  export type Location = import('history').Location
-
-  export type BaseRouter = import('history').History
-
-  export type RouterListener = import('history').Listener
+  export type { Location, BaseRouter, RouteUpdateListener }
 
   export interface Router extends BaseRouter {
-    onBeforeRouteUpdate: RouterListener
+    onBeforeRouteUpdate: RouteUpdateListener
   }
 
   export interface GlobalData {
@@ -63,12 +68,16 @@ declare module '__COODEV__/react/routes' {
 }
 
 declare module '__COODEV__/react/app' {
-  const App: import('react').ComponentType<Coodev.AppProps>
+  import { Component } from 'react'
+
+  const App: ComponentType<Coodev.AppProps>
   export default App
 }
 
 declare module '__COODEV__/react/document' {
-  const Document: import('react').ComponentType<any>
+  import { Component } from 'react'
+
+  const Document: ComponentType<any>
   export default Document
 }
 

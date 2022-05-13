@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
-    "types": ["@coodev/types"]
+    "outDir": "./lib"
   },
-  "include": ["src/**/*", "./index.d.ts"]
+  "include": ["src/**/*", "./global.d.ts", "./index.d.ts"]
 }
