@@ -63,7 +63,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
         const { ext, name, dir } = path.parse(filePath)
         const availableExtensions = ['.tsx', '.js', '.jsx']
         if (availableExtensions.includes(ext)) {
-          const normalizedFilePath = path.format({
+          const formatted = path.format({
             dir,
             name: name ? name.replace(/^\$/, ':') : name,
             ext,
@@ -71,9 +71,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
           const relativePath = path
             .relative(
               basePath,
-              name === 'index'
-                ? path.dirname(normalizedFilePath)
-                : normalizedFilePath,
+              name === 'index' ? path.dirname(formatted) : formatted,
             )
             .replace(/\\/g, '/')
             .replace(new RegExp(`${ext}$`), '')

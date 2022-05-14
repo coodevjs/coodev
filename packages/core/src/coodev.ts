@@ -81,8 +81,8 @@ class Coodev extends BaseCoodev {
   }
 
   private async renderToStream(
-    req: http.IncomingMessage,
-    res: http.ServerResponse,
+    req: Coodev.Request,
+    res: Coodev.Response,
     next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {
@@ -110,8 +110,8 @@ class Coodev extends BaseCoodev {
   }
 
   private async renderToString(
-    req: http.IncomingMessage,
-    res: http.ServerResponse,
+    req: Coodev.Request,
+    res: Coodev.Response,
     next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {
@@ -146,8 +146,8 @@ class Coodev extends BaseCoodev {
   }
 
   private async getDocumentHtml(
-    req: http.IncomingMessage,
-    res: http.ServerResponse,
+    req: Coodev.Request,
+    res: Coodev.Response,
     next: Coodev.NextFunction,
   ) {
     if (!this.renderer) {

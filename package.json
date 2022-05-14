@@ -10,10 +10,11 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm -C ./packages/core build & pnpm -C ./packages/react build",
-    "clean": "lerna exec -- rm -rf lib",
-    "dev": "lerna run dev --scope @coodev/core --scope @coodev/react --scope @coodev/document --scope @coodev/webpack --parallel"
+    "clean": "rimraf ./packages/core/lib && rimraf ./packages/react/lib",
+    "dev": "pnpm -C ./packages/core dev & pnpm -C ./packages/react dev"
   },
   "devDependencies": {
+    "rimraf": "^3.0.2",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4"
   }

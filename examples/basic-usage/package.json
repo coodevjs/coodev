@@ -7,7 +7,6 @@
     "dev": "coodev-react dev"
   },
   "dependencies": {
-    "@coodev/core": "workspace:1.0.0-dev.1",
     "@coodev/react": "workspace:1.0.0-dev.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
