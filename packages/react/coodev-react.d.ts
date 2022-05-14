@@ -1,10 +1,5 @@
 namespace Coodev {
-  import { ComponentType } from 'react'
-  import {
-    Location,
-    History as BaseRouter,
-    Listener as RouteUpdateListener,
-  } from 'history'
+  type ComponentType<P> = import('react').ComponentType<P>
 
   export interface ServerEntryModule {
     getDocumentHtml: (ctx: RenderContext) => Promise<string>
@@ -37,7 +32,11 @@ namespace Coodev {
     component: ComponentType<any>
   }
 
-  export type { Location, BaseRouter, RouteUpdateListener }
+  export type Location = import('history').Location
+
+  export type BaseRouter = import('history').History
+
+  export type RouteUpdateListener = import('history').Listener
 
   export interface Router extends BaseRouter {
     onBeforeRouteUpdate: RouteUpdateListener

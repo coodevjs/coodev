@@ -1,20 +1,17 @@
 declare namespace Coodev {
-  import { SyncWaterfallHook } from 'tapable'
-  import { Server, NextFunction } from 'connect'
-  import { UserConfig } from 'vite'
-  import { IncomingMessage, ServerResponse } from 'http'
+  type SyncWaterfallHook<T, B> = import('tapable').SyncWaterfallHook<T, B>
 
   export type RuntimeConfig = Record<string, any>
 
-  export type { NextFunction }
+  export type NextFunction = import('connect').NextFunction
 
-  export type Request = IncomingMessage
+  export type Request = import('http').IncomingMessage
 
-  export type Response = ServerResponse
+  export type Response = import('http').ServerResponse
 
-  export type CoodevMiddlewares = Server
+  export type CoodevMiddlewares = import('connect').Server
 
-  export type ViteConfig = UserConfig
+  export type ViteConfig = import('vite').UserConfig
 
   export type SSRConfig = boolean | { streamingHtml?: boolean }
 
