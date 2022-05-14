@@ -19,8 +19,6 @@ export class CoodevReactPlugin implements Coodev.Plugin {
     coodev.hooks.viteConfig.tap(
       'CoodevReactPlugin',
       (config: Coodev.ViteConfig) => {
-        console.log('vite config')
-        console.log(userRoutes)
         const routes = userRoutes ?? this.parseRouteConfig(root)
 
         return mergeConfig(config, {
@@ -94,8 +92,6 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
     parseRoutes(basePath)
 
-    console.log('routes')
-    console.log(...routes)
     return routes
   }
 }

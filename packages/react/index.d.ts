@@ -1,3 +1,5 @@
 /// <reference path="coodev-react.d.ts" />
 
-export function coodev(): Coodev.Coodev
+export type CoodevOptions = Omit<Coodev.CoodevOptions, 'renderer'>
+
+export function coodev(options: CoodevOptions): Coodev.Coodev
