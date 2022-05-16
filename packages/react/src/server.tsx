@@ -4,7 +4,7 @@ import {
   renderToPipeableStream
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
-import { CoodevContext } from './contexts/coodev'
+import { ServerContext } from './contexts/server'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
@@ -29,7 +29,7 @@ async function renderApp<T>(
   }
 
   return callback(
-    <CoodevContext.Provider
+    <ServerContext.Provider
       value={{
         Component: matched.component,
         path: matched.path,
@@ -37,7 +37,7 @@ async function renderApp<T>(
         pageProps,
       }}>
       <Document />
-    </CoodevContext.Provider>
+    </ServerContext.Provider>
   )
 }
 

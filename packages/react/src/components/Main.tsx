@@ -1,10 +1,10 @@
 import * as React from 'react'
 import CoodevApp from './CoodevApp'
-import { CoodevContext } from '../contexts/coodev'
+import { ServerContext } from '../contexts/server'
 import { COODEV_APP_ID } from '../constants'
 
 function Main() {
-  const context = React.useContext(CoodevContext)
+  const context = React.useContext(ServerContext)
 
   if (!context.url) {
     return <div id={COODEV_APP_ID} />

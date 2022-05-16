@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { CoodevContext } from '../contexts/coodev'
+import { ServerContext } from '../contexts/server'
 import { COODEV_DATA_ID } from '../constants'
 
 const ESCAPE_LOOKUP: { [match: string]: string } = {
@@ -17,7 +17,7 @@ function htmlEscapeJsonString(str: string): string {
 }
 
 const CoodevScript: React.FC = () => {
-  const { pageProps = {} } = React.useContext(CoodevContext)
+  const { pageProps = {} } = React.useContext(ServerContext)
   return (
     <>
       <script
