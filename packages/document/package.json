@@ -3,7 +3,7 @@
   "version": "1.0.0-dev.1",
   "description": "> TODO: description",
   "author": "wokeyi <wokeyifrontend@gmail.com>",
-  "homepage": "https://github.com/wokeyi/coodev#readme",
+  "homepage": "https://github.com/panghu-huang/coodev#readme",
   "typings": "./src/index.ts",
   "license": "MIT",
   "main": "lib/index.js",
