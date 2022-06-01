@@ -1,5 +1,8 @@
 declare namespace Coodev {
-  type SyncWaterfallHook<T, B> = import('tapable').SyncWaterfallHook<T, B>
+  export interface SyncWaterfallHook<T> {
+    tap(name: string, fn: (arg: T) => any): SyncWaterfallHook<T>
+    call(arg: T): T
+  }
 
   export type RuntimeConfig = Record<string, any>
 
@@ -25,25 +28,14 @@ declare namespace Coodev {
     pipe: (writable: NodeJS.WritableStream) => void
   }
 
-  export type DocumentHtmlSyncWaterfallHook = SyncWaterfallHook<
-    [string],
-    string
-  >
+  export type DocumentHtmlSyncWaterfallHook = SyncWaterfallHook<string>
 
-  export type HtmlRenderedSyncWaterfallHook = SyncWaterfallHook<
-    [string],
-    string
-  >
+  export type HtmlRenderedSyncWaterfallHook = SyncWaterfallHook<string>
 
-  export type ViteConfigSyncWaterfallHook = SyncWaterfallHook<
-    [ViteConfig],
-    ViteConfig
-  >
+  export type ViteConfigSyncWaterfallHook = SyncWaterfallHook<ViteConfig>
 
-  export type PipeableStreamSyncWaterfallHook = SyncWaterfallHook<
-    [PipeableStream],
-    PipeableStream
-  >
+  export type PipeableStreamSyncWaterfallHook =
+    SyncWaterfallHook<PipeableStream>
 
   export interface Plugin {
     enforce?: 'pre' | 'post'

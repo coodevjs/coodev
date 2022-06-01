@@ -10,12 +10,10 @@
   },
   "dependencies": {
     "connect": "^3.7.0",
-    "tapable": "^2.2.1",
     "vite": "^2.9.6"
   },
   "devDependencies": {
-    "@types/connect": "^3.4.35",
-    "@types/tapable": "^2.2.2"
+    "@types/connect": "^3.4.35"
   },
   "publishConfig": {
     "access": "public"

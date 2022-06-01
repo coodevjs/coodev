@@ -141,7 +141,7 @@ class Coodev extends BaseCoodev {
       )
       next()
     } else {
-      res.end(html)
+      res.end(this.hooks.htmlRendered.call(html))
     }
   }
 

@@ -1,6 +1,6 @@
-import { SyncWaterfallHook } from 'tapable'
 import * as connect from 'connect'
 import { loadCoodevConfig } from './coodev-config'
+import { SyncWaterfallHook } from './libs/hooks'
 
 abstract class Coodev implements Coodev.Coodev {
   private readonly _hooks: Coodev.CoodevHooks
@@ -9,10 +9,10 @@ abstract class Coodev implements Coodev.Coodev {
 
   constructor(options: Coodev.CoodevOptions) {
     this._hooks = {
-      documentHtml: new SyncWaterfallHook(['html']),
-      htmlRendered: new SyncWaterfallHook(['html']),
-      stream: new SyncWaterfallHook(['stream']),
-      viteConfig: new SyncWaterfallHook(['viteConfig']),
+      documentHtml: new SyncWaterfallHook(),
+      htmlRendered: new SyncWaterfallHook(),
+      stream: new SyncWaterfallHook(),
+      viteConfig: new SyncWaterfallHook(),
     }
 
     this._coodevConfig = loadCoodevConfig({
