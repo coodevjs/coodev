@@ -18,10 +18,11 @@ export class SyncWaterfallHook<T> implements Coodev.SyncWaterfallHook<T> {
     let index = 0
     let result: T = arg
     try {
-      do {
-        result = this.callbacks[index].fn(result)
+      while (index < this.callbacks.length && result !== undefined) {
+        const callback = this.callbacks[index]
+        result = callback.fn(result)
         index++
-      } while (index < this.callbacks.length && result !== undefined)
+      }
     } catch (error) {
       console.error(`[${this.callbacks[index].name}]`, error)
     }

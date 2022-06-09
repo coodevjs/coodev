@@ -17,12 +17,12 @@ function normalizeCoodevConfig(
     }
   }
   return {
+    ...coodevConfig,
     dev: coodevConfig.dev ?? process.env.NODE_ENV !== 'production',
     rootDir,
     root,
     outputDir: coodevConfig.outputDir ?? 'build',
     ssr: coodevConfig.ssr ?? true,
-    runtimeConfig: coodevConfig.runtimeConfig ?? {},
     plugins: coodevConfig.plugins ?? [],
   }
 }

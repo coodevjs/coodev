@@ -4,8 +4,6 @@ declare namespace Coodev {
     call(arg: T): T
   }
 
-  export type RuntimeConfig = Record<string, any>
-
   export type NextFunction = import('connect').NextFunction
 
   export type Request = import('http').IncomingMessage
@@ -92,7 +90,6 @@ declare namespace Coodev {
     dev?: boolean
     ssr?: SSRConfig
     outputDir?: string
-    runtimeConfig?: RuntimeConfig
     plugins?: CoodevPlugin[]
   }
 

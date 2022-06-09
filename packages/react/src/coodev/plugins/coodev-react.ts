@@ -51,52 +51,89 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     },
     load(id) {
       if (COODEV_REACT_ROUTES === id) {
+        const isLazyLoad = opts.coodevConfig.routing === 'lazy'
         const clientPath = path.resolve(COODEV_REACT_SOURCE_DIR, 'client.tsx')
 
-        const content = opts.routes.map(route => {
-          const fullPath = path.isAbsolute(route.component)
-            ? route.component
-            : path.resolve(opts.root, route.component)
+        const relativeComponentPath = (componentPath: string) => {
+          const fullPath = path.isAbsolute(componentPath)
+            ? componentPath
+            : path.resolve(opts.root, componentPath)
 
           const relativePath = normalizePath(
             path.relative(clientPath, fullPath),
           )
 
-          return `
-            {
+          return relativePath
+        }
+
+        if (isLazyLoad) {
+          const content = opts.routes.map((route, idx) => {
+            const componentPath = relativeComponentPath(route.component)
+
+            return `{
               path: '${route.path}',
-              component: lazyload(() => import('${relativePath}'))
+              component: lazyload(() => import('${componentPath}'))
+            }`
+          })
+
+          const code = `
+          import * as React from 'react'
+
+          function lazyload(loader) {
+            const LazyComponent = React.lazy(loader)
+            
+            const Lazyload = (props) => {
+              return React.createElement(
+                React.Suspense, 
+                { 
+                  fallback: React.createElement('div', {}, 'Loading...')
+                },
+                React.createElement(LazyComponent, props)
+              )
             }
+  
+            Lazyload.getInitialProps = async (props) => {
+              const Component = (await loader()).default
+              
+              return Component.getInitialProps(props)
+            }
+  
+            return Lazyload
+          }
+
+          export default [
+            ${content.join(',')}
+          ]
           `
+
+          return {
+            code,
+            map: null,
+          }
+        }
+
+        const importModules: string[] = []
+
+        const content = opts.routes.map((route, idx) => {
+          const componentPath = relativeComponentPath(route.component)
+
+          const moduleName = `CoodevRouteComponent_${idx}`
+          importModules.push(`import ${moduleName} from '${componentPath}'`)
+          return `{
+            path: '${route.path}',
+            component: ${moduleName}
+          }`
         })
 
         const code = `
         import * as React from 'react'
+        ${importModules.join('\n')}
 
-        function lazyload(loader) {
-          const LazyComponent = React.lazy(loader)
-          
-          const Lazyload = (props) => {
-            return React.createElement(
-              React.Suspense, 
-              { 
-                fallback: React.createElement('div', {}, 'Loading...')
-              },
-              React.createElement(LazyComponent, props)
-            )
-          }
+        export default [
+          ${content.join(',')}
+        ]
+        `
 
-          Lazyload.getInitialProps = async (props) => {
-            const Component = (await loader()).default
-            
-            return Component.getInitialProps(props)
-          }
-
-          return Lazyload
-        }
-
-        export default [${content.join(',')}]
-      `
         return {
           code,
           map: null,

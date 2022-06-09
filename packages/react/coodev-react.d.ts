@@ -18,8 +18,12 @@ namespace Coodev {
     component: string
   }
 
+  export type RuntimeConfig = Record<string, any>
+
   export interface Configuration {
     routes?: RouteConfig[]
+    runtimeConfig?: RuntimeConfig
+    routing?: 'lazy'
   }
 
   export interface AppProps {

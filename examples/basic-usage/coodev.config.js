@@ -15,6 +15,7 @@ const coodevConfig = {
   ssr: {
     streamingHtml: true,
   },
+  routing: 'lazy',
   runtimeConfig: {
     name: 'Test',
   },

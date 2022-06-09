@@ -13,6 +13,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
       ssr,
       dev,
       runtimeConfig,
+      routing,
       routes: userRoutes,
     } = coodev.coodevConfig
 
@@ -31,6 +32,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                 ssr,
                 dev,
                 runtimeConfig,
+                routing,
               },
             }),
             ssrRefresh(),
