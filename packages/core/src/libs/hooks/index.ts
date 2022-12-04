@@ -1,1 +1,1 @@
-export * from './SyncWaterfallHook'
+export * from './WaterfallHook'

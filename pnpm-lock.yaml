@@ -39,11 +39,13 @@ importers:
       '@types/mime-types': ^2.1.1
       connect: ^3.7.0
       mime-types: ^2.1.35
+      rollup: ^2.75.4
       vite: ^2.9.6
     dependencies:
       '@types/mime-types': 2.1.1
       connect: 3.7.0
       mime-types: 2.1.35
+      rollup: 2.75.4
       vite: 2.9.9
     devDependencies:
       '@types/connect': 3.4.35
@@ -917,11 +919,17 @@ packages:
     dependencies:
       js-tokens: 4.0.0
 
-  /minimatch/3.1.2:
-    resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+  /mime-db/1.52.0:
+    resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /mime-types/2.1.35:
+    resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
+    engines: {node: '>= 0.6'}
     dependencies:
-      brace-expansion: 1.1.11
-    dev: true
+      mime-db: 1.52.0
+    dev: false
 
   /minimatch/3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}

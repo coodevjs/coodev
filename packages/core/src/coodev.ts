@@ -12,20 +12,18 @@ import * as mime from 'mime-types'
 import BaseCoodev from './base'
 
 class Coodev extends BaseCoodev {
-  private readonly renderer: Coodev.Renderer
   private viteServer: ViteDevServer | null = null
 
   constructor(options: Coodev.CoodevOptions) {
     super(options)
 
-    this.renderer = options.renderer
-
     this.applyPlugins(this.coodevConfig.plugins)
   }
 
   public async prepare() {
-    this.middlewares.use((req, res, next) => {
+    this.middlewares.use((_, res, next) => {
       res.setHeader('X-Powered-By', 'Coodev')
+      res.setHeader('Server', 'Coodev')
       next()
     })
 
@@ -41,6 +39,7 @@ class Coodev extends BaseCoodev {
   public async start() {
     console.log('Preparing...')
     await this.prepare()
+
     console.log('Starting development server...')
     const server = http.createServer(this.middlewares)
 
@@ -50,89 +49,32 @@ class Coodev extends BaseCoodev {
   }
 
   public async build() {
-    const viteConfig = this.initializeViteConfig()
-    const serverConfig = mergeConfig(viteConfig, {
-      build: {
-        ssr: this.renderer.serverEntryPath,
-        outDir: this.coodevConfig.outputDir,
-        minify: false,
-        emptyOutDir: true,
-      },
-    })
+    const coodevConfig = this.coodevConfig
 
+    const ssr = coodevConfig.ssr !== false
+    const serverConfig = await this.initializeViteConfig({
+      ssr,
+      dev: false,
+      isServer: true,
+      isClient: false,
+    })
     // Build server side
-    await build(serverConfig)
-    console.log('Build complete')
+    const serverBuildOutput = await build(serverConfig)
 
-    // TODO 需要先 build server bundle
-    // renderer 里面会使用 ssrLoadModule
-    console.log('Document html generated')
-    const documentHtml = await this.renderer.getDocumentHtml(this, {
-      next: () => {
-        // TODO handle error
-        throw new Error('next() is not supported in build mode')
-      },
+    await this.hooks.buildCompleted.call(serverBuildOutput, {
+      ssr,
+      isServer: true,
+      isClient: false,
     })
-    console.log('Document html generated')
 
-    const html = this.hooks.documentHtml.call(documentHtml)
-
-    console.log('Building...', html)
-    const outputDirName = path.basename(this.coodevConfig.outputDir)
-    const generatedHtmlPath = path.join(
-      this.coodevConfig.outputDir,
-      'main.html',
-    )
-    fs.writeFileSync(generatedHtmlPath, html)
-    const htmlRelativeName = outputDirName + '/main.html'
-
-    const relativePath = path.relative(
-      this.coodevConfig.rootDir,
-      this.renderer.clientEntryPath,
-    )
-
-    const clientInput: Record<string, string> = {
-      main: generatedHtmlPath,
-    }
-
-    if (this.coodevConfig.ssr) {
-      clientInput.client = this.renderer.clientEntryPath
-    }
-
-    const clientConfig = mergeConfig(viteConfig, {
-      build: {
-        ssr: false,
-        manifest: true,
-        outDir: this.coodevConfig.outputDir,
-        emptyOutDir: false,
-        rollupOptions: {
-          input: clientInput,
-          plugins: [
-            {
-              generateBundle(options: any, bundle: any) {
-                console.log('generateBundle', relativePath, bundle)
-                bundle[htmlRelativeName].fileName = 'index.html'
-              },
-              writeBundle(options: any, bundle: any) {
-                const manifest = bundle['manifest.json']
-                manifest.source = manifest.source
-                  .replaceAll(htmlRelativeName, 'index.html')
-                  .replaceAll(relativePath, 'main')
-
-                fs.writeFileSync(
-                  path.join(options.dir, 'manifest.json'),
-                  manifest.source,
-                )
-                fs.rmSync(generatedHtmlPath)
-              },
-            },
-          ],
-        },
-      },
+    const clientConfig = await this.initializeViteConfig({
+      ssr,
+      dev: false,
+      isServer: false,
+      isClient: true,
     })
     // Build client side
     await build(clientConfig)
-    console.log('Client build complete')
   }
 
   public loadSSRModule(module: string) {
@@ -148,12 +90,20 @@ class Coodev extends BaseCoodev {
     }
   }
 
-  private initializeViteConfig(): InlineConfig {
-    const viteConfig = this.hooks.viteConfig.call({
-      root: this.coodevConfig.root,
-
-      clearScreen: true,
-    })
+  private async initializeViteConfig(
+    options: Coodev.ViteConfigWaterfallHookOptions,
+  ): Promise<InlineConfig> {
+    const coodevConfig = this.coodevConfig
+    const viteConfig = await this.hooks.viteConfig.call(
+      {
+        root: coodevConfig.root,
+        clearScreen: true,
+        build: {
+          outDir: coodevConfig.outputDir,
+        },
+      },
+      options,
+    )
 
     const merged = mergeConfig(viteConfig, {
       configFile: false,
@@ -166,7 +116,13 @@ class Coodev extends BaseCoodev {
   }
 
   private async initializeViteServer() {
-    const viteConfig = this.initializeViteConfig()
+    const coodevConfig = this.coodevConfig
+    const viteConfig = await this.initializeViteConfig({
+      ssr: coodevConfig.ssr !== false,
+      dev: coodevConfig.dev,
+      isClient: true,
+      isServer: true,
+    })
 
     this.viteServer = await createViteServer(viteConfig)
 
@@ -196,9 +152,10 @@ class Coodev extends BaseCoodev {
     res: Coodev.Response,
     next: Coodev.NextFunction,
   ) {
-    const filePath = path.join(this.coodevConfig.outputDir, req.url!)
+    const url = new URL(req.url!, `http://${req.headers.host}`)
+    const filePath = path.join(this.coodevConfig.outputDir, url.pathname)
 
-    if (fs.existsSync(filePath)) {
+    if (url.pathname !== '/' && fs.existsSync(filePath)) {
       res.setHeader('Content-Type', mime.lookup(filePath) || 'text/plain')
       res.end(fs.readFileSync(filePath))
     } else {
@@ -213,9 +170,9 @@ class Coodev extends BaseCoodev {
   ) {
     let hasCalledNext = false
 
-    const wrappedNext = (...args: any[]) => {
+    const wrappedNext = (err?: any) => {
       hasCalledNext = true
-      next(...args)
+      next(err)
     }
 
     const stream = await this.renderer.renderToStream(this, {
@@ -238,9 +195,9 @@ class Coodev extends BaseCoodev {
   ) {
     let hasCalledNext = false
 
-    const wrappedNext = (...args: any[]) => {
+    const wrappedNext = (err?: any) => {
       hasCalledNext = true
-      next(...args)
+      next(err)
     }
 
     const html = await this.renderer.renderToString(this, {
@@ -254,12 +211,11 @@ class Coodev extends BaseCoodev {
     }
 
     if (html == null) {
-      console.warn(
-        'Renderer returned null or undefined, skipping response, You can directly call next() in your renderer',
-      )
+      console.warn()
       next()
     } else {
-      res.end(this.hooks.htmlRendered.call(html))
+      const result = await this.hooks.htmlRendered.call(html)
+      res.end(result)
     }
   }
 
@@ -270,9 +226,9 @@ class Coodev extends BaseCoodev {
   ) {
     let hasCalledNext = false
 
-    const wrappedNext = (...args: any[]) => {
+    const wrappedNext = (err?: any) => {
       hasCalledNext = true
-      next(...args)
+      next(err)
     }
 
     const documentHtml = await this.renderer.getDocumentHtml(this, {
@@ -284,8 +240,9 @@ class Coodev extends BaseCoodev {
     if (hasCalledNext) {
       return
     }
+    const result = await this.hooks.documentHtml.call(documentHtml)
 
-    res.end(this.hooks.documentHtml.call(documentHtml))
+    res.end(result)
   }
 }
 

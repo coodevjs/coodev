@@ -1,8 +1,9 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import react from '@vitejs/plugin-react'
-import { mergeConfig } from 'vite'
+import { InlineConfig, mergeConfig } from 'vite'
 import { coodevReact, ssrRefresh } from './plugins'
+import { COODEV_REACT_SOURCE_DIR } from './constants'
 
 export class CoodevReactPlugin implements Coodev.Plugin {
   public readonly enforce = 'pre'
@@ -20,16 +21,18 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
     coodev.hooks.viteConfig.tap(
       'CoodevReactPlugin',
-      (config: Coodev.ViteConfig) => {
+      async (config: Coodev.ViteConfig, _options) => {
+        const options = _options as Coodev.ViteConfigWaterfallHookOptions
         const routes = userRoutes ?? this.parseRouteConfig(root)
 
-        return mergeConfig(config, {
+        const coodevReactConfig: InlineConfig = {
           plugins: [
             react(),
             coodevReact({
               root,
               routes,
               coodevConfig: {
+                root,
                 ssr,
                 dev,
                 runtimeConfig,
@@ -39,7 +42,102 @@ export class CoodevReactPlugin implements Coodev.Plugin {
             }),
             ssrRefresh(),
           ],
-        })
+        }
+
+        if (!options.dev) {
+          if (options.isClient) {
+            const outputDirName = path.basename(coodev.coodevConfig.outputDir)
+            const generatedHtmlPath = path.join(
+              coodev.coodevConfig.outputDir,
+              'main.html',
+            )
+
+            const htmlRelativeName = outputDirName + '/main.html'
+            const clientEntryPath = path.join(
+              COODEV_REACT_SOURCE_DIR,
+              'client.tsx',
+            )
+            const relativePath = path.relative(root, clientEntryPath)
+
+            const clientInput: Record<string, string> = {
+              main: generatedHtmlPath,
+            }
+
+            if (coodev.coodevConfig.ssr) {
+              clientInput.client = clientEntryPath
+            }
+            coodevReactConfig.build = {
+              ...coodevReactConfig.build,
+              ssr: false,
+              manifest: true,
+              emptyOutDir: false,
+              rollupOptions: {
+                input: clientInput,
+                plugins: [
+                  {
+                    name: 'coodev-react-plugin',
+                    generateBundle(_, bundle) {
+                      bundle[htmlRelativeName].fileName = 'index.html'
+                    },
+                    writeBundle(_, bundle) {
+                      const manifest = bundle['manifest.json']
+                      if (manifest && 'source' in manifest) {
+                        manifest.source = (manifest.source as string)
+                          // @ts-ignore
+                          .replaceAll(htmlRelativeName, 'index.html')
+                          .replaceAll(relativePath, 'main')
+
+                        fs.writeFileSync(
+                          path.join(outputDir, 'manifest.json'),
+                          manifest.source,
+                        )
+                      }
+
+                      fs.rmSync(generatedHtmlPath)
+                    },
+                  },
+                ],
+              },
+            }
+          } else {
+            const serverEntryPath = path.join(
+              COODEV_REACT_SOURCE_DIR,
+              'server.tsx',
+            )
+            coodevReactConfig.build = {
+              ...coodevReactConfig.build,
+              ssr: serverEntryPath,
+              minify: false,
+              emptyOutDir: true,
+            }
+          }
+        }
+
+        return mergeConfig(config, coodevReactConfig)
+      },
+    )
+
+    coodev.hooks.buildCompleted.tap(
+      'CoodevReactPlugin',
+      async (output, options) => {
+        if (options!.isServer) {
+          const documentHtml = await coodev.renderer.getDocumentHtml(coodev, {
+            next: () => {
+              // TODO handle error
+              throw new Error('next() is not supported in build mode')
+            },
+          })
+
+          const html = await coodev.hooks.documentHtml.call(documentHtml)
+
+          const generatedHtmlPath = path.join(
+            coodev.coodevConfig.outputDir,
+            'main.html',
+          )
+          fs.writeFileSync(generatedHtmlPath, html)
+        }
+
+        return output
       },
     )
   }

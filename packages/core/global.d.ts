@@ -1,7 +1,10 @@
 declare namespace Coodev {
-  export interface SyncWaterfallHook<T> {
-    tap(name: string, fn: (arg: T) => any): SyncWaterfallHook<T>
-    call(arg: T): T
+  export interface WaterfallHook<T, Options = {}> {
+    tap(
+      name: string,
+      fn: (arg: T, o?: Options) => Promise<T> | T | undefined,
+    ): WaterfallHook<T, Options>
+    call(arg: T, o?: Options): Promise<T>
   }
 
   export type NextFunction = import('connect').NextFunction
@@ -15,6 +18,11 @@ declare namespace Coodev {
   export type ViteConfig = import('vite').UserConfig
 
   export type SSRConfig = boolean | { streamingHtml?: boolean }
+
+  export type BuildOutput =
+    | import('rollup').RollupOutput
+    | import('rollup').RollupOutput[]
+    | import('rollup').RollupWatcher
 
   export interface RenderContext {
     req: Request
@@ -32,14 +40,34 @@ declare namespace Coodev {
     pipe: (writable: NodeJS.WritableStream) => void
   }
 
-  export type DocumentHtmlSyncWaterfallHook = SyncWaterfallHook<string>
+  export interface ViteConfigWaterfallHookOptions {
+    dev: boolean
+    ssr: boolean
+    isServer: boolean
+    isClient: boolean
+  }
 
-  export type HtmlRenderedSyncWaterfallHook = SyncWaterfallHook<string>
+  export interface BuildCompletedWaterfallHookOptions {
+    ssr: boolean
+    isServer: boolean
+    isClient: boolean
+  }
 
-  export type ViteConfigSyncWaterfallHook = SyncWaterfallHook<ViteConfig>
+  export type DocumentHtmlWaterfallHook = WaterfallHook<string>
 
-  export type PipeableStreamSyncWaterfallHook =
-    SyncWaterfallHook<PipeableStream>
+  export type BuildCompletedWaterfallHook = WaterfallHook<
+    BuildOutput,
+    BuildCompletedWaterfallHookOptions
+  >
+
+  export type HtmlRenderedWaterfallHook = WaterfallHook<string>
+
+  export type ViteConfigWaterfallHook = WaterfallHook<
+    ViteConfig,
+    ViteConfigWaterfallHookOptions
+  >
+
+  export type PipeableStreamWaterfallHook = WaterfallHook<PipeableStream>
 
   export interface Plugin {
     enforce?: 'pre' | 'post'
@@ -47,8 +75,6 @@ declare namespace Coodev {
   }
 
   export interface Renderer {
-    readonly serverEntryPath: string
-    readonly clientEntryPath: string
     renderToStream(
       coodev: Coodev,
       context: RenderContext,
@@ -64,10 +90,11 @@ declare namespace Coodev {
   }
 
   export interface CoodevHooks {
-    documentHtml: DocumentHtmlSyncWaterfallHook
-    htmlRendered: HtmlRenderedSyncWaterfallHook
-    viteConfig: ViteConfigSyncWaterfallHook
-    stream: PipeableStreamSyncWaterfallHook
+    documentHtml: DocumentHtmlWaterfallHook
+    htmlRendered: HtmlRenderedWaterfallHook
+    viteConfig: ViteConfigWaterfallHook
+    stream: PipeableStreamWaterfallHook
+    buildCompleted: BuildCompletedWaterfallHook
   }
 
   export interface CoodevOptions {
@@ -83,6 +110,7 @@ declare namespace Coodev {
 
   export class Coodev {
     constructor(options: CoodevOptions)
+    public readonly renderer: Renderer
     public readonly hooks: CoodevHooks
     public readonly middlewares: CoodevMiddlewares
     public readonly coodevConfig: InternalConfiguration

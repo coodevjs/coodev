@@ -1,8 +1,9 @@
 import * as connect from 'connect'
 import { loadCoodevConfig } from './coodev-config'
-import { SyncWaterfallHook } from './libs/hooks'
+import { WaterfallHook } from './libs/hooks'
 
 abstract class Coodev implements Coodev.Coodev {
+  public readonly renderer: Coodev.Renderer
   private readonly _hooks: Coodev.CoodevHooks
   private readonly _coodevConfig: Coodev.InternalConfiguration
   private readonly _middlewares: Coodev.CoodevMiddlewares
@@ -10,17 +11,21 @@ abstract class Coodev implements Coodev.Coodev {
   constructor(options: Coodev.CoodevOptions) {
     this._hooks = {
       // TODO 增加 isDev / isSSR 的参数
-      documentHtml: new SyncWaterfallHook(),
-      htmlRendered: new SyncWaterfallHook(),
-      stream: new SyncWaterfallHook(),
-      viteConfig: new SyncWaterfallHook(),
+      documentHtml: new WaterfallHook(),
+      htmlRendered: new WaterfallHook(),
+      stream: new WaterfallHook(),
+      viteConfig: new WaterfallHook(),
+      buildCompleted: new WaterfallHook(),
     }
+
+    this.renderer = options.renderer
 
     this._coodevConfig = loadCoodevConfig({
       dev: options.dev,
       ssr: options.ssr,
       plugins: options.plugins,
     })
+
     this._middlewares = connect()
   }
 

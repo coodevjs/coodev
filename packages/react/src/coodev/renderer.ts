@@ -2,12 +2,10 @@ import * as path from 'path'
 import { COODEV_REACT_SOURCE_DIR } from './constants'
 
 export class CoodevReactRenderer implements Coodev.Renderer {
-  public readonly serverEntryPath: string
-  public readonly clientEntryPath: string
+  private readonly serverEntryPath: string
 
   constructor() {
     this.serverEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'server.tsx')
-    this.clientEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
   }
 
   public async getDocumentHtml(
@@ -44,13 +42,8 @@ export class CoodevReactRenderer implements Coodev.Renderer {
   }
 
   private async getServerEntryModule(coodev: Coodev.Coodev) {
-    if (!this.serverEntryPath) {
-      throw new Error('No server entry path')
-    }
-
     if (!coodev.coodevConfig.dev) {
       const entryPath = path.join(coodev.coodevConfig.outputDir, 'server.js')
-      console.log('entryPath', entryPath)
       return require(entryPath)
     }
 
