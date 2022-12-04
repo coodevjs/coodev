@@ -1,4 +1,5 @@
 import * as React from 'react'
+import coodevConfig from '__COODEV__/config'
 import { ServerContext } from '../contexts/server'
 import { COODEV_DATA_ID } from '../constants'
 
@@ -13,7 +14,7 @@ const ESCAPE_LOOKUP: { [match: string]: string } = {
 const ESCAPE_REGEX = /[&><\u2028\u2029]/g
 
 function htmlEscapeJsonString(str: string): string {
-  return str.replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match])
+  return str.replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match])
 }
 
 const CoodevScript: React.FC = () => {
@@ -21,13 +22,15 @@ const CoodevScript: React.FC = () => {
   return (
     <>
       <script
-        type='application/json'
+        type="application/json"
         id={COODEV_DATA_ID}
         dangerouslySetInnerHTML={{
-          __html: htmlEscapeJsonString(JSON.stringify({ pageProps }))
-        }}>
-      </script>
-      <script type='module' src='/@coodev/react/client'></script>
+          __html: htmlEscapeJsonString(JSON.stringify({ pageProps })),
+        }}
+      ></script>
+      {coodevConfig.dev && (
+        <script type="module" src="/@coodev/react/client"></script>
+      )}
     </>
   )
 }

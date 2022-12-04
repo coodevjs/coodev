@@ -1,3 +1,4 @@
 perfer-workspace-packages: true
 packages:
   - packages/*
+  - examples/*

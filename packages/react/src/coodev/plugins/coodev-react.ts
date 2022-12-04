@@ -17,12 +17,17 @@ export interface ViteCoodevReactPluginOptions {
   routes: Coodev.RouteConfig[]
 }
 
-function checkHasCustomizeFile(dir: string, name: string) {
+function findAvailableFile(dir: string, name: string) {
   const availableExtensions = ['.tsx', '.ts', '.jsx', '.js']
-  return availableExtensions.some(ext => {
+
+  for (const ext of availableExtensions) {
     const formattedPath = path.format({ dir, name, ext })
-    return fs.existsSync(formattedPath)
-  })
+    if (fs.existsSync(formattedPath)) {
+      return formattedPath
+    }
+  }
+
+  return path.format({ dir: COODEV_REACT_SOURCE_DIR, name, ext: '.tsx' })
 }
 
 export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
@@ -31,15 +36,9 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     resolveId(id) {
       switch (id) {
         case COODEV_REACT_APP:
-          if (checkHasCustomizeFile(opts.root, 'app')) {
-            return path.join(opts.root, 'app')
-          }
-          return path.join(COODEV_REACT_SOURCE_DIR, 'app.tsx')
+          return findAvailableFile(opts.root, 'app')
         case COODEV_REACT_DOCUMENT:
-          if (checkHasCustomizeFile(opts.root, 'document')) {
-            return path.join(opts.root, 'document')
-          }
-          return path.join(COODEV_REACT_SOURCE_DIR, 'document.tsx')
+          return findAvailableFile(opts.root, 'document')
         case COODEV_REACT_ROUTES:
         case COODEV_CONFIG:
           return id

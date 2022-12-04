@@ -2,7 +2,7 @@ namespace Coodev {
   type ComponentType<P> = import('react').ComponentType<P>
 
   export interface ServerEntryModule {
-    getDocumentHtml: (ctx: RenderContext) => Promise<string>
+    getDocumentHtml: (ctx: DocumentHtmlRenderContext) => Promise<string>
     renderToString: (ctx: RenderContext) => Promise<string>
     renderToStream: (ctx: RenderContext) => Promise<PipeableStream>
   }

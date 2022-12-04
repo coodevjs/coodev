@@ -21,7 +21,7 @@ function normalizeCoodevConfig(
     dev: coodevConfig.dev ?? process.env.NODE_ENV !== 'production',
     rootDir,
     root,
-    outputDir: coodevConfig.outputDir ?? 'build',
+    outputDir: coodevConfig.outputDir ?? path.join(root, 'dist'),
     ssr: coodevConfig.ssr ?? true,
     plugins: coodevConfig.plugins ?? [],
   }
@@ -41,6 +41,7 @@ export function loadCoodevConfig(inlineCoodevConfig: Coodev.Configuration) {
     const userCoodevConfig = require(configPath)
 
     return normalizeCoodevConfig({
+      ...inlineCoodevConfig,
       ...userCoodevConfig,
       plugins: [
         ...(inlineCoodevConfig.plugins || []),

@@ -9,6 +9,7 @@ abstract class Coodev implements Coodev.Coodev {
 
   constructor(options: Coodev.CoodevOptions) {
     this._hooks = {
+      // TODO 增加 isDev / isSSR 的参数
       documentHtml: new SyncWaterfallHook(),
       htmlRendered: new SyncWaterfallHook(),
       stream: new SyncWaterfallHook(),
@@ -36,6 +37,8 @@ abstract class Coodev implements Coodev.Coodev {
   }
 
   public abstract start(): void
+
+  public abstract build(): void
 
   public abstract loadSSRModule<Module>(path: string): Promise<Module>
 }

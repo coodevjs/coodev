@@ -15,6 +15,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
       runtimeConfig,
       routing,
       routes: userRoutes,
+      outputDir,
     } = coodev.coodevConfig
 
     coodev.hooks.viteConfig.tap(
@@ -33,6 +34,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                 dev,
                 runtimeConfig,
                 routing,
+                outputDir,
               },
             }),
             ssrRefresh(),

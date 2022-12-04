@@ -22,6 +22,12 @@ declare namespace Coodev {
     next: NextFunction
   }
 
+  export interface DocumentHtmlRenderContext {
+    req?: Request
+    res?: Response
+    next: NextFunction
+  }
+
   export interface PipeableStream {
     pipe: (writable: NodeJS.WritableStream) => void
   }
@@ -41,13 +47,15 @@ declare namespace Coodev {
   }
 
   export interface Renderer {
+    readonly serverEntryPath: string
+    readonly clientEntryPath: string
     renderToStream(
       coodev: Coodev,
       context: RenderContext,
     ): Promise<PipeableStream>
     getDocumentHtml(
       coodev: Coodev,
-      context: RenderContext,
+      context: DocumentHtmlRenderContext,
     ): Promise<string> | string
     renderToString(
       coodev: Coodev,
@@ -91,6 +99,8 @@ declare namespace Coodev {
     ssr?: SSRConfig
     outputDir?: string
     plugins?: CoodevPlugin[]
+    // TODO
+    // publicPath?: string
   }
 
   export interface InternalConfiguration extends Required<Configuration> {

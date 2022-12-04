@@ -9,7 +9,9 @@
     "dev": "tsc -p tsconfig.json -w"
   },
   "dependencies": {
+    "@types/mime-types": "^2.1.1",
     "connect": "^3.7.0",
+    "mime-types": "^2.1.35",
     "vite": "^2.9.6"
   },
   "devDependencies": {
