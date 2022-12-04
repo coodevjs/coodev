@@ -28,7 +28,7 @@ const CoodevScript: React.FC = () => {
           __html: htmlEscapeJsonString(JSON.stringify({ pageProps })),
         }}
       ></script>
-      {coodevConfig.dev && (
+      {(coodevConfig.dev || !coodevConfig.ssr) && (
         <script type="module" src="/@coodev/react/client"></script>
       )}
     </>

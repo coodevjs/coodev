@@ -86,6 +86,14 @@ class Coodev extends BaseCoodev {
       this.renderer.clientEntryPath,
     )
 
+    const clientInput: Record<string, string> = {
+      main: generatedHtmlPath,
+    }
+
+    if (this.coodevConfig.ssr) {
+      clientInput.client = this.renderer.clientEntryPath
+    }
+
     const clientConfig = mergeConfig(viteConfig, {
       build: {
         ssr: false,
@@ -93,10 +101,7 @@ class Coodev extends BaseCoodev {
         outDir: this.coodevConfig.outputDir,
         emptyOutDir: false,
         rollupOptions: {
-          input: {
-            main: generatedHtmlPath,
-            client: this.renderer.clientEntryPath,
-          },
+          input: clientInput,
           plugins: [
             {
               generateBundle(options: any, bundle: any) {
