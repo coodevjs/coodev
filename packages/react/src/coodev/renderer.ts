@@ -48,7 +48,6 @@ export class CoodevReactRenderer implements Coodev.Renderer {
       throw new Error('No server entry path')
     }
 
-    console.log('coodev.coodevConfig.dev', coodev.coodevConfig.dev)
     if (!coodev.coodevConfig.dev) {
       const entryPath = path.join(coodev.coodevConfig.outputDir, 'server.js')
       console.log('entryPath', entryPath)

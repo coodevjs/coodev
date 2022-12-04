@@ -24,6 +24,11 @@ class Coodev extends BaseCoodev {
   }
 
   public async prepare() {
+    this.middlewares.use((req, res, next) => {
+      res.setHeader('X-Powered-By', 'Coodev')
+      next()
+    })
+
     if (this.coodevConfig.dev) {
       await this.initializeViteServer()
     } else {
