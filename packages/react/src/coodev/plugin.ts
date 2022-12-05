@@ -52,12 +52,14 @@ export class CoodevReactPlugin implements Coodev.Plugin {
               'main.html',
             )
 
-            const htmlRelativeName = outputDirName + '/main.html'
+            const htmlRelativeName = outputDirName + path.sep + 'main.html'
             const clientEntryPath = path.join(
               COODEV_REACT_SOURCE_DIR,
               'client.tsx',
             )
-            const relativePath = path.relative(root, clientEntryPath)
+            const relativePath = path
+              .relative(root, clientEntryPath)
+              .replace(/\\/g, '/')
 
             const clientInput: Record<string, string> = {
               main: generatedHtmlPath,
@@ -83,7 +85,10 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                       const manifest = bundle['manifest.json']
                       if (manifest && 'source' in manifest) {
                         manifest.source = (manifest.source as string)
-                          // @ts-ignore
+                          .replaceAll(
+                            outputDirName + '/main.html',
+                            'index.html',
+                          )
                           .replaceAll(htmlRelativeName, 'index.html')
                           .replaceAll(relativePath, 'main')
 
