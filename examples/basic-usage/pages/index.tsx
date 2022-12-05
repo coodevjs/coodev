@@ -3,42 +3,42 @@ import { useParams, useLocation } from '@coodev/react/router'
 import { Link } from '@coodev/react/app'
 import { getRuntimeConfig } from '@coodev/react/config'
 
-interface PageProps {
+interface HomeProps {
   name: string
 }
 
-const Page: React.FC<PageProps> = (props) => {
+const Home: React.FC<HomeProps> = props => {
   const location = useLocation()
   const params = useParams()
   const [count, setCount] = React.useState(0)
 
-  console.log('location', location);
-  console.log('params', params);
-  console.log('runtimeConfig', getRuntimeConfig());
+  console.log('location', location)
+  console.log('params', params)
+  console.log('runtimeConfig', getRuntimeConfig())
 
   const handleClick = () => {
     setTimeout(() => {
       setCount(count => count + 1)
       setCount(count => count + 1)
-    }, 0);
+    }, 0)
   }
 
   return (
-    <div id='home'>
+    <div id="home">
       <h1 onClick={handleClick}>{`Home ${count}`}</h1>
-      <Link to='/?a=2'>to home</Link>
+      <Link to="/?a=2">to home</Link>
       <br />
-      <Link to='/other'>to other</Link>
+      <Link to="/other">to other</Link>
       <br />
-      <Link to='/info/test'>to info/test</Link>
+      <Link to="/info/test">to info/test</Link>
     </div>
   )
 }
 
-Page.getInitialProps = async () => {
+Home.getInitialProps = async () => {
   return {
-    name: 'home'
+    name: 'home',
   }
 }
 
-export default Page
+export default Home

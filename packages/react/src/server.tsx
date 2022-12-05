@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
   renderToString as _renderToString,
-  renderToPipeableStream
+  renderToPipeableStream,
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
 import { ServerContext } from './contexts/server'
@@ -11,20 +11,20 @@ import routes from '__COODEV__/react/routes'
 
 async function renderApp<T>(
   { req }: Coodev.RenderContext,
-  callback: (content: React.ReactElement) => T
+  callback: (content: React.ReactElement) => T,
 ): Promise<T | void> {
   const url = req.url || '/'
 
   const matched = findMatchedRoute(url, routes) || {
     component: null,
-    path: null
+    path: null,
   }
 
   let pageProps = {}
   if (App.getInitialProps) {
     pageProps = await App.getInitialProps({
       req,
-      Component: matched.component
+      Component: matched.component,
     })
   }
 
@@ -35,9 +35,10 @@ async function renderApp<T>(
         path: matched.path,
         url,
         pageProps,
-      }}>
+      }}
+    >
       <Document />
-    </ServerContext.Provider>
+    </ServerContext.Provider>,
   )
 }
 
@@ -45,8 +46,8 @@ export function renderToStream(ctx: Coodev.RenderContext) {
   return renderApp(ctx, content => {
     return renderToPipeableStream(content, {
       onShellReady: () => {
-        console.log('shell ready');
-      }
+        console.log('shell ready')
+      },
     })
   })
 }
