@@ -46,11 +46,8 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
         if (!options.dev) {
           if (options.isClient) {
-            const outputDirName = path.basename(coodev.coodevConfig.outputDir)
-            const generatedHtmlPath = path.join(
-              coodev.coodevConfig.outputDir,
-              'main.html',
-            )
+            const outputDirName = path.basename(outputDir)
+            const generatedHtmlPath = path.join(outputDir, 'main.html')
 
             const htmlRelativeName = outputDirName + path.sep + 'main.html'
             const clientEntryPath = path.join(
@@ -65,7 +62,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
               main: generatedHtmlPath,
             }
 
-            if (coodev.coodevConfig.ssr) {
+            if (ssr) {
               clientInput.client = clientEntryPath
             }
             coodevReactConfig.build = {
@@ -135,10 +132,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
           const html = await coodev.hooks.documentHtml.call(documentHtml)
 
-          const generatedHtmlPath = path.join(
-            coodev.coodevConfig.outputDir,
-            'main.html',
-          )
+          const generatedHtmlPath = path.join(outputDir, 'main.html')
           fs.writeFileSync(generatedHtmlPath, html)
         }
 
