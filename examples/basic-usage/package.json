@@ -1,10 +1,6 @@
 {
-  "name": "base-coodev-usage",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "dev": "coodev-react dev",
+    "dev": "coodev-react",
     "build": "coodev-react build",
     "start": "coodev-react start"
   },

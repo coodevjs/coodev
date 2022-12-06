@@ -10,9 +10,7 @@ switch (command) {
     require('./start')
     break
   case 'dev':
-    require('./dev')
-    break
   default:
-    console.log('Unknown command: ' + command)
+    require('./dev')
     break
 }
