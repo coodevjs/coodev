@@ -47,7 +47,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
         if (!options.dev) {
           if (options.isClient) {
             const outputDirName = path.basename(outputDir)
-            const generatedHtmlPath = path.join(outputDir, 'main.html')
+            const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
 
             const htmlRelativeName = outputDirName + path.sep + 'main.html'
             const clientEntryPath = path.join(
@@ -59,7 +59,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
               .replace(/\\/g, '/')
 
             const clientInput: Record<string, string> = {
-              main: generatedHtmlPath,
+              main: dynamicGeneratedHtmlPath,
             }
 
             if (ssr) {
@@ -87,7 +87,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                             'index.html',
                           )
                           .replaceAll(htmlRelativeName, 'index.html')
-                          .replaceAll(relativePath, 'main')
+                          .replaceAll(relativePath, 'index.html')
 
                         fs.writeFileSync(
                           path.join(outputDir, 'manifest.json'),
@@ -95,7 +95,7 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                         )
                       }
 
-                      fs.rmSync(generatedHtmlPath)
+                      fs.rmSync(dynamicGeneratedHtmlPath)
                     },
                   },
                 ],
@@ -109,7 +109,6 @@ export class CoodevReactPlugin implements Coodev.Plugin {
             coodevReactConfig.build = {
               ...coodevReactConfig.build,
               ssr: serverEntryPath,
-              minify: false,
               emptyOutDir: true,
             }
           }
@@ -125,15 +124,14 @@ export class CoodevReactPlugin implements Coodev.Plugin {
         if (options!.isServer) {
           const documentHtml = await coodev.renderer.getDocumentHtml(coodev, {
             next: () => {
-              // TODO handle error
               throw new Error('next() is not supported in build mode')
             },
           })
 
           const html = await coodev.hooks.documentHtml.call(documentHtml)
 
-          const generatedHtmlPath = path.join(outputDir, 'main.html')
-          fs.writeFileSync(generatedHtmlPath, html)
+          const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
+          fs.writeFileSync(dynamicGeneratedHtmlPath, html)
         }
 
         return output

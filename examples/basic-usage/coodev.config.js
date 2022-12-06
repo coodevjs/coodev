@@ -13,9 +13,9 @@ class TestPlugin {
 
 const coodevConfig = {
   ssr: {
-    streamingHtml: false,
+    streamingHtml: true,
   },
-  // routing: 'lazy',
+  routing: 'lazy',
   runtimeConfig: {
     name: 'Test',
   },

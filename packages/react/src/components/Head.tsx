@@ -1,7 +1,6 @@
 import * as React from 'react'
-import * as path from 'path'
-import * as fs from 'fs'
 import coodevConfig from '__COODEV__/config'
+import { ServerContext } from '../contexts/server'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
@@ -14,39 +13,32 @@ window.__vite_plugin_react_preamble_installed__ = true
 `
 
 const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
+  const { manifest } = React.useContext(ServerContext)
   const manifestChildren: React.ReactNode[] = []
-  if (!coodevConfig.dev) {
-    const outputDir = coodevConfig.outputDir
-    const manifestPath = path.join(outputDir!, 'manifest.json')
-
-    if (fs.existsSync(manifestPath)) {
-      const manifest = require(manifestPath)
-      const htmlResources = manifest['main']
-      if (htmlResources) {
-        const cssResources = htmlResources.css
-        if (cssResources) {
-          cssResources.forEach((cssResource: string) => {
-            manifestChildren.push(
-              <link
-                key={cssResource}
-                rel="stylesheet"
-                href={`/${cssResource}`}
-              />,
-            )
-          })
-        }
-        const jsResource = htmlResources.file
-        if (jsResource) {
+  if (manifest) {
+    const entryChunk = Object.values(manifest).find(chunk => chunk.isEntry)
+    if (entryChunk) {
+      const cssResources = entryChunk.css
+      if (cssResources) {
+        cssResources.forEach((cssResource: string) => {
           manifestChildren.push(
-            <script
-              type="module"
-              crossOrigin="anonymous"
-              key={jsResource}
-              src={`/${jsResource}`}
+            <link
+              key={cssResource}
+              rel="stylesheet"
+              href={`/${cssResource}`}
             />,
           )
-        }
+        })
       }
+
+      manifestChildren.push(
+        <script
+          type="module"
+          crossOrigin="anonymous"
+          key={entryChunk.file}
+          src={`/${entryChunk.file}`}
+        />,
+      )
     }
   }
 

@@ -1,13 +1,33 @@
 import * as React from 'react'
+import { join } from 'path'
+import { access } from 'fs/promises'
+import { constants } from 'fs'
 import {
   renderToString as _renderToString,
   renderToPipeableStream,
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
-import { ServerContext } from './contexts/server'
+import { ServerContext, Manifest } from './contexts/server'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
+import coodevConfig from '__COODEV__/config'
+
+async function loadManifest(): Promise<Manifest> {
+  if (!coodevConfig.dev) {
+    try {
+      const outputDir = coodevConfig.outputDir
+      const manifestPath = join(outputDir!, 'manifest.json')
+
+      await access(manifestPath, constants.R_OK)
+
+      return require(manifestPath)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  return {}
+}
 
 async function renderApp<T>(
   { req }: Coodev.RenderContext,
@@ -28,6 +48,8 @@ async function renderApp<T>(
     })
   }
 
+  const manifest = await loadManifest()
+
   return callback(
     <ServerContext.Provider
       value={{
@@ -35,6 +57,7 @@ async function renderApp<T>(
         path: matched.path,
         url,
         pageProps,
+        manifest,
       }}
     >
       <Document />
