@@ -76,7 +76,11 @@ export class CoodevReactPlugin implements Coodev.Plugin {
                   {
                     name: 'coodev-react-plugin',
                     generateBundle(_, bundle) {
-                      bundle[htmlRelativeName].fileName = 'index.html'
+                      if (ssr !== false) {
+                        delete bundle[htmlRelativeName]
+                      } else {
+                        bundle[htmlRelativeName].fileName = 'index.html'
+                      }
                     },
                     writeBundle(_, bundle) {
                       const manifest = bundle['manifest.json']
@@ -132,9 +136,6 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
           const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
           fs.writeFileSync(dynamicGeneratedHtmlPath, html)
-        } else if (options!.ssr !== false) {
-          // Remove the generated index.html file
-          fs.rmSync(path.join(outputDir, 'index.html'))
         }
 
         return output
