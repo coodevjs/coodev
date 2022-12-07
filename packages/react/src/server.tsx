@@ -69,7 +69,7 @@ export function renderToStream(ctx: Coodev.RenderContext) {
   return renderApp(ctx, content => {
     return renderToPipeableStream(content, {
       onShellReady: () => {
-        console.log('shell ready')
+        // TODO: shell ready
       },
     })
   })

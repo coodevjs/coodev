@@ -132,6 +132,9 @@ export class CoodevReactPlugin implements Coodev.Plugin {
 
           const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
           fs.writeFileSync(dynamicGeneratedHtmlPath, html)
+        } else if (options!.ssr !== false) {
+          // Remove the generated index.html file
+          fs.rmSync(path.join(outputDir, 'index.html'))
         }
 
         return output

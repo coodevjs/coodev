@@ -1,1 +1,1 @@
-export { Html, Main, CoodevScript, Head, Title, Link } from './src/components'
+export { Html, Main, CoodevScript, Head, Title } from './src/components'

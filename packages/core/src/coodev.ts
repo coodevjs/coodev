@@ -1,6 +1,4 @@
 import * as http from 'http'
-import * as path from 'path'
-import * as fs from 'fs'
 import {
   ViteDevServer,
   createServer as createViteServer,
@@ -8,7 +6,6 @@ import {
   InlineConfig,
   build,
 } from 'vite'
-import * as mime from 'mime-types'
 import BaseCoodev from './base'
 
 class Coodev extends BaseCoodev {
@@ -26,21 +23,24 @@ class Coodev extends BaseCoodev {
       res.setHeader('Server', 'Coodev')
       next()
     })
+    const { dev, ssr, outputDir } = this.coodevConfig
 
-    if (this.coodevConfig.dev) {
+    if (dev) {
       await this.initializeViteServer()
     } else {
-      this.middlewares.use(this.serveStatic.bind(this))
+      const serveStatic = require('serve-static')
+
+      this.middlewares.use(serveStatic(outputDir))
     }
 
-    this.initializeMiddlewares()
+    if (dev || ssr !== false) {
+      this.initializeMiddlewares()
+    }
   }
 
   public async start() {
-    console.log('Preparing...')
     await this.prepare()
 
-    console.log('Starting development server...')
     const server = http.createServer(this.middlewares)
 
     server.listen(3000)
@@ -59,7 +59,7 @@ class Coodev extends BaseCoodev {
       isClient: false,
     })
     // Build server side
-    const serverBuildOutput = await build(serverConfig)
+    const serverBuildOutput = (await build(serverConfig)) as Coodev.BuildOutput
 
     await this.hooks.buildCompleted.call(serverBuildOutput, {
       ssr,
@@ -67,14 +67,20 @@ class Coodev extends BaseCoodev {
       isClient: false,
     })
 
+    // Build client side
     const clientConfig = await this.initializeViteConfig({
       ssr,
       dev: false,
       isServer: false,
       isClient: true,
     })
-    // Build client side
-    await build(clientConfig)
+
+    const clientBuildOutput = (await build(clientConfig)) as Coodev.BuildOutput
+    await this.hooks.buildCompleted.call(clientBuildOutput, {
+      ssr,
+      isServer: false,
+      isClient: true,
+    })
   }
 
   public loadSSRModule(module: string) {
@@ -145,22 +151,6 @@ class Coodev extends BaseCoodev {
     }
 
     this.middlewares.use(this.renderToString.bind(this))
-  }
-
-  private serveStatic(
-    req: Coodev.Request,
-    res: Coodev.Response,
-    next: Coodev.NextFunction,
-  ) {
-    const url = new URL(req.url!, `http://${req.headers.host}`)
-    const filePath = path.join(this.coodevConfig.outputDir, url.pathname)
-
-    if (url.pathname !== '/' && fs.existsSync(filePath)) {
-      res.setHeader('Content-Type', mime.lookup(filePath) || 'text/plain')
-      res.end(fs.readFileSync(filePath))
-    } else {
-      next()
-    }
   }
 
   private async renderToStream(

@@ -93,6 +93,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
   
             Lazyload.getInitialProps = async (props) => {
               const Component = (await loader()).default
+              if (!Component.getInitialProps) return
               
               return Component.getInitialProps(props)
             }

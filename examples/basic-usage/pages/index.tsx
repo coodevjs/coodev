@@ -1,20 +1,13 @@
 import * as React from 'react'
-import { useParams, useLocation } from '@coodev/react/router'
-import { Link } from '@coodev/react/app'
 import { getRuntimeConfig } from '@coodev/react/config'
+import Link from '@coodev/react/link'
 
 interface HomeProps {
   name: string
 }
 
-const Home: React.FC<HomeProps> = props => {
-  const location = useLocation()
-  const params = useParams()
+const Home: React.FC<HomeProps> = () => {
   const [count, setCount] = React.useState(0)
-
-  console.log('location', location)
-  console.log('params', params)
-  console.log('runtimeConfig', getRuntimeConfig())
 
   const handleClick = () => {
     setTimeout(() => {
@@ -25,7 +18,9 @@ const Home: React.FC<HomeProps> = props => {
 
   return (
     <div id="home">
-      <h1 onClick={handleClick}>{`Home ${count}`}</h1>
+      <h1 onClick={handleClick}>{`Home ${count} - ${
+        getRuntimeConfig().name
+      }`}</h1>
       <Link to="/?a=2">to home</Link>
       <br />
       <Link to="/other">to other</Link>
