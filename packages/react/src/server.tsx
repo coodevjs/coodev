@@ -11,7 +11,7 @@ import { ServerContext, Manifest } from './contexts/server'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
-import coodevConfig from '__COODEV__/config'
+import coodevConfig from '__COODEV__/react/config'
 
 async function loadManifest(): Promise<Manifest> {
   if (!coodevConfig.dev) {

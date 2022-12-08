@@ -1,12 +1,4 @@
 declare namespace Coodev {
-  export interface WaterfallHook<T, Options = {}> {
-    tap(
-      name: string,
-      fn: (arg: T, o?: Options) => Promise<T> | T | undefined,
-    ): WaterfallHook<T, Options>
-    call(arg: T, o?: Options): Promise<T>
-  }
-
   export type NextFunction = import('connect').NextFunction
 
   export type Request = import('http').IncomingMessage
@@ -40,38 +32,33 @@ declare namespace Coodev {
     pipe: (writable: NodeJS.WritableStream) => void
   }
 
-  export interface ViteConfigWaterfallHookOptions {
+  export interface ViteConfigOptions {
     dev: boolean
     ssr: boolean
     isServer: boolean
     isClient: boolean
   }
 
-  export interface BuildCompletedWaterfallHookOptions {
+  export interface BuildEndOptions {
     ssr: boolean
     isServer: boolean
     isClient: boolean
   }
 
-  export type DocumentHtmlWaterfallHook = WaterfallHook<string>
-
-  export type BuildCompletedWaterfallHook = WaterfallHook<
-    BuildOutput,
-    BuildCompletedWaterfallHookOptions
-  >
-
-  export type HtmlRenderedWaterfallHook = WaterfallHook<string>
-
-  export type ViteConfigWaterfallHook = WaterfallHook<
-    ViteConfig,
-    ViteConfigWaterfallHookOptions
-  >
-
-  export type PipeableStreamWaterfallHook = WaterfallHook<PipeableStream>
+  export type Promisable<T> = T | Promise<T>
 
   export interface Plugin {
     enforce?: 'pre' | 'post'
-    apply(coodev: Coodev): Promise<void> | void
+    // configureCoodev 里面配置 middleware 会在 Coodev 内置 middleware 之前执行
+    // 返回一个函数，会在 Coodev 内置 middleware 之后执行
+    configureCoodev?(coodev: Coodev): void | (() => void)
+    buildEnd?(options: BuildEndOptions, output: BuildOutput): Promisable<void>
+    documentHtml?(html: string): Promisable<void | string>
+    htmlRendered?(html: string): Promisable<void | string>
+    viteConfig?(
+      options: ViteConfigOptions,
+      config: ViteConfig,
+    ): Promisable<void | ViteConfig>
   }
 
   export interface Renderer {
@@ -89,19 +76,13 @@ declare namespace Coodev {
     ): Promise<string | null>
   }
 
-  export interface CoodevHooks {
-    documentHtml: DocumentHtmlWaterfallHook
-    htmlRendered: HtmlRenderedWaterfallHook
-    viteConfig: ViteConfigWaterfallHook
-    stream: PipeableStreamWaterfallHook
-    buildCompleted: BuildCompletedWaterfallHook
-  }
+  export type PluginConfiguration = Plugin | Plugin[]
 
   export interface CoodevOptions {
     dev?: boolean
     ssr?: SSRConfig
     renderer: Renderer
-    plugins?: Plugin[]
+    plugins?: PluginConfiguration[]
   }
 
   export interface CoodevStartOptions {
@@ -111,10 +92,10 @@ declare namespace Coodev {
   export class Coodev {
     constructor(options: CoodevOptions)
     public readonly renderer: Renderer
-    public readonly hooks: CoodevHooks
     public readonly middlewares: CoodevMiddlewares
     public readonly coodevConfig: InternalConfiguration
     public start(options: CoodevStartOptions): void
+    public getDocumentHtml(): Promise<string>
     public loadSSRModule<Module extends Record<string, any>>(
       path: string,
     ): Promise<Module>
@@ -126,7 +107,7 @@ declare namespace Coodev {
     dev?: boolean
     ssr?: SSRConfig
     outputDir?: string
-    plugins?: CoodevPlugin[]
+    plugins?: PluginConfiguration[]
     // TODO
     // publicPath?: string
   }

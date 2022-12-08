@@ -26,9 +26,9 @@ namespace Coodev {
     routing?: 'lazy'
   }
 
-  export interface AppProps {
+  export interface AppProps<T = any> {
     Component: ComponentType<any> | null
-    pageProps: object
+    pageProps: T
   }
 
   export interface InternalRouteConfig {
@@ -84,7 +84,7 @@ declare module '__COODEV__/react/document' {
   export default Document
 }
 
-declare module '__COODEV__/config' {
+declare module '__COODEV__/react/config' {
   const config: Coodev.Configuration
 
   export default config

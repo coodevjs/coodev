@@ -6,18 +6,47 @@ import {
   InlineConfig,
   build,
 } from 'vite'
-import BaseCoodev from './base'
+import * as connect from 'connect'
+import { loadCoodevConfig } from './coodev-config'
 
-class Coodev extends BaseCoodev {
+class Coodev implements Coodev.Coodev {
+  public readonly renderer: Coodev.Renderer
+  private readonly _coodevConfig: Coodev.InternalConfiguration
+  private readonly _middlewares: Coodev.CoodevMiddlewares
+  private readonly plugins: Coodev.Plugin[] = []
   private viteServer: ViteDevServer | null = null
 
   constructor(options: Coodev.CoodevOptions) {
-    super(options)
+    this.renderer = options.renderer
 
-    this.applyPlugins(this.coodevConfig.plugins)
+    this._coodevConfig = loadCoodevConfig({
+      dev: options.dev,
+      ssr: options.ssr,
+      plugins: options.plugins,
+    })
+
+    this._middlewares = connect()
+    this.plugins = this.normalizePlugins(this.coodevConfig.plugins)
+  }
+
+  public get middlewares() {
+    return this._middlewares
+  }
+
+  public get coodevConfig() {
+    return this._coodevConfig
   }
 
   public async prepare() {
+    const postHooks: (() => void)[] = []
+    for (const plugin of this.plugins) {
+      if (plugin.configureCoodev) {
+        const postHook = plugin.configureCoodev(this)
+        if (postHook) {
+          postHooks.push(postHook)
+        }
+      }
+    }
     this.middlewares.use((_, res, next) => {
       res.setHeader('X-Powered-By', 'Coodev')
       res.setHeader('Server', 'Coodev')
@@ -36,6 +65,10 @@ class Coodev extends BaseCoodev {
     if (dev || ssr !== false) {
       this.initializeMiddlewares()
     }
+
+    for (const postHook of postHooks) {
+      postHook()
+    }
   }
 
   public async start() {
@@ -49,10 +82,25 @@ class Coodev extends BaseCoodev {
   }
 
   public async build() {
+    const postHooks: (() => void)[] = []
+    for (const plugin of this.plugins) {
+      if (plugin.configureCoodev) {
+        const postHook = plugin.configureCoodev(this)
+        if (postHook) {
+          postHooks.push(postHook)
+        }
+      }
+    }
+
+    // TODO: optimize the build process
+    for (const postHook of postHooks) {
+      postHook()
+    }
+
     const coodevConfig = this.coodevConfig
 
     const ssr = coodevConfig.ssr !== false
-    const serverConfig = await this.initializeViteConfig({
+    const serverConfig = await this.callViteConfigHooks({
       ssr,
       dev: false,
       isServer: true,
@@ -61,14 +109,17 @@ class Coodev extends BaseCoodev {
     // Build server side
     const serverBuildOutput = (await build(serverConfig)) as Coodev.BuildOutput
 
-    await this.hooks.buildCompleted.call(serverBuildOutput, {
-      ssr,
-      isServer: true,
-      isClient: false,
-    })
+    await this.callBuildEndHook(
+      {
+        ssr,
+        isServer: true,
+        isClient: false,
+      },
+      serverBuildOutput,
+    )
 
     // Build client side
-    const clientConfig = await this.initializeViteConfig({
+    const clientConfig = await this.callViteConfigHooks({
       ssr,
       dev: false,
       isServer: false,
@@ -76,11 +127,25 @@ class Coodev extends BaseCoodev {
     })
 
     const clientBuildOutput = (await build(clientConfig)) as Coodev.BuildOutput
-    await this.hooks.buildCompleted.call(clientBuildOutput, {
-      ssr,
-      isServer: false,
-      isClient: true,
+
+    await this.callBuildEndHook(
+      {
+        ssr,
+        isServer: false,
+        isClient: true,
+      },
+      clientBuildOutput,
+    )
+  }
+
+  public async getDocumentHtml(): Promise<string> {
+    const documentHtml = await this.renderer.getDocumentHtml(this, {
+      next: () => {
+        throw new Error('next() is not supported in build mode')
+      },
     })
+
+    return this.callDocumentHtmlHooks(documentHtml)
   }
 
   public loadSSRModule(module: string) {
@@ -90,40 +155,93 @@ class Coodev extends BaseCoodev {
     return this.viteServer.ssrLoadModule(module) as any
   }
 
-  private async applyPlugins(plugins: Coodev.Plugin[]) {
-    for (const plugin of plugins) {
-      await plugin.apply(this)
+  private async callBuildEndHook(
+    options: Coodev.BuildEndOptions,
+    output: Coodev.BuildOutput,
+  ) {
+    for (const plugin of this.plugins) {
+      if (plugin.buildEnd) {
+        await plugin.buildEnd(options, output)
+      }
     }
   }
 
-  private async initializeViteConfig(
-    options: Coodev.ViteConfigWaterfallHookOptions,
+  private async callViteConfigHooks(
+    options: Coodev.ViteConfigOptions,
   ): Promise<InlineConfig> {
     const coodevConfig = this.coodevConfig
-    const viteConfig = await this.hooks.viteConfig.call(
-      {
-        root: coodevConfig.root,
-        clearScreen: true,
-        build: {
-          outDir: coodevConfig.outputDir,
-        },
-      },
-      options,
-    )
 
-    const merged = mergeConfig(viteConfig, {
+    let config: InlineConfig = {
+      root: coodevConfig.root,
+      clearScreen: true,
+      build: {
+        outDir: coodevConfig.outputDir,
+      },
+    }
+    for (const plugin of this.plugins) {
+      if (plugin.viteConfig) {
+        const res = await plugin.viteConfig(options, config)
+        if (res) {
+          config = mergeConfig(config, res)
+        }
+      }
+    }
+
+    return mergeConfig(config, {
       configFile: false,
       server: {
         middlewareMode: 'ssr',
       },
     })
+  }
 
-    return merged
+  private async callHtmlRenderedHooks(_html: string) {
+    let html = _html
+    for (const plugin of this.plugins) {
+      if (plugin.htmlRendered) {
+        const res = await plugin.htmlRendered(html)
+        if (res) {
+          html = res
+        }
+      }
+    }
+
+    return html
+  }
+
+  private async callDocumentHtmlHooks(documentHtml: string) {
+    let html = documentHtml
+    for (const plugin of this.plugins) {
+      if (plugin.documentHtml) {
+        const res = await plugin.documentHtml(html)
+        if (res) {
+          html = res
+        }
+      }
+    }
+
+    return html
+  }
+
+  private normalizePlugins(
+    plugins: Coodev.PluginConfiguration[],
+  ): Coodev.Plugin[] {
+    const normalizedPlugins: Coodev.Plugin[] = []
+
+    for (const plugin of plugins) {
+      if (Array.isArray(plugin)) {
+        normalizedPlugins.push(...plugin)
+      } else {
+        normalizedPlugins.push(plugin)
+      }
+    }
+
+    return normalizedPlugins
   }
 
   private async initializeViteServer() {
     const coodevConfig = this.coodevConfig
-    const viteConfig = await this.initializeViteConfig({
+    const viteConfig = await this.callViteConfigHooks({
       ssr: coodevConfig.ssr !== false,
       dev: coodevConfig.dev,
       isClient: true,
@@ -141,7 +259,7 @@ class Coodev extends BaseCoodev {
     const ssr = this.coodevConfig.ssr
 
     if (ssr === false) {
-      this.middlewares.use(this.getDocumentHtml.bind(this))
+      this.middlewares.use(this._getDocumentHtml.bind(this))
       return
     }
 
@@ -204,12 +322,12 @@ class Coodev extends BaseCoodev {
       console.warn()
       next()
     } else {
-      const result = await this.hooks.htmlRendered.call(html)
+      const result = await this.callHtmlRenderedHooks(html)
       res.end(result)
     }
   }
 
-  private async getDocumentHtml(
+  private async _getDocumentHtml(
     req: Coodev.Request,
     res: Coodev.Response,
     next: Coodev.NextFunction,
@@ -230,7 +348,7 @@ class Coodev extends BaseCoodev {
     if (hasCalledNext) {
       return
     }
-    const result = await this.hooks.documentHtml.call(documentHtml)
+    const result = await this.callDocumentHtmlHooks(documentHtml)
 
     res.end(result)
   }

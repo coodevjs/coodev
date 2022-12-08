@@ -1,5 +1,5 @@
 import * as React from 'react'
-import coodevConfig from '__COODEV__/config'
+import coodevConfig from '__COODEV__/react/config'
 import { ServerContext } from '../contexts/server'
 import { COODEV_DATA_ID } from '../constants'
 

@@ -1,13 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import routes from '__COODEV__/react/routes'
-import coodevConfig from '__COODEV__/config'
+import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
 import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
 import { findMatchedRoute } from './utils'
 
 let globalData: Coodev.GlobalData = {
-  pageProps: {}
+  pageProps: {},
 }
 
 const scriptElement = document.getElementById(COODEV_DATA_ID)
@@ -19,7 +19,7 @@ const url = location.pathname + location.search
 
 const matched = findMatchedRoute(url, routes) || {
   component: null,
-  path: null
+  path: null,
 }
 
 const content = (

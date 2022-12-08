@@ -4,7 +4,7 @@ import * as path from 'path'
 import { COODEV_REACT_SOURCE_DIR } from '../constants'
 import type { Plugin } from 'vite'
 
-const COODEV_CONFIG = '__COODEV__/config'
+const COODEV_REACT_CONFIG = '__COODEV__/react/config'
 const COODEV_REACT_ROUTES = '__COODEV__/react/routes'
 const COODEV_REACT_APP = '__COODEV__/react/app'
 const COODEV_REACT_DOCUMENT = '__COODEV__/react/document'
@@ -40,7 +40,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
         case COODEV_REACT_DOCUMENT:
           return findAvailableFile(opts.root, 'document')
         case COODEV_REACT_ROUTES:
-        case COODEV_CONFIG:
+        case COODEV_REACT_CONFIG:
           return id
         case COODEV_RUNTIME_REACT_CLIENT:
           return path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
@@ -139,7 +139,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
           map: null,
         }
       }
-      if (COODEV_CONFIG === id) {
+      if (COODEV_REACT_CONFIG === id) {
         return `export default ${JSON.stringify(opts.coodevConfig)}`
       }
       return null
