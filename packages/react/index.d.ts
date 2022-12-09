@@ -1,4 +1,4 @@
-/// <reference path="coodev-react.d.ts" />
+/// <reference path="./coodev-react.d.ts" />
 
 export type CoodevOptions = Omit<Coodev.CoodevOptions, 'renderer'>
 

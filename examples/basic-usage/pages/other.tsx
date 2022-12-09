@@ -1,11 +1,8 @@
 import * as React from 'react'
 
 const Page: React.FC = () => {
-  const handleClick = () => {
-    console.log('other clicked')
-  }
   return (
-    <div id='other' onClick={handleClick}>
+    <div>
       <h1>Other</h1>
     </div>
   )
@@ -13,7 +10,7 @@ const Page: React.FC = () => {
 
 Page.getInitialProps = async () => {
   return {
-    name: 'other'
+    name: 'other',
   }
 }
 
