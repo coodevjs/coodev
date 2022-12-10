@@ -18,8 +18,7 @@
     "jsx": "react",
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2017",
-    "types": ["@coodev/react"]
+    "target": "ES2017"
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx"]
