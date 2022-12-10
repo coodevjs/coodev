@@ -1,15 +1,13 @@
 import { afterAll, beforeAll, describe, test, expect } from 'vitest'
-import { CoodevTestManager, CoodevPage } from '@coodev/test'
+import { CoodevTestManager } from '@coodev/test'
 
 describe('basic', async () => {
   let manager: CoodevTestManager
-  let page: CoodevPage
 
   beforeAll(async () => {
     manager = new CoodevTestManager()
 
     await manager.launchBrowser()
-    page = await manager.newPage()
   })
 
   afterAll(async () => {
@@ -18,6 +16,7 @@ describe('basic', async () => {
 
   test('should change page when link clicked on dev mode', async () => {
     const url = await manager.startApp({ dev: true })
+    const page = await manager.newPage()
     await page.goto(url)
     const homePageTitleElement = await page.querySelector('h1')
     const homePageTitle = await homePageTitleElement.textContent()
@@ -31,10 +30,13 @@ describe('basic', async () => {
     expect(otherPageTitle).toBe('Other')
 
     await manager.stopApp()
+    await page.close()
   })
 
   test('should change page when link clicked after build', async () => {
     const url = await manager.startApp({ dev: false })
+    const page = await manager.newPage()
+
     await page.goto(url)
     const homePageTitleElement = await page.querySelector('h1')
     const homePageTitle = await homePageTitleElement.textContent()
@@ -48,5 +50,6 @@ describe('basic', async () => {
     expect(otherPageTitle).toBe('Other')
 
     await manager.stopApp()
+    await page.close()
   })
 })

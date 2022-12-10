@@ -12,7 +12,15 @@ export class CoodevPage {
   }
 
   public async goto(url: string) {
-    await this.page.goto(url)
+    await this.page.goto(url, { waitUntil: 'networkidle' })
+  }
+
+  public async close() {
+    await this.page.close()
+  }
+
+  public async title() {
+    return this.page.title()
   }
 
   public async querySelector(selector: string) {
