@@ -173,6 +173,7 @@ class Coodev implements Coodev.Coodev {
 
     let config: InlineConfig = {
       root: coodevConfig.root,
+      base: coodevConfig.publicPath,
       clearScreen: true,
       build: {
         outDir: coodevConfig.outputDir,

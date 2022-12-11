@@ -9,9 +9,10 @@
   "repository": "https://github.com/wokeyi/coodev",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm run clean & pnpm -C ./packages/core build & pnpm -C ./packages/react build & pnpm -C ./packages/test build",
-    "clean": "rimraf ./packages/core/lib && rimraf ./packages/react/lib",
-    "clean:all": "rimraf ./packages/core/node_modules && rimraf ./packages/react/node_modules && rimraf ./node_modules",
+    "build": "pnpm run clean:libs && pnpm --filter \"./packages/**\" --filter !@coodev/document build",
+    "test": "pnpm -r test",
+    "clean:libs": "pnpm -r exec rimraf lib",
+    "clean:node-modules": "pnpm -r exec rimraf node_modules && rimraf node_modules",
     "dev": "pnpm -C ./packages/core dev & pnpm -C ./packages/react dev"
   },
   "devDependencies": {

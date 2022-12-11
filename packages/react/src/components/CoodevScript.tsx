@@ -18,18 +18,21 @@ function htmlEscapeJsonString(str: string): string {
 }
 
 const CoodevScript: React.FC = () => {
+  const publicPath = coodevConfig.publicPath as string
   const { pageProps = {} } = React.useContext(ServerContext)
   return (
     <>
-      <script
-        type="application/json"
-        id={COODEV_DATA_ID}
-        dangerouslySetInnerHTML={{
-          __html: htmlEscapeJsonString(JSON.stringify({ pageProps })),
-        }}
-      ></script>
+      {coodevConfig.ssr !== false && (
+        <script
+          type="application/json"
+          id={COODEV_DATA_ID}
+          dangerouslySetInnerHTML={{
+            __html: htmlEscapeJsonString(JSON.stringify({ pageProps })),
+          }}
+        />
+      )}
       {(coodevConfig.dev || !coodevConfig.ssr) && (
-        <script type="module" src="/@coodev/react/client"></script>
+        <script type="module" src={publicPath + '@coodev/react/client'} />
       )}
     </>
   )

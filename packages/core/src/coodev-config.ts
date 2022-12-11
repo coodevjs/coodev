@@ -4,6 +4,17 @@ import * as path from 'path'
 
 const validExtensions = ['.js']
 
+function normalizePublicPath(publicPath: string | undefined): string {
+  if (!publicPath) {
+    return '/'
+  }
+  if (publicPath.endsWith('/')) {
+    return publicPath
+  }
+  console.warn('"publicPath" option should end with a slash')
+  return publicPath + '/'
+}
+
 function normalizeCoodevConfig(
   coodevConfig: Coodev.Configuration,
 ): Coodev.InternalConfiguration {
@@ -19,8 +30,8 @@ function normalizeCoodevConfig(
   return {
     ...coodevConfig,
     dev: coodevConfig.dev ?? process.env.NODE_ENV !== 'production',
-    rootDir,
     root,
+    publicPath: normalizePublicPath(coodevConfig.publicPath),
     outputDir: coodevConfig.outputDir ?? path.join(root, 'dist'),
     ssr: coodevConfig.ssr ?? true,
     plugins: coodevConfig.plugins ?? [],
@@ -37,7 +48,6 @@ export function loadCoodevConfig(inlineCoodevConfig: Coodev.Configuration) {
   })
 
   if (fs.existsSync(configPath)) {
-    // TODO merge config
     const userCoodevConfig = require(configPath)
 
     return normalizeCoodevConfig({
@@ -45,7 +55,7 @@ export function loadCoodevConfig(inlineCoodevConfig: Coodev.Configuration) {
       ...userCoodevConfig,
       plugins: [
         ...(inlineCoodevConfig.plugins || []),
-        ...userCoodevConfig.plugins,
+        ...(userCoodevConfig.plugins || []),
       ],
     })
   }

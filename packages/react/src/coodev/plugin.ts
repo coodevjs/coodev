@@ -74,6 +74,7 @@ export function coodevReactPlugin(): Coodev.Plugin {
         routing,
         routes: userRoutes,
         outputDir,
+        publicPath,
       } = coodev.coodevConfig
       const routes = userRoutes ?? parseRouteConfig(root)
 
@@ -90,6 +91,7 @@ export function coodevReactPlugin(): Coodev.Plugin {
               runtimeConfig,
               routing,
               outputDir,
+              publicPath,
             },
           }),
           ssrRefresh(),

@@ -108,12 +108,8 @@ declare namespace Coodev {
     ssr?: SSRConfig
     outputDir?: string
     plugins?: PluginConfiguration[]
-    // TODO
-    // publicPath?: string
+    publicPath?: string
   }
 
-  export interface InternalConfiguration extends Required<Configuration> {
-    // the dir is the root dir of the project
-    rootDir: string
-  }
+  export type InternalConfiguration = Required<Configuration>
 }

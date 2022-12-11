@@ -4,29 +4,17 @@ import { ServerContext } from '../contexts/server'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
-const reactFastRefreshCode = `
-import RefreshRuntime from "/@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
-`
-
 const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
+  const publicPath = coodevConfig.publicPath as string
   const { manifest } = React.useContext(ServerContext)
   const manifestChildren: React.ReactNode[] = []
   if (manifest) {
     const entryChunk = Object.values(manifest).find(chunk => chunk.isEntry)
     if (entryChunk) {
-      const cssResources = entryChunk.css
-      if (cssResources) {
-        cssResources.forEach((cssResource: string) => {
+      if (entryChunk.css) {
+        entryChunk.css.forEach((path: string) => {
           manifestChildren.push(
-            <link
-              key={cssResource}
-              rel="stylesheet"
-              href={`/${cssResource}`}
-            />,
+            <link key={path} rel="stylesheet" href={publicPath + path} />,
           )
         })
       }
@@ -36,7 +24,7 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
           type="module"
           crossOrigin="anonymous"
           key={entryChunk.file}
-          src={`/${entryChunk.file}`}
+          src={publicPath + entryChunk.file}
         />,
       )
     }
@@ -50,10 +38,16 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
           <script
             type="module"
             dangerouslySetInnerHTML={{
-              __html: reactFastRefreshCode,
+              __html: `
+              import RefreshRuntime from "${publicPath}@react-refresh"
+              RefreshRuntime.injectIntoGlobalHook(window)
+              window.$RefreshReg$ = () => {}
+              window.$RefreshSig$ = () => (type) => type
+              window.__vite_plugin_react_preamble_installed__ = true
+              `,
             }}
           />
-          <script type="module" src="/@vite/client" />
+          <script type="module" src={publicPath + '@vite/client'} />
         </>
       )}
       {manifestChildren}
