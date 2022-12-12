@@ -76,9 +76,10 @@ class Coodev implements Coodev.Coodev {
 
     const server = http.createServer(this.middlewares)
 
-    server.listen(3000)
+    const { port } = this.coodevConfig.server
+    server.listen(port)
 
-    console.log('Coodev server is running on http://localhost:3000')
+    console.log(`> Coodev server is running on http://localhost:${port}`)
   }
 
   public async build() {
@@ -191,7 +192,7 @@ class Coodev implements Coodev.Coodev {
     return mergeConfig(config, {
       configFile: false,
       server: {
-        middlewareMode: 'ssr',
+        middlewareMode: true,
       },
     })
   }
@@ -252,8 +253,6 @@ class Coodev implements Coodev.Coodev {
     this.viteServer = await createViteServer(viteConfig)
 
     this.middlewares.use(this.viteServer.middlewares)
-
-    this.initializeMiddlewares()
   }
 
   private initializeMiddlewares() {

@@ -47,10 +47,13 @@ declare namespace Coodev {
 
   export type Promisable<T> = T | Promise<T>
 
-  export interface Plugin {
-    enforce?: 'pre' | 'post'
+  export interface Hooks {
     // configureCoodev 里面配置 middleware 会在 Coodev 内置 middleware 之前执行
     // 返回一个函数，会在 Coodev 内置 middleware 之后执行
+    config?(
+      config: InternalConfiguration,
+    ): Promisable<void | InternalConfiguration>
+    configResolved?(config: InternalConfiguration): Promisable<void>
     configureCoodev?(coodev: Coodev): void | (() => void)
     buildEnd?(options: BuildEndOptions, output: BuildOutput): Promisable<void>
     documentHtml?(html: string): Promisable<void | string>
@@ -59,6 +62,10 @@ declare namespace Coodev {
       options: ViteConfigOptions,
       config: ViteConfig,
     ): Promisable<void | ViteConfig>
+  }
+
+  export interface Plugin extends Hooks {
+    enforce?: 'pre' | 'post'
   }
 
   export interface Renderer {
@@ -101,6 +108,10 @@ declare namespace Coodev {
     ): Promise<Module>
   }
 
+  export interface ServerConfiguration {
+    port?: number
+  }
+
   export interface Configuration {
     // the dir is the root dir of source code
     root?: string
@@ -109,6 +120,7 @@ declare namespace Coodev {
     outputDir?: string
     plugins?: PluginConfiguration[]
     publicPath?: string
+    server?: ServerConfiguration
   }
 
   export type InternalConfiguration = Required<Configuration>

@@ -35,6 +35,9 @@ function normalizeCoodevConfig(
     outputDir: coodevConfig.outputDir ?? path.join(root, 'dist'),
     ssr: coodevConfig.ssr ?? true,
     plugins: coodevConfig.plugins ?? [],
+    server: {
+      port: coodevConfig.server?.port ?? 3000,
+    },
   }
 }
 
