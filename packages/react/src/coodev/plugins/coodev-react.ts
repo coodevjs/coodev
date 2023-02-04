@@ -51,18 +51,17 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     load(id) {
       if (COODEV_REACT_ROUTES === id) {
         const isLazyLoad = opts.coodevConfig.routing === 'lazy'
-        const clientPath = path.resolve(COODEV_REACT_SOURCE_DIR, 'client.tsx')
 
         const relativeComponentPath = (componentPath: string) => {
           const fullPath = path.isAbsolute(componentPath)
             ? componentPath
             : path.resolve(opts.root, componentPath)
 
-          console.log('fullPath', fullPath)
-          console.log('clientPath', clientPath)
           const relativePath = normalizePath(path.relative(opts.root, fullPath))
 
-          return `./${relativePath}`
+          const publicPath = opts.coodevConfig.publicPath || '/'
+
+          return publicPath + relativePath
         }
 
         if (isLazyLoad) {
@@ -116,7 +115,6 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
 
         const content = opts.routes.map((route, idx) => {
           const componentPath = relativeComponentPath(route.component)
-          console.log('componentPath', componentPath)
 
           const moduleName = `CoodevRouteComponent_${idx}`
           importModules.push(`import ${moduleName} from '${componentPath}'`)

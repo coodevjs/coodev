@@ -165,6 +165,11 @@ export function coodevReactPlugin(): Coodev.Plugin {
             ...coodevReactConfig.build,
             ssr: serverEntryPath,
             emptyOutDir: true,
+            lib: {
+              entry: serverEntryPath,
+              fileName: 'server.js',
+              formats: ['cjs'],
+            },
           }
         }
       }

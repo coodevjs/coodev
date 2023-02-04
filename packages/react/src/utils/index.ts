@@ -1,11 +1,11 @@
-import { parse as parseUrl } from 'url'
 import { pathToRegexp } from 'path-to-regexp'
 
 export function findMatchedRoute(
   path: string,
   routes: Coodev.InternalRouteConfig[] = [],
 ) {
-  const pathname = parseUrl(path).pathname ?? '/'
+  const parsedUrl = new URL(path, 'http://localhost')
+  const pathname = parsedUrl.pathname ?? '/'
   // 通配符
   const wildcard = '(.*)'
   const matched = routes

@@ -6,6 +6,7 @@ const Home: React.FC = () => {
     <div>
       <h1>Home</h1>
       <Link to="/other">other</Link>
+      <button onClick={() => console.log('clicked')}>Click</button>
     </div>
   )
 }

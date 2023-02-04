@@ -9,7 +9,7 @@
     "alwaysStrict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "importHelpers": true,
+    "importHelpers": false,
     "noUnusedLocals": false,
     "strictNullChecks": true,
     "skipLibCheck": true,
