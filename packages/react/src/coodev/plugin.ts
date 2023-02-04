@@ -9,7 +9,7 @@ function parseRouteConfig(root: string): Coodev.RouteConfig[] {
   const basePath = path.join(root, 'pages')
 
   if (!fs.existsSync(basePath)) {
-    console.warn(`No pages directory found in ${root}`)
+    console.warn(`No pages directory found in \`${root}\``)
     return []
   }
 

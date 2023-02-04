@@ -77,7 +77,8 @@ class Coodev implements Coodev.Coodev {
     const server = http.createServer(this.middlewares)
 
     const { port } = this.coodevConfig.server
-    server.listen(port)
+
+    server.listen(port, '0.0.0.0')
 
     console.log(`> Coodev server is running on http://localhost:${port}`)
   }
@@ -191,6 +192,7 @@ class Coodev implements Coodev.Coodev {
 
     return mergeConfig(config, {
       configFile: false,
+      appType: 'custom',
       server: {
         middlewareMode: true,
       },

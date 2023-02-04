@@ -51,6 +51,7 @@ export function loadCoodevConfig(inlineCoodevConfig: Coodev.Configuration) {
   })
 
   if (fs.existsSync(configPath)) {
+    console.log(`> Loading coodev config from \`${configPath}\``)
     const userCoodevConfig = require(configPath)
 
     return normalizeCoodevConfig({

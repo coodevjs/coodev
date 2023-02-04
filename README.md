@@ -8,7 +8,15 @@
 npm i @coodev/react
 ```
 
-### Create page component in `src/pages` directory
+If you want to use `typescript`, you need to install `typescript`
+
+```bash
+npm i typescript -D
+```
+
+#### Create pages
+
+Create page component in `src/pages` directory
 
 for example `src/pages/index.tsx`
 
