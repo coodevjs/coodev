@@ -8,7 +8,9 @@
 npm i @coodev/react
 ```
 
-### Create page component in `src/pages` directory, for example `src/pages/index.tsx`
+### Create page component in `src/pages` directory
+
+for example `src/pages/index.tsx`
 
 ```typescript
 import React from 'react'

@@ -1,9 +1,18 @@
 {
   "name": "@coodev/react",
-  "version": "1.0.0-dev.1",
+  "version": "1.0.0-dev.2",
   "main": "index.js",
   "types": "index.d.ts",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "coodev",
+    "router",
+    "history",
+    "spa",
+    "ssr",
+    "framework"
+  ],
   "bin": {
     "coodev-react": "./bin/index.js"
   },
@@ -28,7 +37,7 @@
     "react-dom": "^18.1.0"
   },
   "dependencies": {
-    "@coodev/core": "workspace:1.0.0-dev.1",
+    "@coodev/core": "workspace:1.0.0-dev.2",
     "history": "^5.3.0",
     "path-to-regexp": "^6.2.1",
     "url": "^0.11.0"

@@ -5,7 +5,7 @@
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "@coodev/react": "workspace:1.0.0-dev.1",
+    "@coodev/react": "workspace:1.0.0-dev.2",
     "cross-env": "^7.0.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
