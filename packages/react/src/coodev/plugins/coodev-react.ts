@@ -59,9 +59,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
 
           const relativePath = normalizePath(path.relative(opts.root, fullPath))
 
-          const publicPath = opts.coodevConfig.publicPath || '/'
-
-          return publicPath + relativePath
+          return '/' + relativePath
         }
 
         if (isLazyLoad) {

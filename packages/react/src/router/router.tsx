@@ -1,12 +1,7 @@
-import {
-  createBrowserHistory,
-  createMemoryHistory,
-  Blocker,
-} from 'history'
+import { createBrowserHistory, createMemoryHistory, Blocker } from 'history'
 
-export const history = typeof window !== 'undefined'
-  ? createBrowserHistory()
-  : createMemoryHistory()
+const history =
+  typeof window !== 'undefined' ? createBrowserHistory() : createMemoryHistory()
 
 export const router: Coodev.Router = {
   get action() {
@@ -41,6 +36,5 @@ export const router: Coodev.Router = {
   block(blocker: Blocker) {
     return history.block(blocker)
   },
-  onBeforeRouteUpdate() { }
+  onBeforeRouteUpdate() {},
 }
-

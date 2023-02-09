@@ -172,6 +172,21 @@ export function coodevReactPlugin(): Coodev.Plugin {
             },
           }
         }
+      } else {
+        const clientEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
+        const serverEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'server.tsx')
+
+        coodevReactConfig.build = {
+          ...coodevReactConfig.build,
+          rollupOptions: {
+            ...coodevReactConfig.build?.rollupOptions,
+            input: [
+              clientEntryPath,
+              serverEntryPath,
+              ...routes.map(route => route.component),
+            ],
+          },
+        }
       }
 
       return coodevReactConfig

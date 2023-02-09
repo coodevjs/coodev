@@ -5,7 +5,7 @@
 ### Install
 
 ```bash
-npm i @coodev/react
+npm i @coodev/react react react-dom
 ```
 
 If you want to use `typescript`, you need to install `typescript`

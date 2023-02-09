@@ -3,7 +3,7 @@ import { match } from 'path-to-regexp'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
 import { RouterContext } from '../contexts/router'
-import { history } from '../router/router'
+import { router } from '../router/router'
 import { findMatchedRoute } from '../utils'
 
 interface CoodevAppProps {
@@ -42,7 +42,7 @@ function CoodevApp(props: CoodevAppProps) {
   })
 
   React.useEffect(() => {
-    const unlisten = history.listen(async ({ location, action }) => {
+    const unlisten = router.listen(async ({ location, action }) => {
       const matched = findMatchedRoute(location.pathname, routes)
       if (matched) {
         configRef.current.Component = matched.component
