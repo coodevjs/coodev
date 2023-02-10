@@ -195,6 +195,9 @@ class Coodev implements Coodev.Coodev {
       appType: 'custom',
       server: {
         middlewareMode: true,
+        fs: {
+          strict: false,
+        },
       },
     })
   }
