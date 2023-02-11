@@ -33,6 +33,13 @@ function findAvailableFile(dir: string, name: string) {
 export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
   return {
     name: 'coodev-react',
+    config() {
+      return {
+        optimizeDeps: {
+          exclude: ['@coodev/react'],
+        },
+      }
+    },
     resolveId(id) {
       switch (id) {
         case COODEV_REACT_APP:
