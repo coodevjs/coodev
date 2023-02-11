@@ -6,12 +6,12 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@coodev/react": "workspace:1.0.0-dev.4",
+    "@coodev/react": "workspace:1.0.0-dev.5",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },
   "devDependencies": {
-    "@coodev/test": "workspace:1.0.0-dev.4",
+    "@coodev/test": "workspace:1.0.0-dev.5",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
     "vitest": "latest"
