@@ -1,12 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
+import type { GlobalData } from './types'
 import routes from '__COODEV__/react/routes'
 import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
 import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
 import { findMatchedRoute } from './utils'
 
-let globalData: Coodev.GlobalData = {
+let globalData: GlobalData = {
   pageProps: {},
 }
 

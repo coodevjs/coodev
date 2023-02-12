@@ -1,7 +1,20 @@
 import * as path from 'path'
+import type {
+  Renderer,
+  Coodev,
+  DocumentHtmlRenderContext,
+  RenderContext,
+  PipeableStream,
+} from '@coodev/core'
 import { COODEV_REACT_SOURCE_DIR } from './constants'
 
-export class CoodevReactRenderer implements Coodev.Renderer {
+export interface ServerEntryModule {
+  getDocumentHtml: (ctx: DocumentHtmlRenderContext) => Promise<string>
+  renderToString: (ctx: RenderContext) => Promise<string>
+  renderToStream: (ctx: RenderContext) => Promise<PipeableStream>
+}
+
+export class CoodevReactRenderer implements Renderer {
   private readonly serverEntryPath: string
 
   constructor() {
@@ -9,8 +22,8 @@ export class CoodevReactRenderer implements Coodev.Renderer {
   }
 
   public async getDocumentHtml(
-    coodev: Coodev.Coodev,
-    context: Coodev.DocumentHtmlRenderContext,
+    coodev: Coodev,
+    context: DocumentHtmlRenderContext,
   ): Promise<string> {
     const { getDocumentHtml } = await this.getServerEntryModule(coodev)
 
@@ -20,8 +33,8 @@ export class CoodevReactRenderer implements Coodev.Renderer {
   }
 
   public async renderToString(
-    coodev: Coodev.Coodev,
-    { req, res, next }: Coodev.RenderContext,
+    coodev: Coodev,
+    { req, res, next }: RenderContext,
   ) {
     const { renderToString } = await this.getServerEntryModule(coodev)
 
@@ -31,9 +44,9 @@ export class CoodevReactRenderer implements Coodev.Renderer {
   }
 
   public async renderToStream(
-    coodev: Coodev.Coodev,
-    context: Coodev.RenderContext,
-  ): Promise<Coodev.PipeableStream> {
+    coodev: Coodev,
+    context: RenderContext,
+  ): Promise<PipeableStream> {
     const { renderToStream } = await this.getServerEntryModule(coodev)
 
     const stream = await renderToStream(context)
@@ -41,12 +54,12 @@ export class CoodevReactRenderer implements Coodev.Renderer {
     return stream
   }
 
-  private async getServerEntryModule(coodev: Coodev.Coodev) {
+  private async getServerEntryModule(coodev: Coodev) {
     if (!coodev.coodevConfig.dev) {
       const entryPath = path.join(coodev.coodevConfig.outputDir, 'server.js')
       return require(entryPath)
     }
 
-    return coodev.loadSSRModule<Coodev.ServerEntryModule>(this.serverEntryPath)
+    return coodev.loadSSRModule<ServerEntryModule>(this.serverEntryPath)
   }
 }

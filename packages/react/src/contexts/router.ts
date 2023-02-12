@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Location } from 'history'
+import { Location } from '../types'
 
 export const RouterContext = React.createContext(
   {} as {

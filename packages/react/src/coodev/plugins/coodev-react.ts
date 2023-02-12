@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { COODEV_REACT_SOURCE_DIR } from '../constants'
 import type { Plugin } from 'vite'
+import type { RouteConfig, ReactCoodevConfiguration } from '../../types'
 
 const COODEV_REACT_CONFIG = '__COODEV__/react/config'
 const COODEV_REACT_ROUTES = '__COODEV__/react/routes'
@@ -13,8 +14,8 @@ const COODEV_RUNTIME_REACT_CLIENT = '/@coodev/react/client'
 
 export interface ViteCoodevReactPluginOptions {
   root: string
-  coodevConfig: Coodev.Configuration
-  routes: Coodev.RouteConfig[]
+  coodevConfig: ReactCoodevConfiguration
+  routes: RouteConfig[]
 }
 
 function findAvailableFile(dir: string, name: string) {

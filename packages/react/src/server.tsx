@@ -8,6 +8,7 @@ import {
 } from 'react-dom/server'
 import { findMatchedRoute } from './utils'
 import { ServerContext, Manifest } from './contexts/server'
+import type { RenderContext } from '@coodev/core'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
@@ -30,7 +31,7 @@ async function loadManifest(): Promise<Manifest> {
 }
 
 async function renderApp<T>(
-  { req }: Coodev.RenderContext,
+  { req }: RenderContext,
   callback: (content: React.ReactElement) => T,
 ): Promise<T | void> {
   const url = req.url || '/'
@@ -65,7 +66,7 @@ async function renderApp<T>(
   )
 }
 
-export function renderToStream(ctx: Coodev.RenderContext) {
+export function renderToStream(ctx: RenderContext) {
   return renderApp(ctx, content => {
     return renderToPipeableStream(content, {
       onShellReady: () => {
@@ -75,12 +76,12 @@ export function renderToStream(ctx: Coodev.RenderContext) {
   })
 }
 
-export async function renderToString(ctx: Coodev.RenderContext) {
+export async function renderToString(ctx: RenderContext) {
   return renderApp(ctx, content => {
     return _renderToString(content)
   })
 }
 
-export async function getDocumentHtml(ctx: Coodev.RenderContext) {
+export async function getDocumentHtml(ctx: RenderContext) {
   return _renderToString(<Document />).replace('data-reactroot=""', '')
 }

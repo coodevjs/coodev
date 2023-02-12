@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "declaration": false
   },
   "include": ["src/coodev/*", "coodev-react.d.ts"]
 }

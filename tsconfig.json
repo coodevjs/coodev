@@ -4,7 +4,7 @@
     "outDir": "lib",
     "allowJs": true,
     "checkJs": false,
-    "declaration": false,
+    "declaration": true,
     "allowSyntheticDefaultImports": false,
     "alwaysStrict": true,
     "noImplicitAny": true,

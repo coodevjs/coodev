@@ -1,22 +1,33 @@
 import * as http from 'http'
-import {
-  ViteDevServer,
-  createServer as createViteServer,
-  mergeConfig,
-  InlineConfig,
-  build,
-} from 'vite'
+import type { ViteDevServer } from 'vite'
+import { createServer as createViteServer, mergeConfig, build } from 'vite'
 import * as connect from 'connect'
 import { loadCoodevConfig } from './coodev-config'
+import type {
+  InternalConfiguration,
+  Renderer,
+  CoodevMiddlewares,
+  Plugin,
+  CoodevOptions,
+  BuildOutput,
+  BuildEndOptions,
+  ViteConfigOptions,
+  NextFunction,
+  PluginConfiguration,
+  Request,
+  Response,
+  Coodev,
+  ViteConfig,
+} from './types'
 
-class Coodev implements Coodev.Coodev {
-  public readonly renderer: Coodev.Renderer
-  private readonly _coodevConfig: Coodev.InternalConfiguration
-  private readonly _middlewares: Coodev.CoodevMiddlewares
-  private readonly plugins: Coodev.Plugin[] = []
+class CoodevImpl implements Coodev {
+  public readonly renderer: Renderer
+  private readonly _coodevConfig: InternalConfiguration
+  private readonly _middlewares: CoodevMiddlewares
+  private readonly plugins: Plugin[] = []
   private viteServer: ViteDevServer | null = null
 
-  constructor(options: Coodev.CoodevOptions) {
+  constructor(options: CoodevOptions) {
     this.renderer = options.renderer
 
     this._coodevConfig = loadCoodevConfig({
@@ -109,7 +120,7 @@ class Coodev implements Coodev.Coodev {
       isClient: false,
     })
     // Build server side
-    const serverBuildOutput = (await build(serverConfig)) as Coodev.BuildOutput
+    const serverBuildOutput = (await build(serverConfig)) as BuildOutput
 
     await this.callBuildEndHook(
       {
@@ -128,7 +139,7 @@ class Coodev implements Coodev.Coodev {
       isClient: true,
     })
 
-    const clientBuildOutput = (await build(clientConfig)) as Coodev.BuildOutput
+    const clientBuildOutput = (await build(clientConfig)) as BuildOutput
 
     await this.callBuildEndHook(
       {
@@ -150,7 +161,9 @@ class Coodev implements Coodev.Coodev {
     return this.callDocumentHtmlHooks(documentHtml)
   }
 
-  public loadSSRModule(module: string) {
+  public async loadSSRModule<T extends Record<string, any>>(
+    module: string,
+  ): Promise<T> {
     if (!this.viteServer) {
       throw new Error('Vite server is not initialized')
     }
@@ -158,8 +171,8 @@ class Coodev implements Coodev.Coodev {
   }
 
   private async callBuildEndHook(
-    options: Coodev.BuildEndOptions,
-    output: Coodev.BuildOutput,
+    options: BuildEndOptions,
+    output: BuildOutput,
   ) {
     for (const plugin of this.plugins) {
       if (plugin.buildEnd) {
@@ -169,11 +182,11 @@ class Coodev implements Coodev.Coodev {
   }
 
   private async callViteConfigHooks(
-    options: Coodev.ViteConfigOptions,
-  ): Promise<InlineConfig> {
+    options: ViteConfigOptions,
+  ): Promise<ViteConfig> {
     const coodevConfig = this.coodevConfig
 
-    let config: InlineConfig = {
+    let config: ViteConfig = {
       root: coodevConfig.root,
       base: coodevConfig.publicPath,
       clearScreen: true,
@@ -230,10 +243,8 @@ class Coodev implements Coodev.Coodev {
     return html
   }
 
-  private normalizePlugins(
-    plugins: Coodev.PluginConfiguration[],
-  ): Coodev.Plugin[] {
-    const normalizedPlugins: Coodev.Plugin[] = []
+  private normalizePlugins(plugins: PluginConfiguration[]): Plugin[] {
+    const normalizedPlugins: Plugin[] = []
 
     for (const plugin of plugins) {
       if (Array.isArray(plugin)) {
@@ -277,9 +288,9 @@ class Coodev implements Coodev.Coodev {
   }
 
   private async renderToStream(
-    req: Coodev.Request,
-    res: Coodev.Response,
-    next: Coodev.NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
   ) {
     let hasCalledNext = false
 
@@ -302,9 +313,9 @@ class Coodev implements Coodev.Coodev {
   }
 
   private async renderToString(
-    req: Coodev.Request,
-    res: Coodev.Response,
-    next: Coodev.NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
   ) {
     let hasCalledNext = false
 
@@ -333,9 +344,9 @@ class Coodev implements Coodev.Coodev {
   }
 
   private async _getDocumentHtml(
-    req: Coodev.Request,
-    res: Coodev.Response,
-    next: Coodev.NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
   ) {
     let hasCalledNext = false
 
@@ -359,6 +370,6 @@ class Coodev implements Coodev.Coodev {
   }
 }
 
-export function createCoodev(options: Coodev.CoodevOptions) {
-  return new Coodev(options)
+export function createCoodev(options: CoodevOptions) {
+  return new CoodevImpl(options)
 }

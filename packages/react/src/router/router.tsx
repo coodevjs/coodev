@@ -1,13 +1,14 @@
 import { createBrowserHistory, createMemoryHistory, Blocker } from 'history'
+import type { Router, RouteUpdateListener } from '../types'
 
 declare module globalThis {
-  export const __COODEV_ROUTER__: Coodev.Router
+  export const __COODEV_ROUTER__: Router
 }
 
 const history =
   typeof window !== 'undefined' ? createBrowserHistory() : createMemoryHistory()
 
-let router: Coodev.Router = globalThis.__COODEV_ROUTER__
+let router: Router = globalThis.__COODEV_ROUTER__
 
 if (!router) {
   router = {
@@ -37,7 +38,7 @@ if (!router) {
       // onBeforeRouteUpdate(to, state)
       history.push(to, state)
     },
-    listen(listener: Coodev.RouteUpdateListener) {
+    listen(listener: RouteUpdateListener) {
       return history.listen(listener)
     },
     block(blocker: Blocker) {

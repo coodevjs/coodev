@@ -1,11 +1,12 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import react from '@vitejs/plugin-react'
-import { InlineConfig } from 'vite'
+import type { ViteConfig, Coodev, Plugin } from '@coodev/core'
+import type { ReactCoodevConfiguration, RouteConfig } from '../types'
 import { coodevReact, ssrRefresh } from './plugins'
 import { COODEV_REACT_SOURCE_DIR } from './constants'
 
-function parseRouteConfig(root: string): Coodev.RouteConfig[] {
+function parseRouteConfig(root: string): RouteConfig[] {
   const basePath = path.join(root, 'pages')
 
   if (!fs.existsSync(basePath)) {
@@ -13,7 +14,7 @@ function parseRouteConfig(root: string): Coodev.RouteConfig[] {
     return []
   }
 
-  const routes: Coodev.RouteConfig[] = []
+  const routes: RouteConfig[] = []
 
   const parseRoutes = (filePath: string) => {
     const stats = fs.lstatSync(filePath)
@@ -58,8 +59,8 @@ function parseRouteConfig(root: string): Coodev.RouteConfig[] {
   return routes
 }
 
-export function coodevReactPlugin(): Coodev.Plugin {
-  let coodev: Coodev.Coodev
+export function coodevReactPlugin(): Plugin {
+  let coodev: Coodev
   return {
     enforce: 'pre',
     configureCoodev(_coodev) {
@@ -75,10 +76,10 @@ export function coodevReactPlugin(): Coodev.Plugin {
         routes: userRoutes,
         outputDir,
         publicPath,
-      } = coodev.coodevConfig
+      } = coodev.coodevConfig as ReactCoodevConfiguration
       const routes = userRoutes ?? parseRouteConfig(root)
 
-      const coodevReactConfig: InlineConfig = {
+      const coodevReactConfig: ViteConfig = {
         plugins: [
           react(),
           coodevReact({
@@ -92,7 +93,7 @@ export function coodevReactPlugin(): Coodev.Plugin {
               routing,
               outputDir,
               publicPath,
-            },
+            } as ReactCoodevConfiguration,
           }),
           ssrRefresh(),
         ],

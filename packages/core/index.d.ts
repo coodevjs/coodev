@@ -1,3 +1,5 @@
-/// <reference path="global.d.ts" />
+import { Coodev, CoodevOptions } from './src/types'
 
-export function createCoodev(options: Coodev.CoodevOptions): Coodev.Coodev
+export function createCoodev(options: CoodevOptions): Coodev
+
+export * from './src/types'

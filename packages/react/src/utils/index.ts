@@ -1,8 +1,9 @@
 import { pathToRegexp } from 'path-to-regexp'
+import type { InternalRouteConfig } from '../types'
 
 export function findMatchedRoute(
   path: string,
-  routes: Coodev.InternalRouteConfig[] = [],
+  routes: InternalRouteConfig[] = [],
 ) {
   const parsedUrl = new URL(path, 'http://localhost')
   const pathname = parsedUrl.pathname ?? '/'

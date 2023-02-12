@@ -1,6 +1,7 @@
-import { COODEV_CONFIG } from './constants'
 import * as fs from 'fs'
 import * as path from 'path'
+import { COODEV_CONFIG } from './constants'
+import type { Configuration, InternalConfiguration } from './types'
 
 const validExtensions = ['.js']
 
@@ -16,8 +17,8 @@ function normalizePublicPath(publicPath: string | undefined): string {
 }
 
 function normalizeCoodevConfig(
-  coodevConfig: Coodev.Configuration,
-): Coodev.InternalConfiguration {
+  coodevConfig: Configuration,
+): InternalConfiguration {
   const rootDir = process.cwd()
   let root = rootDir
   if (coodevConfig.root) {
@@ -41,7 +42,7 @@ function normalizeCoodevConfig(
   }
 }
 
-export function loadCoodevConfig(inlineCoodevConfig: Coodev.Configuration) {
+export function loadCoodevConfig(inlineCoodevConfig: Configuration) {
   const rootDir = process.cwd()
 
   const configPath = path.format({

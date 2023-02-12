@@ -1,5 +1,5 @@
-/// <reference path="./coodev-react.d.ts" />
+import type { Coodev, CoodevOptions } from '@coodev/core'
 
-export type CoodevOptions = Omit<Coodev.CoodevOptions, 'renderer'>
+export type CoodevOptions = Omit<CoodevOptions, 'renderer'>
 
-export function coodev(options: CoodevOptions): Coodev.Coodev
+export function coodev(options: CoodevOptions): Coodev
