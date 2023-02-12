@@ -14,8 +14,8 @@ importers:
 
   examples/basic-usage:
     specifiers:
-      '@coodev/react': workspace:1.0.0-dev.5
-      '@coodev/test': workspace:1.0.0-dev.5
+      '@coodev/react': workspace:*
+      '@coodev/test': workspace:*
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
       react: ^18.1.0
@@ -33,8 +33,8 @@ importers:
 
   examples/custom-document:
     specifiers:
-      '@coodev/react': workspace:1.0.0-dev.5
-      '@coodev/test': workspace:1.0.0-dev.5
+      '@coodev/react': workspace:*
+      '@coodev/test': workspace:*
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
       react: ^18.1.0
@@ -52,7 +52,7 @@ importers:
 
   examples/custom-server:
     specifiers:
-      '@coodev/react': workspace:1.0.0-dev.5
+      '@coodev/react': workspace:*
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
       cross-env: ^7.0.3
@@ -90,7 +90,7 @@ importers:
 
   packages/react:
     specifiers:
-      '@coodev/core': workspace:1.0.0-dev.5
+      '@coodev/core': workspace:*
       '@types/node': ^17.0.32
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
@@ -1383,15 +1383,6 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
-    dev: false
-
-  /rollup/3.15.0:
-    resolution: {integrity: sha512-F9hrCAhnp5/zx/7HYmftvsNBkMfLfk/dXUh73hPSM2E3CRgap65orDNJbLetoiUFwSAk6iHPLvBrZ5iHYvzqsg==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
@@ -1714,7 +1705,7 @@ packages:
       esbuild: 0.16.17
       postcss: 8.4.21
       resolve: 1.22.1
-      rollup: 3.15.0
+      rollup: 3.13.0
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

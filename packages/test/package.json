@@ -1,6 +1,6 @@
 {
   "name": "@coodev/test",
-  "version": "1.0.0-dev.5",
+  "version": "1.0.0-dev.6",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "license": "MIT",
