@@ -5,20 +5,12 @@
 ### Install
 
 ```bash
-npm i @coodev/react
-```
-
-If you want to use `typescript`, you need to install `typescript`
-
-```bash
-npm i typescript -D
+npm i @coodev/react react react-dom
 ```
 
 #### Create pages
 
-Create page component in `src/pages` directory
-
-for example `src/pages/index.tsx`
+Create page component in `pages` directory, for example `pages/index.tsx`
 
 ```typescript
 import React from 'react'

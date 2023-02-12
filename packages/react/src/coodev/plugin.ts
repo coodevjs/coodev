@@ -98,16 +98,16 @@ export function coodevReactPlugin(): Coodev.Plugin {
         ],
       }
 
+      const clientEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
+      const serverEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'server.tsx')
+
       if (!options.dev) {
         if (options.isClient) {
           const outputDirName = path.basename(outputDir)
           const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
 
           const htmlRelativeName = outputDirName + path.sep + 'main.html'
-          const clientEntryPath = path.join(
-            COODEV_REACT_SOURCE_DIR,
-            'client.tsx',
-          )
+
           const relativePath = path
             .relative(root, clientEntryPath)
             .replace(/\\/g, '/')
@@ -157,10 +157,6 @@ export function coodevReactPlugin(): Coodev.Plugin {
             },
           }
         } else {
-          const serverEntryPath = path.join(
-            COODEV_REACT_SOURCE_DIR,
-            'server.tsx',
-          )
           coodevReactConfig.build = {
             ...coodevReactConfig.build,
             ssr: serverEntryPath,
@@ -173,9 +169,6 @@ export function coodevReactPlugin(): Coodev.Plugin {
           }
         }
       } else {
-        const clientEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'client.tsx')
-        const serverEntryPath = path.join(COODEV_REACT_SOURCE_DIR, 'server.tsx')
-
         coodevReactConfig.build = {
           ...coodevReactConfig.build,
           rollupOptions: {
