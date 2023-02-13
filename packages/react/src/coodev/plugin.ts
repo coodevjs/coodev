@@ -107,7 +107,7 @@ export function coodevReactPlugin(): Plugin {
           const outputDirName = path.basename(outputDir)
           const dynamicGeneratedHtmlPath = path.join(outputDir, 'main.html')
 
-          const htmlRelativeName = outputDirName + path.sep + 'main.html'
+          const htmlRelativeName = `${outputDirName}/main.html`
 
           const relativePath = path
             .relative(root, clientEntryPath)

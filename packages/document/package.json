@@ -1,7 +1,7 @@
 {
   "name": "@coodev/document",
   "version": "1.0.0-dev.7",
-  "description": "> TODO: description",
+  "description": "Node document object model",
   "author": "wokeyi <wokeyifrontend@gmail.com>",
   "homepage": "https://github.com/panghu-huang/coodev#readme",
   "typings": "./src/index.ts",

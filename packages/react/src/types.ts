@@ -44,3 +44,14 @@ export interface Router extends BaseRouter {
 export interface GlobalData {
   pageProps: object
 }
+
+declare global {
+  namespace React {
+    interface ComponentClass<P = {}> {
+      getInitialProps?: (...args: any[]) => any
+    }
+    interface FunctionComponent<P = {}> {
+      getInitialProps?: (...args: any[]) => any
+    }
+  }
+}

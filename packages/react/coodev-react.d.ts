@@ -3,15 +3,6 @@ type ReactCoodevConfiguration = import('./src/types').ReactCoodevConfiguration
 type InternalRouteConfig = import('./src/types').InternalRouteConfig
 type AppProps = import('./src/types').AppProps
 
-namespace React {
-  interface ComponentClass<P = {}> {
-    getInitialProps?: (...args: any[]) => any
-  }
-  interface FunctionComponent<P = {}> {
-    getInitialProps?: (...args: any[]) => any
-  }
-}
-
 declare module '__COODEV__/react/routes' {
   const routes: InternalRouteConfig[]
   export default routes

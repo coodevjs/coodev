@@ -1,9 +1,14 @@
 {
   "name": "@coodev/core",
-  "version": "1.0.0-dev.7",
+  "version": "1.0.0-dev.8",
   "main": "./lib/index.js",
   "license": "MIT",
+  "description": "Core library for Coodev",
   "types": "./index.d.ts",
+  "files": [
+    "lib",
+    "index.d.ts"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json -w"
