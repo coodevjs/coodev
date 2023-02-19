@@ -28,6 +28,8 @@ function normalizeCoodevConfig(
       root = path.resolve(rootDir, coodevConfig.root)
     }
   }
+
+  const serverConfig = coodevConfig.server ?? {}
   return {
     ...coodevConfig,
     dev: coodevConfig.dev ?? process.env.NODE_ENV !== 'production',
@@ -37,7 +39,8 @@ function normalizeCoodevConfig(
     ssr: coodevConfig.ssr ?? true,
     plugins: coodevConfig.plugins ?? [],
     server: {
-      port: coodevConfig.server?.port ?? 3000,
+      host: serverConfig.host ?? '0.0.0.0',
+      port: serverConfig.port ?? 3000,
     },
   }
 }
