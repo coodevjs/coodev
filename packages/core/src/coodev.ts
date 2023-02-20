@@ -1,4 +1,6 @@
 import * as http from 'http'
+import * as fs from 'fs'
+import * as path from 'path'
 import type { ViteDevServer } from 'vite'
 import { createServer as createViteServer, mergeConfig, build } from 'vite'
 import * as connect from 'connect'
@@ -75,6 +77,14 @@ class CoodevImpl implements Coodev {
 
     if (dev || ssr !== false) {
       this.initializeMiddlewares()
+    } else {
+      this.middlewares.use((req, res) => {
+        // Send index.html for all requests
+        res.setHeader('Content-Type', 'text/html')
+        const stream = fs.createReadStream(path.join(outputDir, 'index.html'))
+
+        stream.pipe(res)
+      })
     }
 
     for (const postHook of postHooks) {
@@ -87,11 +97,11 @@ class CoodevImpl implements Coodev {
 
     const server = http.createServer(this.middlewares)
 
-    const { port } = this.coodevConfig.server
+    const { port, host } = this.coodevConfig.server
 
-    server.listen(port, '0.0.0.0')
+    server.listen(port, host)
 
-    console.log(`> Coodev server is running on http://localhost:${port}`)
+    console.log(`> Coodev server is running on http://${host}:${port}`)
   }
 
   public async build() {

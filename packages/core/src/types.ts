@@ -100,6 +100,7 @@ export interface Coodev {
 }
 
 export interface ServerConfiguration {
+  host?: string
   port?: number
 }
 
@@ -114,4 +115,6 @@ export interface Configuration {
   server?: ServerConfiguration
 }
 
-export type InternalConfiguration = Required<Configuration>
+export interface InternalConfiguration extends Required<Configuration> {
+  server: Required<ServerConfiguration>
+}
