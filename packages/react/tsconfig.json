@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "module": "ESNext"
+    "module": "ESNext",
+    "resolveJsonModule": true
   },
   "include": ["index.d.ts", "coodev-react.d.ts", "src"]
 }

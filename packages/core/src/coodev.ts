@@ -33,8 +33,13 @@ class CoodevImpl implements Coodev {
     this.renderer = options.renderer
 
     this._coodevConfig = loadCoodevConfig({
+      root: options.root,
       dev: options.dev,
       ssr: options.ssr,
+      server: {
+        port: options.port,
+        host: options.host,
+      },
       plugins: options.plugins,
     })
 

@@ -5,5 +5,5 @@
     "module": "CommonJS",
     "declaration": false
   },
-  "include": ["src/coodev/*", "coodev-react.d.ts"]
+  "include": ["src/coodev/**/*", "coodev-react.d.ts"]
 }

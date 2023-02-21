@@ -61,6 +61,10 @@ export function loadCoodevConfig(inlineCoodevConfig: Configuration) {
     return normalizeCoodevConfig({
       ...inlineCoodevConfig,
       ...userCoodevConfig,
+      server: {
+        ...inlineCoodevConfig.server,
+        ...userCoodevConfig.server,
+      },
       plugins: [
         ...(inlineCoodevConfig.plugins || []),
         ...(userCoodevConfig.plugins || []),

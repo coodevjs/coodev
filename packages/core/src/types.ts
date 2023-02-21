@@ -79,13 +79,12 @@ export type PluginConfiguration = Plugin | Plugin[]
 
 export interface CoodevOptions {
   dev?: boolean
+  root?: string
+  port?: number
+  host?: string
   ssr?: SSRConfig
   renderer: Renderer
   plugins?: PluginConfiguration[]
-}
-
-export interface CoodevStartOptions {
-  port?: number
 }
 
 export interface Coodev {
@@ -93,7 +92,7 @@ export interface Coodev {
   readonly middlewares: CoodevMiddlewares
   readonly coodevConfig: InternalConfiguration
   prepare(this: Coodev): Promise<void>
-  start(this: Coodev, options: CoodevStartOptions): void
+  start(this: Coodev): Promise<void>
   build(this: Coodev): Promise<void>
   getDocumentHtml(this: Coodev): Promise<string>
   loadSSRModule<T extends Record<string, any>>(path: string): Promise<T>
