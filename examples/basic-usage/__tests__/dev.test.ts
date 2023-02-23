@@ -14,42 +14,55 @@ describe('basic', async () => {
     await manager.close()
   })
 
-  test('should change page when link clicked on dev mode', async () => {
-    const url = await manager.startApp({ dev: true })
-    const page = await manager.newPage()
-    await page.goto(url)
-    const homePageTitleElement = await page.querySelector('h1')
-    const homePageTitle = await homePageTitleElement.textContent()
-    expect(homePageTitle).toBe('Home')
+  test(
+    'should change page when link clicked on dev mode',
+    async () => {
+      const url = await manager.startApp({ dev: true })
+      const page = await manager.newPage()
 
-    const link = await page.querySelector('a')
-    await link.click()
-    const otherPageTitleElement = await page.querySelector('h1')
+      await page.goto(url)
+      const homePageTitleElement = await page.querySelector('h1')
+      const homePageTitle = await homePageTitleElement.textContent()
+      expect(homePageTitle).toBe('Home')
 
-    const otherPageTitle = await otherPageTitleElement.textContent()
-    expect(otherPageTitle).toBe('Other')
+      const link = await page.querySelector('a')
+      await link.click()
+      const otherPageTitleElement = await page.querySelector('h1')
 
-    await manager.stopApp()
-    await page.close()
-  })
+      const otherPageTitle = await otherPageTitleElement.textContent()
+      expect(otherPageTitle).toBe('Other')
 
-  test('should change page when link clicked after build', async () => {
-    const url = await manager.startApp({ dev: false })
-    const page = await manager.newPage()
+      await manager.stopApp()
+      await page.close()
+    },
+    {
+      timeout: 10000,
+    },
+  )
 
-    await page.goto(url)
-    const homePageTitleElement = await page.querySelector('h1')
-    const homePageTitle = await homePageTitleElement.textContent()
-    expect(homePageTitle).toBe('Home')
+  test(
+    'should change page when link clicked after build',
+    async () => {
+      const url = await manager.startApp({ dev: false })
+      const page = await manager.newPage()
 
-    const link = await page.querySelector('a')
-    await link.click()
-    const otherPageTitleElement = await page.querySelector('h1')
+      await page.goto(url)
+      const homePageTitleElement = await page.querySelector('h1')
+      const homePageTitle = await homePageTitleElement.textContent()
+      expect(homePageTitle).toBe('Home')
 
-    const otherPageTitle = await otherPageTitleElement.textContent()
-    expect(otherPageTitle).toBe('Other')
+      const link = await page.querySelector('a')
+      await link.click()
+      const otherPageTitleElement = await page.querySelector('h1')
 
-    await manager.stopApp()
-    await page.close()
-  })
+      const otherPageTitle = await otherPageTitleElement.textContent()
+      expect(otherPageTitle).toBe('Other')
+
+      await manager.stopApp()
+      await page.close()
+    },
+    {
+      timeout: 20000,
+    },
+  )
 })

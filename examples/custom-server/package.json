@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "node server.js",
     "build": "coodev-react build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "start": "cross-env NODE_ENV=production node server.js",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@coodev/react": "workspace:*",
@@ -11,7 +12,9 @@
     "react-dom": "^18.1.0"
   },
   "devDependencies": {
+    "@coodev/test": "workspace:*",
     "@types/react": "^18.0.8",
-    "@types/react-dom": "^18.0.3"
+    "@types/react-dom": "^18.0.3",
+    "vitest": "latest"
   }
 }

@@ -1,4 +1,5 @@
-import { Browser, chromium } from 'playwright-core'
+import { Browser, chromium, LaunchOptions } from 'playwright-core'
+import { type } from 'os'
 import { CoodevPage } from './page'
 
 export class CoodevBrowser {
@@ -9,10 +10,16 @@ export class CoodevBrowser {
   }
 
   async launch() {
-    this.browser = await chromium.launch({
-      channel: 'chrome',
+    const options: LaunchOptions = {
       headless: true,
-    })
+    }
+    if (type() === 'Windows_NT') {
+      options.executablePath =
+        'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+    } else {
+      options.channel = 'chrome'
+    }
+    this.browser = await chromium.launch(options)
   }
 
   async close() {

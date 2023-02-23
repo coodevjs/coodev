@@ -3,7 +3,7 @@
     "dev": "coodev-react",
     "build": "coodev-react build",
     "start": "coodev-react start",
-    "test": "vitest"
+    "test": "vitest --run"
   },
   "dependencies": {
     "@coodev/react": "workspace:*",

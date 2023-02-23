@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm run clean:libs && pnpm --filter \"./packages/**\" --filter !@coodev/document build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --workspace-concurrency=1 test",
     "clean:libs": "pnpm -r exec rimraf lib",
     "clean:node-modules": "pnpm -r exec rimraf node_modules && rimraf node_modules",
     "dev": "pnpm -C ./packages/core dev & pnpm -C ./packages/react dev"

@@ -19,6 +19,10 @@ export class CoodevPage {
     await this.page.close()
   }
 
+  public url() {
+    return this.page.url()
+  }
+
   public async title() {
     return this.page.title()
   }

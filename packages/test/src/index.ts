@@ -1,5 +1,11 @@
 import { spawn, ChildProcess } from 'child_process'
+import { getPortPromise } from 'portfinder'
 import { CoodevBrowser } from './browser'
+
+export interface StartAppOptions {
+  dev?: boolean
+  port?: number
+}
 
 export class CoodevTestManager {
   private readonly browser: CoodevBrowser
@@ -15,36 +21,54 @@ export class CoodevTestManager {
   }
 
   // return app running url
-  public async startApp({ dev = false }: { dev?: boolean }): Promise<string> {
-    let url = ''
+  public async startApp({
+    dev = false,
+    port,
+  }: StartAppOptions): Promise<string> {
+    if (!port) {
+      port = await getPortPromise({
+        port: 37483,
+      })
+    }
+
     const resolveOnServerStarted = (data: string) => {
       if (data.includes('Coodev server is running on')) {
-        const match = data.match(/http:\/\/localhost:(\d+)/)
-        if (match) {
-          url = `http://localhost:${match[1]}`
-        }
         return true
       }
       return false
     }
 
     if (dev) {
-      await this.runCommand('pnpm run dev', resolveOnServerStarted)
+      await this.runCommand(
+        `pnpm coodev-react --host localhost --port ${port}`,
+        resolveOnServerStarted,
+      )
     } else {
       await this.runCommand('pnpm run build')
-      await this.runCommand('pnpm run start', resolveOnServerStarted)
+      await this.runCommand(
+        `pnpm coodev-react start --host localhost --port ${port}`,
+        resolveOnServerStarted,
+      )
     }
 
-    return url
+    return `http://localhost:${port}`
   }
 
   public async stopApp() {
     if (this.runningChildProcess) {
       const promise = new Promise<void>(resolve => {
-        this.runningChildProcess!.on('close', () => {
+        const exit = () => {
           this.runningChildProcess = null
           resolve()
-        })
+        }
+
+        if (this.runningChildProcess) {
+          this.runningChildProcess.on('close', exit)
+
+          this.runningChildProcess.on('exit', exit)
+        } else {
+          resolve()
+        }
       })
       this.runningChildProcess.kill()
 

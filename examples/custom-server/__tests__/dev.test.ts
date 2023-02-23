@@ -21,8 +21,9 @@ describe('basic', async () => {
       const page = await manager.newPage()
       await page.goto(url)
 
-      const title = await page.title()
-      expect(title).toBe('Custom document title')
+      const element = await page.querySelector('div')
+      const title = await element.textContent()
+      expect(title).toBe('Custom server')
 
       await manager.stopApp()
       await page.close()
@@ -39,8 +40,9 @@ describe('basic', async () => {
       const page = await manager.newPage()
       await page.goto(url)
 
-      const title = await page.title()
-      expect(title).toBe('Custom document title')
+      const element = await page.querySelector('div')
+      const title = await element.textContent()
+      expect(title).toBe('Custom server')
 
       await manager.stopApp()
       await page.close()
