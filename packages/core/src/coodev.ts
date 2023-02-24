@@ -1,6 +1,7 @@
 import * as http from 'http'
 import * as fs from 'fs'
 import * as path from 'path'
+import { networkInterfaces } from 'os'
 import type { ViteDevServer } from 'vite'
 import { createServer as createViteServer, mergeConfig, build } from 'vite'
 import * as connect from 'connect'
@@ -104,9 +105,29 @@ class CoodevImpl implements Coodev {
 
     const { port, host } = this.coodevConfig.server
 
-    server.listen(port, host)
+    server.listen({
+      port,
+      host,
+      exclusive: true,
+    })
 
-    console.log(`> Coodev server is running on http://${host}:${port}`)
+    let hostname = host
+    if (host === '0.0.0.0') {
+      const interfaces = networkInterfaces()
+      for (const key in interfaces) {
+        const interfaceInfos = interfaces[key]
+        if (interfaceInfos) {
+          for (const interfaceInfo of interfaceInfos) {
+            if (!interfaceInfo.internal && interfaceInfo.family === 'IPv4') {
+              hostname = interfaceInfo.address
+              break
+            }
+          }
+        }
+      }
+    }
+
+    console.log(`> Coodev server is running on http://${hostname}:${port}`)
   }
 
   public async build() {
