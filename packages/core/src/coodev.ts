@@ -105,29 +105,25 @@ class CoodevImpl implements Coodev {
 
     const { port, host } = this.coodevConfig.server
 
-    server.listen({
-      port,
-      host,
-      exclusive: true,
-    })
-
-    let hostname = host
-    if (host === '0.0.0.0') {
-      const interfaces = networkInterfaces()
-      for (const key in interfaces) {
-        const interfaceInfos = interfaces[key]
-        if (interfaceInfos) {
-          for (const interfaceInfo of interfaceInfos) {
-            if (!interfaceInfo.internal && interfaceInfo.family === 'IPv4') {
-              hostname = interfaceInfo.address
-              break
+    server.listen(port, host, () => {
+      let hostname = host
+      if (host === '0.0.0.0') {
+        const interfaces = networkInterfaces()
+        for (const key in interfaces) {
+          const interfaceInfos = interfaces[key]
+          if (interfaceInfos) {
+            for (const interfaceInfo of interfaceInfos) {
+              if (!interfaceInfo.internal && interfaceInfo.family === 'IPv4') {
+                hostname = interfaceInfo.address
+                break
+              }
             }
           }
         }
       }
-    }
 
-    console.log(`> Coodev server is running on http://${hostname}:${port}`)
+      console.log(`> Coodev server is running on http://${hostname}:${port}`)
+    })
   }
 
   public async build() {
