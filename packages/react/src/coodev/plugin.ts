@@ -161,12 +161,13 @@ export function coodevReactPlugin(): Plugin {
           coodevReactConfig.build = {
             ...coodevReactConfig.build,
             ssr: serverEntryPath,
+            target: 'esnext',
             emptyOutDir: true,
-            lib: {
-              entry: serverEntryPath,
-              fileName: 'server.js',
-              formats: ['cjs'],
-            },
+            // lib: {
+            //   entry: serverEntryPath,
+            //   fileName: 'server.js',
+            //   formats: ['cjs'],
+            // },
           }
         }
       } else {

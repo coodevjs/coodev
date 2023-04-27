@@ -4,23 +4,30 @@ import type { GlobalData } from './types'
 import routes from '__COODEV__/react/routes'
 import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
+import App from '__COODEV__/react/app'
 import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
 import { findMatchedRoute } from './utils'
-
-let globalData: GlobalData = {
-  pageProps: {},
-}
-
-const scriptElement = document.getElementById(COODEV_DATA_ID)
-if (scriptElement) {
-  globalData = JSON.parse(scriptElement!.innerText)
-}
 
 const url = location.pathname + location.search
 
 const matched = findMatchedRoute(url, routes) || {
   component: null,
   path: null,
+}
+
+let globalData: GlobalData = {
+  pageProps: {},
+}
+
+if (coodevConfig.ssr) {
+  const scriptElement = document.getElementById(COODEV_DATA_ID)
+  if (scriptElement) {
+    globalData = JSON.parse(scriptElement!.innerText)
+  }
+} else if (App.getInitialProps) {
+  globalData.pageProps = await App.getInitialProps({
+    Component: matched.component,
+  })
 }
 
 const content = (

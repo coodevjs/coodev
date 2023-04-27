@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "dev": "coodev-react",
     "build": "coodev-react build",

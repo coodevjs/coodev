@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --es-module-specifier-resolution=node
 import { cac } from 'cac'
 import { start, CoodevStartOptions } from './start'
 import { build } from './build'

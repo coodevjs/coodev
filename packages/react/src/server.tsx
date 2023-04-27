@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { join } from 'path'
 import { access } from 'fs/promises'
-import { constants } from 'fs'
+import { constants, readFileSync } from 'fs'
 import {
   renderToString as _renderToString,
   renderToPipeableStream,
@@ -22,7 +22,7 @@ async function loadManifest(): Promise<Manifest> {
 
       await access(manifestPath, constants.R_OK)
 
-      return require(manifestPath)
+      return JSON.parse(readFileSync(manifestPath, 'utf-8'))
     } catch (error) {
       console.error(error)
     }

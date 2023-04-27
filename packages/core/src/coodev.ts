@@ -4,7 +4,7 @@ import * as path from 'path'
 import { networkInterfaces } from 'os'
 import type { ViteDevServer } from 'vite'
 import { createServer as createViteServer, mergeConfig, build } from 'vite'
-import * as connect from 'connect'
+import connect from 'connect'
 import { loadCoodevConfig } from './coodev-config'
 import type {
   InternalConfiguration,
@@ -25,27 +25,17 @@ import type {
 
 class CoodevImpl implements Coodev {
   public readonly renderer: Renderer
-  private readonly _coodevConfig: InternalConfiguration
+  private _coodevConfig: InternalConfiguration = {} as any
   private readonly _middlewares: CoodevMiddlewares
-  private readonly plugins: Plugin[] = []
+  private plugins: Plugin[] = []
   private viteServer: ViteDevServer | null = null
+  private readonly initializePromise: Promise<void>
 
-  constructor(options: CoodevOptions) {
+  constructor(private readonly options: CoodevOptions) {
     this.renderer = options.renderer
-
-    this._coodevConfig = loadCoodevConfig({
-      root: options.root,
-      dev: options.dev,
-      ssr: options.ssr,
-      server: {
-        port: options.port,
-        host: options.host,
-      },
-      plugins: options.plugins,
-    })
-
     this._middlewares = connect()
-    this.plugins = this.normalizePlugins(this.coodevConfig.plugins)
+
+    this.initializePromise = this.initialize(options)
   }
 
   public get middlewares() {
@@ -57,6 +47,8 @@ class CoodevImpl implements Coodev {
   }
 
   public async prepare() {
+    await this.initializePromise
+
     const postHooks: (() => void)[] = []
     for (const plugin of this.plugins) {
       if (plugin.configureCoodev) {
@@ -76,7 +68,8 @@ class CoodevImpl implements Coodev {
     if (dev) {
       await this.initializeViteServer()
     } else {
-      const serveStatic = require('serve-static')
+      // @ts-ignore
+      const { default: serveStatic } = await import('serve-static')
 
       this.middlewares.use(serveStatic(outputDir))
     }
@@ -127,6 +120,8 @@ class CoodevImpl implements Coodev {
   }
 
   public async build() {
+    await this.initializePromise
+
     const postHooks: (() => void)[] = []
     for (const plugin of this.plugins) {
       if (plugin.configureCoodev) {
@@ -200,6 +195,20 @@ class CoodevImpl implements Coodev {
       throw new Error('Vite server is not initialized')
     }
     return this.viteServer.ssrLoadModule(module) as any
+  }
+
+  private async initialize(options: CoodevOptions) {
+    this._coodevConfig = await loadCoodevConfig({
+      root: options.root,
+      dev: options.dev,
+      ssr: options.ssr,
+      server: {
+        port: options.port,
+        host: options.host,
+      },
+    })
+
+    this.plugins = this.normalizePlugins(this.coodevConfig.plugins)
   }
 
   private async callBuildEndHook(

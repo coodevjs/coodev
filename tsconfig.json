@@ -5,7 +5,7 @@
     "allowJs": true,
     "checkJs": false,
     "declaration": true,
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -16,7 +16,7 @@
     "strict": true,
     "lib": ["es6", "dom", "ES2021"],
     "jsx": "react",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "target": "ES2017"
   },

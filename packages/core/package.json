@@ -2,6 +2,17 @@
   "name": "@coodev/core",
   "version": "1.0.0-dev.10",
   "main": "./lib/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    },
+    "./lib": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    }
+  },
   "license": "MIT",
   "description": "Core library for Coodev",
   "types": "./index.d.ts",

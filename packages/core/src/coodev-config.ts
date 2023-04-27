@@ -45,7 +45,7 @@ function normalizeCoodevConfig(
   }
 }
 
-export function loadCoodevConfig(inlineCoodevConfig: Configuration) {
+export async function loadCoodevConfig(inlineCoodevConfig: Configuration) {
   const rootDir = process.cwd()
 
   const configPath = path.format({
@@ -56,7 +56,7 @@ export function loadCoodevConfig(inlineCoodevConfig: Configuration) {
 
   if (fs.existsSync(configPath)) {
     console.log(`> Loading coodev config from \`${configPath}\``)
-    const userCoodevConfig = require(configPath)
+    const userCoodevConfig = await import(`file://${configPath}`)
 
     return normalizeCoodevConfig({
       ...inlineCoodevConfig,

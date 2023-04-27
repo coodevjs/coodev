@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as fs from 'fs'
 import type {
   Renderer,
   Coodev,
@@ -56,8 +57,13 @@ export class CoodevReactRenderer implements Renderer {
 
   private async getServerEntryModule(coodev: Coodev) {
     if (!coodev.coodevConfig.dev) {
-      const entryPath = path.join(coodev.coodevConfig.outputDir, 'server.js')
-      return require(entryPath)
+      let entryPath = path.join(coodev.coodevConfig.outputDir, 'server.js')
+
+      if (!fs.existsSync(entryPath)) {
+        entryPath = path.join(coodev.coodevConfig.outputDir, 'server.mjs')
+      }
+
+      return import(`file://${entryPath}`)
     }
 
     return coodev.loadSSRModule<ServerEntryModule>(this.serverEntryPath)
