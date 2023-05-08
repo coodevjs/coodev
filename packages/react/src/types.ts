@@ -12,6 +12,7 @@ export interface ReactRenderContext {
   req: Request
   res: Response
   Component: ComponentType<any> | null
+  params: object
 }
 
 export interface RouteConfig {
@@ -30,6 +31,7 @@ export interface ReactCoodevConfiguration extends Required<Configuration> {
 export interface AppProps<T = any> {
   Component: ComponentType<any> | null
   pageProps: T
+  params: object
 }
 
 export interface InternalRouteConfig {

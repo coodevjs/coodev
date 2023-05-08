@@ -6,7 +6,7 @@ import {
   renderToString as _renderToString,
   renderToPipeableStream,
 } from 'react-dom/server'
-import { findMatchedRoute } from './utils'
+import { findMatchedRoute, matchParams } from './utils'
 import { ServerContext, Manifest } from './contexts/server'
 import type { RenderContext } from '@coodev/core'
 import Document from '__COODEV__/react/document'
@@ -43,9 +43,12 @@ async function renderApp<T>(
 
   let pageProps = {}
   if (App.getInitialProps) {
+    const params = matchParams(matched.path || '/', url)
+
     pageProps = await App.getInitialProps({
       req,
       Component: matched.component,
+      params,
     })
   }
 

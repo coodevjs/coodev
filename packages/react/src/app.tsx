@@ -5,9 +5,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   return Component ? <Component {...pageProps} /> : null
 }
 
-App.getInitialProps = async ({ Component, req, res }: ReactRenderContext) => {
+App.getInitialProps = async ({ Component, ...rest }: ReactRenderContext) => {
   const pageProps = Component?.getInitialProps
-    ? await Component.getInitialProps({ req, res })
+    ? await Component.getInitialProps(rest)
     : {}
 
   return pageProps

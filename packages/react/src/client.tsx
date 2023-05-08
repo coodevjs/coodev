@@ -6,7 +6,7 @@ import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
 import App from '__COODEV__/react/app'
 import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
-import { findMatchedRoute } from './utils'
+import { findMatchedRoute, matchParams } from './utils'
 ;(async () => {
   const url = location.pathname + location.search
 
@@ -25,8 +25,11 @@ import { findMatchedRoute } from './utils'
       globalData = JSON.parse(scriptElement!.innerText)
     }
   } else if (App.getInitialProps) {
+    const params = matchParams(matched.path || '/', url)
+
     globalData.pageProps = await App.getInitialProps({
       Component: matched.component,
+      params,
     })
   }
 

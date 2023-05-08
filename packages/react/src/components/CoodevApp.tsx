@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { match } from 'path-to-regexp'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
 import { RouterContext } from '../contexts/router'
 import { router } from '../router/router'
-import { findMatchedRoute } from '../utils'
+import { findMatchedRoute, matchParams } from '../utils'
 
 interface CoodevAppProps {
   url: string
@@ -15,11 +14,6 @@ interface CoodevAppProps {
 
 interface Config extends Omit<CoodevAppProps, 'url'> {
   params: object
-}
-
-function matchParams(path: string, pathname: string) {
-  const matched = match(path)(pathname)
-  return matched ? matched.params : {}
 }
 
 function CoodevApp(props: CoodevAppProps) {
@@ -57,6 +51,7 @@ function CoodevApp(props: CoodevAppProps) {
       if (App.getInitialProps) {
         pageProps = await App.getInitialProps({
           Component: configRef.current.Component,
+          params: configRef.current.params,
         })
       }
 
@@ -77,6 +72,7 @@ function CoodevApp(props: CoodevAppProps) {
       <App
         Component={configRef.current.Component}
         pageProps={configRef.current.pageProps}
+        params={configRef.current.params}
       />
     </RouterContext.Provider>
   )

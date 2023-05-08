@@ -1,9 +1,26 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
+    "baseUrl": ".",
+    "outDir": "lib",
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "allowSyntheticDefaultImports": false,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "importHelpers": false,
+    "noUnusedLocals": false,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "lib": ["es6", "dom", "ES2021"],
+    "jsx": "react",
+    "moduleResolution": "node",
+    "target": "ES2017",
     "module": "ESNext",
     "resolveJsonModule": true
   },
-  "include": ["index.d.ts", "coodev-react.d.ts", "src"]
+  "include": ["index.d.ts", "coodev-react.d.ts", "src"],
+  "exclude": ["node_modules", "lib"]
 }

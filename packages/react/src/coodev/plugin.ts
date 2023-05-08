@@ -26,21 +26,17 @@ function parseRouteConfig(root: string): RouteConfig[] {
         parseRoutes(childFilePath)
       }
     } else if (stats.isFile()) {
-      const { ext, name, dir } = path.parse(filePath)
+      const { ext, name } = path.parse(filePath)
       const availableExtensions = ['.tsx', '.js', '.jsx']
       if (availableExtensions.includes(ext)) {
-        const formatted = path.format({
-          dir,
-          name: name ? name.replace(/^\$/, ':') : name,
-          ext,
-        })
         const relativePath = path
           .relative(
             basePath,
-            name === 'index' ? path.dirname(formatted) : formatted,
+            name === 'index' ? path.dirname(filePath) : filePath,
           )
           .replace(/\\/g, '/')
           .replace(new RegExp(`${ext}$`), '')
+          .replace(/\/\$/g, '/:')
 
         const normalized = relativePath.startsWith('/')
           ? relativePath

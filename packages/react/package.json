@@ -1,6 +1,6 @@
 {
   "name": "@coodev/react",
-  "version": "1.0.0-dev.11",
+  "version": "1.0.0-dev.13",
   "main": "index.js",
   "types": "index.d.ts",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "index.d.ts",
     "index.js",
     "link.ts",
+    "types.ts",
     "README.md",
     "router.ts",
     "tsconfig.build.json",

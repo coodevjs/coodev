@@ -1,5 +1,11 @@
 import { pathToRegexp } from 'path-to-regexp'
+import { match } from 'path-to-regexp'
 import type { InternalRouteConfig } from '../types'
+
+export function matchParams(path: string, pathname: string) {
+  const matched = match(path)(pathname)
+  return matched ? matched.params : {}
+}
 
 export function findMatchedRoute(
   path: string,
