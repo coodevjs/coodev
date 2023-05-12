@@ -71,15 +71,17 @@ export function coodevReactPlugin(): Plugin {
         routing,
         routes: userRoutes,
         outputDir,
+        srcDir,
         publicPath,
       } = coodev.coodevConfig as ReactCoodevConfiguration
-      const routes = userRoutes ?? parseRouteConfig(root)
+      const routes = userRoutes ?? parseRouteConfig(srcDir)
 
       const coodevReactConfig: ViteConfig = {
         plugins: [
           react(),
           coodevReact({
             root,
+            srcDir,
             routes,
             coodevConfig: {
               root,
@@ -190,6 +192,10 @@ export function coodevReactPlugin(): Plugin {
           'main.html',
         )
         fs.writeFileSync(dynamicGeneratedHtmlPath, documentHtml)
+
+        if (!coodev.coodevConfig.ssr) {
+          fs.rmSync(path.join(coodev.coodevConfig.outputDir, 'server.js'))
+        }
       }
     },
   }

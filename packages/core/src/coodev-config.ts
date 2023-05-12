@@ -29,13 +29,32 @@ function normalizeCoodevConfig(
     }
   }
 
+  let srcDir = rootDir
+  if (coodevConfig.srcDir) {
+    if (path.isAbsolute(coodevConfig.srcDir)) {
+      srcDir = coodevConfig.srcDir
+    } else {
+      srcDir = path.resolve(rootDir, coodevConfig.srcDir)
+    }
+  }
+
+  let outputDir = coodevConfig.outputDir
+  if (outputDir) {
+    if (!path.isAbsolute(outputDir)) {
+      outputDir = path.resolve(rootDir, outputDir)
+    }
+  } else {
+    outputDir = path.join(root, 'dist')
+  }
+
   const serverConfig = coodevConfig.server ?? {}
   return {
     ...coodevConfig,
     dev: coodevConfig.dev ?? process.env.NODE_ENV !== 'production',
     root,
+    srcDir,
     publicPath: normalizePublicPath(coodevConfig.publicPath),
-    outputDir: coodevConfig.outputDir ?? path.join(root, 'dist'),
+    outputDir,
     ssr: coodevConfig.ssr ?? true,
     plugins: coodevConfig.plugins ?? [],
     server: {

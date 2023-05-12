@@ -108,6 +108,7 @@ export interface Configuration {
   root?: string
   dev?: boolean
   ssr?: SSRConfig
+  srcDir?: string
   outputDir?: string
   plugins?: PluginConfiguration[]
   publicPath?: string

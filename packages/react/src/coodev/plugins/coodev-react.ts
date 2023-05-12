@@ -14,6 +14,7 @@ const COODEV_RUNTIME_REACT_CLIENT = '/@coodev/react/client'
 
 export interface ViteCoodevReactPluginOptions {
   root: string
+  srcDir: string
   coodevConfig: ReactCoodevConfiguration
   routes: RouteConfig[]
 }
@@ -44,9 +45,9 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     resolveId(id) {
       switch (id) {
         case COODEV_REACT_APP:
-          return findAvailableFile(opts.root, 'app')
+          return findAvailableFile(opts.srcDir, 'app')
         case COODEV_REACT_DOCUMENT:
-          return findAvailableFile(opts.root, 'document')
+          return findAvailableFile(opts.srcDir, 'document')
         case COODEV_REACT_ROUTES:
         case COODEV_REACT_CONFIG:
           return id
