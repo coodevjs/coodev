@@ -36,14 +36,13 @@ function parseRouteConfig(root: string): RouteConfig[] {
           )
           .replace(/\\/g, '/')
           .replace(new RegExp(`${ext}$`), '')
-          .replace(/\/\$/g, '/:')
 
         const normalized = relativePath.startsWith('/')
           ? relativePath
           : '/' + relativePath
 
         routes.push({
-          path: normalized,
+          path: normalized.replace(/\/\$/g, '/:'),
           component: filePath,
         })
       }
