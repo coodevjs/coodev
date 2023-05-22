@@ -5,7 +5,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <h1>Home</h1>
-      <Link to="/other">other</Link>
+      <Link to="/other?a=1&b=2">other</Link>
       <Link to="/coodevjs/coodev/workflow-runs">
         coodevjs/coodev workflow runs
       </Link>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import type { GlobalData } from './types'
+import type { GlobalData, ReactRenderContext } from './types'
 import routes from '__COODEV__/react/routes'
 import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
@@ -26,11 +26,12 @@ import { findMatchedRoute, matchParams } from './utils'
     }
   } else if (App.getInitialProps) {
     const params = matchParams(matched.path || '/', url)
-
-    globalData.pageProps = await App.getInitialProps({
+    const context: ReactRenderContext = {
       Component: matched.component,
       params,
-    })
+      url,
+    }
+    globalData.pageProps = await App.getInitialProps(context)
   }
 
   const content = (

@@ -4,6 +4,7 @@ import routes from '__COODEV__/react/routes'
 import { RouterContext } from '../contexts/router'
 import { router } from '../router/router'
 import { findMatchedRoute, matchParams } from '../utils'
+import type { ReactRenderContext } from '../types'
 
 interface CoodevAppProps {
   url: string
@@ -36,7 +37,7 @@ function CoodevApp(props: CoodevAppProps) {
   })
 
   React.useEffect(() => {
-    const unlisten = router.listen(async ({ location, action }) => {
+    const unlisten = router.listen(async ({ location }) => {
       const matched = findMatchedRoute(location.pathname, routes)
       if (matched) {
         configRef.current.Component = matched.component
@@ -49,10 +50,12 @@ function CoodevApp(props: CoodevAppProps) {
 
       let pageProps = {}
       if (App.getInitialProps) {
-        pageProps = await App.getInitialProps({
+        const context: ReactRenderContext = {
           Component: configRef.current.Component,
           params: configRef.current.params,
-        })
+          url: location.pathname + location.search,
+        }
+        pageProps = await App.getInitialProps(context)
       }
 
       configRef.current.pageProps = pageProps

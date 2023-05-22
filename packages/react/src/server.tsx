@@ -8,6 +8,7 @@ import {
 } from 'react-dom/server'
 import { findMatchedRoute, matchParams } from './utils'
 import { ServerContext, Manifest } from './contexts/server'
+import type { ReactRenderContext } from './types'
 import type { RenderContext } from '@coodev/core'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
@@ -31,7 +32,7 @@ async function loadManifest(): Promise<Manifest> {
 }
 
 async function renderApp<T>(
-  { req }: RenderContext,
+  { req, res }: RenderContext,
   callback: (content: React.ReactElement) => T,
 ): Promise<T | void> {
   const url = req.url || '/'
@@ -45,11 +46,14 @@ async function renderApp<T>(
   if (App.getInitialProps) {
     const params = matchParams(matched.path || '/', url)
 
-    pageProps = await App.getInitialProps({
+    const context: ReactRenderContext = {
+      url,
       req,
+      res,
       Component: matched.component,
       params,
-    })
+    }
+    pageProps = await App.getInitialProps(context)
   }
 
   const manifest = await loadManifest()

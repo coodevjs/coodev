@@ -9,9 +9,10 @@ import type { Request, Response, Configuration } from '@coodev/core'
 export { Location, RouteUpdateListener }
 
 export interface ReactRenderContext {
-  req: Request
-  res: Response
+  req?: Request
+  res?: Response
   Component: ComponentType<any> | null
+  url: string
   params: object
 }
 
