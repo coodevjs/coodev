@@ -1,11 +1,12 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
+import { getGlobalData } from './config'
 import type { GlobalData, ReactRenderContext } from './types'
 import routes from '__COODEV__/react/routes'
 import coodevConfig from '__COODEV__/react/config'
 import CoodevApp from './components/CoodevApp'
 import App from '__COODEV__/react/app'
-import { COODEV_APP_ID, COODEV_DATA_ID } from './constants'
+import { COODEV_APP_ID } from './constants'
 import { findMatchedRoute, matchParams } from './utils'
 ;(async () => {
   const url = location.pathname + location.search
@@ -15,16 +16,9 @@ import { findMatchedRoute, matchParams } from './utils'
     path: null,
   }
 
-  let globalData: GlobalData = {
-    pageProps: {},
-  }
+  let globalData: GlobalData = getGlobalData()
 
-  if (coodevConfig.ssr) {
-    const scriptElement = document.getElementById(COODEV_DATA_ID)
-    if (scriptElement) {
-      globalData = JSON.parse(scriptElement!.innerText)
-    }
-  } else if (App.getInitialProps) {
+  if (!coodevConfig.ssr && App.getInitialProps) {
     const params = matchParams(matched.path || '/', url)
     const context: ReactRenderContext = {
       Component: matched.component,

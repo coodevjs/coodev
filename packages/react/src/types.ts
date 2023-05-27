@@ -29,6 +29,11 @@ export interface ReactCoodevConfiguration extends Required<Configuration> {
   routing?: 'lazy'
 }
 
+export type SerializedConfiguration = Pick<
+  ReactCoodevConfiguration,
+  'ssr' | 'dev' | 'routing' | 'publicPath' | 'runtimeConfig'
+>
+
 export interface AppProps<T = any> {
   Component: ComponentType<any> | null
   pageProps: T
@@ -46,6 +51,8 @@ export interface Router extends BaseRouter {
 
 export interface GlobalData {
   pageProps: object
+  publicPath: string
+  runtimeConfig: RuntimeConfig
 }
 
 declare global {

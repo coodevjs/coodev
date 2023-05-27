@@ -8,17 +8,18 @@ import {
 } from 'react-dom/server'
 import { findMatchedRoute, matchParams } from './utils'
 import { ServerContext, Manifest } from './contexts/server'
-import type { ReactRenderContext } from './types'
+import type { ReactRenderContext, ReactCoodevConfiguration } from './types'
 import type { RenderContext } from '@coodev/core'
 import Document from '__COODEV__/react/document'
 import App from '__COODEV__/react/app'
 import routes from '__COODEV__/react/routes'
-import coodevConfig from '__COODEV__/react/config'
 
-async function loadManifest(): Promise<Manifest> {
-  if (!coodevConfig.dev) {
+async function loadManifest(
+  config: ReactCoodevConfiguration,
+): Promise<Manifest> {
+  if (!config.dev) {
     try {
-      const outputDir = coodevConfig.outputDir
+      const outputDir = config.outputDir
       const manifestPath = join(outputDir!, 'manifest.json')
 
       await access(manifestPath, constants.R_OK)
@@ -32,10 +33,11 @@ async function loadManifest(): Promise<Manifest> {
 }
 
 async function renderApp<T>(
-  { req, res }: RenderContext,
+  { req, res, coodevConfig }: RenderContext,
   callback: (content: React.ReactElement) => T,
 ): Promise<T | void> {
   const url = req.url || '/'
+  const config = coodevConfig as ReactCoodevConfiguration
 
   const matched = findMatchedRoute(url, routes) || {
     component: null,
@@ -56,7 +58,7 @@ async function renderApp<T>(
     pageProps = await App.getInitialProps(context)
   }
 
-  const manifest = await loadManifest()
+  const manifest = await loadManifest(config)
 
   return callback(
     <ServerContext.Provider
@@ -66,6 +68,7 @@ async function renderApp<T>(
         url,
         pageProps,
         manifest,
+        coodevConfig: config,
       }}
     >
       <Document />
@@ -90,5 +93,13 @@ export async function renderToString(ctx: RenderContext) {
 }
 
 export async function getDocumentHtml(ctx: RenderContext) {
-  return _renderToString(<Document />).replace('data-reactroot=""', '')
+  return _renderToString(
+    <ServerContext.Provider
+      value={{
+        coodevConfig: ctx.coodevConfig,
+      }}
+    >
+      <Document />
+    </ServerContext.Provider>,
+  ).replace('data-reactroot=""', '')
 }

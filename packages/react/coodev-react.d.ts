@@ -1,5 +1,5 @@
 type ComponentType<P> = import('react').ComponentType<P>
-type ReactCoodevConfiguration = import('./src/types').ReactCoodevConfiguration
+type SerializedConfiguration = import('./src/types').SerializedConfiguration
 type InternalRouteConfig = import('./src/types').InternalRouteConfig
 type AppProps = import('./src/types').AppProps
 
@@ -23,7 +23,7 @@ declare module '__COODEV__/react/document' {
 }
 
 declare module '__COODEV__/react/config' {
-  const config: ReactCoodevConfiguration
+  const config: SerializedConfiguration
 
   export default config
 }

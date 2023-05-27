@@ -1,7 +1,7 @@
 import * as React from 'react'
-import coodevConfig from '__COODEV__/react/config'
 import { ServerContext } from '../contexts/server'
 import { COODEV_DATA_ID } from '../constants'
+import type { GlobalData } from '../types'
 
 const ESCAPE_LOOKUP: { [match: string]: string } = {
   '&': '\\u0026',
@@ -18,8 +18,15 @@ function htmlEscapeJsonString(str: string): string {
 }
 
 const CoodevScript: React.FC = () => {
+  const context = React.useContext(ServerContext)
+  const coodevConfig = context.coodevConfig
   const publicPath = coodevConfig.publicPath as string
-  const { pageProps = {} } = React.useContext(ServerContext)
+
+  const globalData: GlobalData = {
+    publicPath,
+    pageProps: 'pageProps' in context ? context.pageProps : {},
+    runtimeConfig: coodevConfig.runtimeConfig || {},
+  }
   return (
     <>
       {coodevConfig.ssr !== false && (
@@ -27,7 +34,7 @@ const CoodevScript: React.FC = () => {
           type="application/json"
           id={COODEV_DATA_ID}
           dangerouslySetInnerHTML={{
-            __html: htmlEscapeJsonString(JSON.stringify({ pageProps })),
+            __html: htmlEscapeJsonString(JSON.stringify(globalData)),
           }}
         />
       )}

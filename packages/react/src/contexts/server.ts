@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { ReactCoodevConfiguration } from '../types'
 
 export type Manifest = Record<string, ManifestChunk>
 
@@ -13,12 +14,19 @@ export interface ManifestChunk {
   dynamicImports?: string[]
 }
 
-interface ServerContextType {
+interface SSRServerContextType {
   url: string
   path: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
   manifest: Manifest
+  coodevConfig: ReactCoodevConfiguration
 }
 
-export const ServerContext = React.createContext<ServerContextType>({} as any)
+interface CSRServerContextType {
+  coodevConfig: ReactCoodevConfiguration
+}
+
+export const ServerContext = React.createContext<
+  CSRServerContextType | SSRServerContextType
+>({} as any)

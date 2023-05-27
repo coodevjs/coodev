@@ -15,12 +15,14 @@ export interface RenderContext {
   req: Request
   res: Response
   next: NextFunction
+  coodevConfig: InternalConfiguration
 }
 
 export interface DocumentHtmlRenderContext {
   req?: Request
   res?: Response
   next: NextFunction
+  coodevConfig: InternalConfiguration
 }
 
 export interface PipeableStream {

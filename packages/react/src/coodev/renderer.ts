@@ -32,13 +32,10 @@ export class CoodevReactRenderer implements Renderer {
     return html
   }
 
-  public async renderToString(
-    coodev: Coodev,
-    { req, res, next }: RenderContext,
-  ) {
+  public async renderToString(coodev: Coodev, context: RenderContext) {
     const { renderToString } = await this.getServerEntryModule(coodev)
 
-    const html = await renderToString({ req, res, next })
+    const html = await renderToString(context)
 
     return html
   }

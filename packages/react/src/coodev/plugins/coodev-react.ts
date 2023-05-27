@@ -3,7 +3,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { COODEV_REACT_SOURCE_DIR } from '../constants'
 import type { Plugin } from 'vite'
-import type { RouteConfig, ReactCoodevConfiguration } from '../../types'
+import type {
+  RouteConfig,
+  ReactCoodevConfiguration,
+  SerializedConfiguration,
+} from '../../types'
 
 const COODEV_REACT_CONFIG = '__COODEV__/react/config'
 const COODEV_REACT_ROUTES = '__COODEV__/react/routes'
@@ -15,7 +19,8 @@ const COODEV_RUNTIME_REACT_CLIENT = '/@coodev/react/client'
 export interface ViteCoodevReactPluginOptions {
   root: string
   srcDir: string
-  coodevConfig: ReactCoodevConfiguration
+  routing: ReactCoodevConfiguration['routing']
+  serializeConfig: SerializedConfiguration
   routes: RouteConfig[]
 }
 
@@ -59,7 +64,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
     },
     load(id) {
       if (COODEV_REACT_ROUTES === id) {
-        const isLazyLoad = opts.coodevConfig.routing === 'lazy'
+        const isLazyLoad = opts.routing === 'lazy'
 
         const relativeComponentPath = (componentPath: string) => {
           const fullPath = path.isAbsolute(componentPath)
@@ -146,7 +151,7 @@ export function coodevReact(opts: ViteCoodevReactPluginOptions): Plugin {
         }
       }
       if (COODEV_REACT_CONFIG === id) {
-        return `export default ${JSON.stringify(opts.coodevConfig)}`
+        return `export default ${JSON.stringify(opts.serializeConfig)}`
       }
       return null
     },

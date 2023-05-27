@@ -6,7 +6,7 @@ import { COODEV_APP_ID } from '../constants'
 function Main() {
   const context = React.useContext(ServerContext)
 
-  if (!context.url) {
+  if (!('url' in context)) {
     return <div id={COODEV_APP_ID} />
   }
 

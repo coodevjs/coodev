@@ -1,5 +1,8 @@
 import * as React from 'react'
+import { getRuntimeConfig } from '@coodev/react/config'
 import Link from '@coodev/react/link'
+
+const runtimeConfig = getRuntimeConfig()
 
 const Home: React.FC = () => {
   return (
@@ -9,7 +12,9 @@ const Home: React.FC = () => {
       <Link to="/coodevjs/coodev/workflow-runs">
         coodevjs/coodev workflow runs
       </Link>
-      <button onClick={() => console.log('clicked')}>Click</button>
+      <button onClick={() => console.log('clicked', runtimeConfig)}>
+        Click
+      </button>
     </div>
   )
 }

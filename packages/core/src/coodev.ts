@@ -46,6 +46,11 @@ class CoodevImpl implements Coodev {
 
     this._middlewares = connect()
     this.plugins = this.normalizePlugins(this.coodevConfig.plugins)
+
+    // @ts-ignore
+    globalThis.__COODEV__ = {
+      coodevConfig: this.coodevConfig,
+    }
   }
 
   public get middlewares() {
@@ -185,6 +190,7 @@ class CoodevImpl implements Coodev {
 
   public async getDocumentHtml(): Promise<string> {
     const documentHtml = await this.renderer.getDocumentHtml(this, {
+      coodevConfig: this.coodevConfig,
       next: () => {
         throw new Error('next() is not supported in build mode')
       },
@@ -335,6 +341,7 @@ class CoodevImpl implements Coodev {
       req,
       res,
       next: wrappedNext,
+      coodevConfig: this.coodevConfig,
     })
 
     if (hasCalledNext || res.writableEnded) {
@@ -360,6 +367,7 @@ class CoodevImpl implements Coodev {
       req,
       res,
       next: wrappedNext,
+      coodevConfig: this.coodevConfig,
     })
 
     if (hasCalledNext || res.writableEnded) {
@@ -391,6 +399,7 @@ class CoodevImpl implements Coodev {
       req,
       res,
       next: wrappedNext,
+      coodevConfig: this.coodevConfig,
     })
 
     if (hasCalledNext) {

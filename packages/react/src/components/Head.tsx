@@ -1,15 +1,17 @@
 import * as React from 'react'
-import coodevConfig from '__COODEV__/react/config'
 import { ServerContext } from '../contexts/server'
 
 export type HeadProps = React.HTMLAttributes<HTMLHeadElement>
 
 const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
+  const context = React.useContext(ServerContext)
+  const coodevConfig = context.coodevConfig
   const publicPath = coodevConfig.publicPath as string
-  const { manifest } = React.useContext(ServerContext)
   const manifestChildren: React.ReactNode[] = []
-  if (manifest) {
-    const entryChunk = Object.values(manifest).find(chunk => chunk.isEntry)
+  if ('manifest' in context) {
+    const entryChunk = Object.values(context.manifest).find(
+      chunk => chunk.isEntry,
+    )
     if (entryChunk) {
       if (entryChunk.css) {
         entryChunk.css.forEach((path: string) => {
