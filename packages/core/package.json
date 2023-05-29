@@ -1,6 +1,6 @@
 {
   "name": "@coodev/core",
-  "version": "1.0.0-dev.12",
+  "version": "1.0.0-dev.13",
   "main": "./lib/index.js",
   "license": "MIT",
   "description": "Core library for Coodev",

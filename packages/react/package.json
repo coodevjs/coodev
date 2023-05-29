@@ -1,6 +1,6 @@
 {
   "name": "@coodev/react",
-  "version": "1.0.0-dev.16",
+  "version": "1.0.0-dev.19",
   "main": "index.js",
   "types": "index.d.ts",
   "license": "MIT",
