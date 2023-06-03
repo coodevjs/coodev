@@ -11,7 +11,7 @@ const WorkflowRuns: React.FC = () => {
   return (
     <div>
       <h1>
-        {owner}/{repository} workflow runs
+        {owner}/{repository}
       </h1>
     </div>
   )
