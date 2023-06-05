@@ -22,6 +22,24 @@ const CoodevScript: React.FC = () => {
   const coodevConfig = context.coodevConfig
   const publicPath = coodevConfig.publicPath as string
 
+  const manifestChildren: React.ReactNode[] = []
+  if ('manifest' in context) {
+    const entryChunk = Object.values(context.manifest).find(
+      chunk => chunk.isEntry,
+    )
+
+    if (entryChunk) {
+      manifestChildren.push(
+        <script
+          type="module"
+          crossOrigin="anonymous"
+          key={entryChunk.file}
+          src={publicPath + entryChunk.file}
+        />,
+      )
+    }
+  }
+
   const globalData: GlobalData = {
     publicPath,
     pageProps: 'pageProps' in context ? context.pageProps : {},
@@ -41,6 +59,7 @@ const CoodevScript: React.FC = () => {
       {(coodevConfig.dev || !coodevConfig.ssr) && (
         <script type="module" src={publicPath + '@coodev/react/client'} />
       )}
+      {manifestChildren}
     </>
   )
 }

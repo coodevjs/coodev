@@ -12,23 +12,12 @@ const Head: React.FC<HeadProps> = ({ children, ...otherProps }) => {
     const entryChunk = Object.values(context.manifest).find(
       chunk => chunk.isEntry,
     )
-    if (entryChunk) {
-      if (entryChunk.css) {
-        entryChunk.css.forEach((path: string) => {
-          manifestChildren.push(
-            <link key={path} rel="stylesheet" href={publicPath + path} />,
-          )
-        })
-      }
-
-      manifestChildren.push(
-        <script
-          type="module"
-          crossOrigin="anonymous"
-          key={entryChunk.file}
-          src={publicPath + entryChunk.file}
-        />,
-      )
+    if (entryChunk?.css) {
+      entryChunk.css.forEach((path: string) => {
+        manifestChildren.push(
+          <link key={path} rel="stylesheet" href={publicPath + path} />,
+        )
+      })
     }
   }
 
