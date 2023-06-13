@@ -31,7 +31,7 @@ import { findMatchedRoute, matchParams } from './utils'
   const content = (
     <CoodevApp
       url={url}
-      path={matched.path}
+      pathDefinition={matched.path}
       Component={matched.component}
       pageProps={globalData.pageProps || {}}
     />

@@ -8,7 +8,7 @@ import type { ReactRenderContext } from '../types'
 
 interface CoodevAppProps {
   url: string
-  path: string | null
+  pathDefinition: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
 }
@@ -19,10 +19,10 @@ interface Config extends Omit<CoodevAppProps, 'url'> {
 
 function CoodevApp(props: CoodevAppProps) {
   const configRef = React.useRef<Config>({
-    path: props.path,
+    pathDefinition: props.pathDefinition,
     Component: props.Component,
     pageProps: props.pageProps,
-    params: matchParams(props.path || '/', props.url),
+    params: matchParams(props.pathDefinition || '/', props.url),
   })
 
   const [location, setLocation] = React.useState<any>(() => {
@@ -41,7 +41,7 @@ function CoodevApp(props: CoodevAppProps) {
       const matched = findMatchedRoute(location.pathname, routes)
       if (matched) {
         configRef.current.Component = matched.component
-        configRef.current.path = matched.path
+        configRef.current.pathDefinition = matched.path
         configRef.current.params = matchParams(matched.path, location.pathname)
       } else {
         configRef.current.params = {}

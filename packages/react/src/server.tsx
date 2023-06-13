@@ -64,7 +64,7 @@ async function renderApp<T>(
     <ServerContext.Provider
       value={{
         Component: matched.component,
-        path: matched.path,
+        pathDefinition: matched.path,
         url,
         pageProps,
         manifest,

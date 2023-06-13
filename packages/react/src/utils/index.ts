@@ -2,8 +2,12 @@ import { pathToRegexp } from 'path-to-regexp'
 import { match } from 'path-to-regexp'
 import type { InternalRouteConfig } from '../types'
 
-export function matchParams(path: string, pathname: string) {
-  const matched = match(path)(pathname)
+export function matchParams(pathDefinition: string, url: string) {
+  const parsedUrl = new URL(url, 'http://localhost')
+  const matched = match(pathDefinition, {
+    strict: true,
+  })(parsedUrl.pathname ?? '/')
+
   return matched ? matched.params : {}
 }
 

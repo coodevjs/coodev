@@ -16,7 +16,7 @@ export interface ManifestChunk {
 
 interface SSRServerContextType {
   url: string
-  path: string | null
+  pathDefinition: string | null
   Component: React.ComponentType<any> | null
   pageProps: object
   manifest: Manifest
