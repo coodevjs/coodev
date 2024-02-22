@@ -2,16 +2,35 @@ import * as path from 'path'
 import * as fs from 'fs'
 import react from '@vitejs/plugin-react'
 import type { ViteConfig, Coodev, Plugin } from '@coodev/core'
-import type { ReactCoodevConfiguration, RouteConfig } from '../types'
+import type {
+  ReactCoodevConfiguration,
+  RouteConfig,
+  RouteMatcher,
+} from '../types'
 import { coodevReact, ssrRefresh } from './plugins'
 import { COODEV_REACT_SOURCE_DIR } from './constants'
 
-function parseRouteConfig(root: string): RouteConfig[] {
+function parseRouteConfig(
+  root: string,
+  routeMatcher?: RegExp | RouteMatcher,
+): RouteConfig[] {
   const basePath = path.join(root, 'pages')
 
   if (!fs.existsSync(basePath)) {
     console.warn(`No pages directory found in \`${root}\``)
     return []
+  }
+
+  const isRouteMatch = (filePath: string) => {
+    if (!routeMatcher) {
+      return true
+    }
+
+    if (routeMatcher instanceof RegExp) {
+      return routeMatcher.test(filePath)
+    }
+
+    return routeMatcher(filePath)
   }
 
   const routes: RouteConfig[] = []
@@ -28,7 +47,7 @@ function parseRouteConfig(root: string): RouteConfig[] {
     } else if (stats.isFile()) {
       const { ext, name } = path.parse(filePath)
       const availableExtensions = ['.tsx', '.js', '.jsx']
-      if (availableExtensions.includes(ext)) {
+      if (availableExtensions.includes(ext) && isRouteMatch(filePath)) {
         const relativePath = path
           .relative(
             basePath,
@@ -73,7 +92,9 @@ export function coodevReactPlugin(): Plugin {
         srcDir,
         publicPath,
       } = coodev.coodevConfig as ReactCoodevConfiguration
-      const routes = userRoutes ?? parseRouteConfig(srcDir)
+      const routes = Array.isArray(userRoutes)
+        ? userRoutes
+        : parseRouteConfig(srcDir, userRoutes)
 
       const coodevReactConfig: ViteConfig = {
         plugins: [

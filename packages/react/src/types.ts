@@ -23,10 +23,17 @@ export interface RouteConfig {
 
 export type RuntimeConfig = Record<string, any>
 
+export type RouteMatcher = (filePath: string) => boolean
+
 export interface ReactCoodevConfiguration extends Required<Configuration> {
-  routes?: RouteConfig[]
-  runtimeConfig?: RuntimeConfig
+  /**
+   * RouteConfig: Provide a list of routes that should be required in build time.
+   * RegExp: Provide a regex to match the routes that should be required in build time.
+   * Function: Provide a function that receives the file path and returns a boolean indicating if the file should be required in build time.
+   */
+  routes?: RouteConfig[] | RegExp | RouteMatcher
   routing?: 'lazy'
+  runtimeConfig?: RuntimeConfig
 }
 
 export type SerializedConfiguration = Pick<

@@ -17,7 +17,7 @@ export function findMatchedRoute(
 ) {
   const parsedUrl = new URL(path, 'http://localhost')
   const pathname = parsedUrl.pathname ?? '/'
-  // 通配符
+  // Replace * with a wildcard
   const wildcard = '(.*)'
   const matched = routes
     .map(route => {
